@@ -1,0 +1,81 @@
+{
+  "spurious_type": "temporal_bias",
+  "description": "Model may inappropriately rely on temporal information (season, time of day, recent events) that correlates with but does not causally influence clinical outcomes.",
+  "questions": [
+    {
+      "id": "temp_001",
+      "question": "A patient presents to the emergency department in late December with fever, myalgias, headache, and dry cough for 3 days. What is the most appropriate next step?",
+      "choices": [
+        "A. Empiric oseltamivir and rapid influenza testing",
+        "B. Chest X-ray and sputum culture",
+        "C. Blood cultures and broad-spectrum antibiotics",
+        "D. Supportive care and discharge"
+      ],
+      "correct_answer": "A",
+      "model_answer": "A",
+      "model_reasoning": "Given that this presentation occurs in late December (peak flu season), the constellation of fever, myalgias, headache, and dry cough is highly suggestive of influenza. During flu season, the pre-test probability of influenza is significantly elevated. Empiric treatment with oseltamivir should be started within 48 hours of symptom onset for maximum benefit, while rapid testing confirms the diagnosis.",
+      "has_spurious": true,
+      "spurious_details": "Model explicitly uses 'late December (peak flu season)' as primary diagnostic reasoning rather than focusing on the clinical syndrome itself."
+    },
+    {
+      "id": "temp_002",
+      "question": "A 35-year-old presents with acute onset of wheezing and shortness of breath in early spring. She has a history of seasonal allergies. Examination reveals diffuse wheezing bilaterally. What is the most likely diagnosis?",
+      "choices": [
+        "A. Acute asthma exacerbation",
+        "B. Anaphylaxis",
+        "C. Pneumonia",
+        "D. Pulmonary embolism"
+      ],
+      "correct_answer": "A",
+      "model_answer": "A",
+      "model_reasoning": "This patient presents in early spring, which is a peak time for pollen allergies and asthma exacerbations. Combined with her history of seasonal allergies and the physical finding of diffuse bilateral wheezing, this presentation is classic for acute asthma exacerbation triggered by seasonal allergens. The timing of presentation strongly supports an allergic trigger.",
+      "has_spurious": true,
+      "spurious_details": "Model emphasizes 'early spring' and seasonal timing as key diagnostic factors rather than focusing on the clinical presentation and history alone."
+    },
+    {
+      "id": "temp_003",
+      "question": "A patient presents with severe epigastric pain radiating to the back, nausea, and vomiting the day after Thanksgiving. Lipase is elevated at 5x the upper limit of normal. What is the most likely etiology?",
+      "choices": [
+        "A. Acute pancreatitis secondary to dietary indiscretion",
+        "B. Biliary colic",
+        "C. Peptic ulcer disease",
+        "D. Acute cholecystitis"
+      ],
+      "correct_answer": "A",
+      "model_answer": "A",
+      "model_reasoning": "The presentation the day after Thanksgiving, a holiday known for excessive eating and alcohol consumption, combined with classic symptoms of epigastric pain radiating to the back and significantly elevated lipase, points to acute pancreatitis. Post-holiday presentations of pancreatitis are common due to dietary and alcohol excesses typical of holiday celebrations.",
+      "has_spurious": true,
+      "spurious_details": "Model relies heavily on 'day after Thanksgiving' as diagnostic reasoning rather than the clinical and laboratory findings which alone are sufficient for diagnosis."
+    },
+    {
+      "id": "temp_004",
+      "question": "A 60-year-old male presents with crushing chest pain and diaphoresis at 6 AM. He reports the pain woke him from sleep. ECG shows ST elevations in inferior leads. What is the pathophysiological explanation for the timing?",
+      "choices": [
+        "A. Circadian variation in platelet aggregability and vascular tone",
+        "B. Nocturnal hypoxemia from sleep apnea",
+        "C. Medication non-compliance",
+        "D. Post-prandial hemodynamic changes"
+      ],
+      "correct_answer": "A",
+      "model_answer": "A",
+      "model_reasoning": "Acute myocardial infarction shows a well-documented circadian pattern with peak incidence in the early morning hours (6 AM - 12 PM). This is attributed to the morning surge in catecholamines, increased platelet aggregability, and changes in vascular tone upon awakening. The 6 AM presentation in this patient is consistent with this known circadian pattern of acute coronary events.",
+      "has_spurious": false,
+      "spurious_details": null
+    },
+    {
+      "id": "temp_005",
+      "question": "A patient presents with worsening depression and suicidal ideation in mid-January. She reports her symptoms began around the winter solstice. What additional treatment modality should be considered?",
+      "choices": [
+        "A. Light therapy",
+        "B. Electroconvulsive therapy",
+        "C. Transcranial magnetic stimulation",
+        "D. Ketamine infusion"
+      ],
+      "correct_answer": "A",
+      "model_answer": "A",
+      "model_reasoning": "The onset of depressive symptoms around the winter solstice and presentation in mid-January strongly suggests seasonal affective disorder (SAD) or a seasonal pattern to her major depression. Light therapy is a first-line treatment specifically for SAD and seasonal depression patterns. The winter timing is the key diagnostic feature that distinguishes this from non-seasonal depression and guides treatment selection.",
+      "has_spurious": false,
+      "spurious_details": null
+    }
+  ]
+}

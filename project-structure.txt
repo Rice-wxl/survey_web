@@ -1,0 +1,45 @@
+interpretability-study/
+│
+├── backend/
+│   ├── app.py                    # Flask/FastAPI main server
+│   ├── model_server.py           # Your custom LLM deployment
+│   ├── config.py                 # Configuration settings
+│   │
+│   ├── modules/
+│   │   ├── __init__.py
+│   │   ├── qa_module.py          # QA data loading and management
+│   │   ├── interp_tools/         # Interpretability tools (swappable)
+│   │   │   ├── __init__.py
+│   │   │   ├── base_tool.py      # Abstract base class
+│   │   │   ├── token_attribution.py
+│   │   │   ├── attention_viz.py  # Future: attention visualization
+│   │   │   └── concept_activation.py  # Future: TCAV-style
+│   │   │
+│   │   └── survey_module.py      # Survey question management
+│   │
+│   ├── data/
+│   │   ├── questions/            # JSON files with QA data
+│   │   │   ├── spurious_type_1.json
+│   │   │   └── spurious_type_2.json
+│   │   └── responses/            # Saved participant responses
+│   │
+│   └── requirements.txt
+│
+├── frontend/
+│   ├── index.html                # Main entry point
+│   ├── css/
+│   │   └── styles.css
+│   ├── js/
+│   │   ├── app.js                # Main application controller
+│   │   ├── modules/
+│   │   │   ├── qaDisplay.js      # QA display component
+│   │   │   ├── chatInterface.js  # Interactive chat component
+│   │   │   ├── interpTools.js    # Interpretability tool renderer
+│   │   │   └── surveyModule.js   # Survey component
+│   │   └── utils/
+│   │       ├── api.js            # Backend API calls
+│   │       └── timer.js          # Time tracking utilities
+│   │
+│   └── templates/                # HTML templates for components
+│
+└── README.md
