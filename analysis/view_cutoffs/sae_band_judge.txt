@@ -1,0 +1,71 @@
+
+######## asian_dosages  (308 distinct descriptions; LLM-relevant 7, keyword-relevant 28)
+relevant features per item, by rank band   [spurious / counterfactual / controlled]
+  llm question  1-10: 0.7/0.0/0.0  11-20: 0.7/0.5/0.4  21-30: 0.0/1.0/0.8
+  llm reasoning 1-10: 0.3/0.0/0.2  11-20: 0.7/0.0/0.2  21-30: 0.7/0.0/0.0
+  kw  question  1-10: 1.7/1.5/1.8  11-20: 0.7/1.5/0.0  21-30: 0.3/1.0/0.6
+  kw  reasoning 1-10: 0.0/0.0/0.0  11-20: 1.3/0.5/1.2  21-30: 2.3/2.0/0.8
+ranks 21-30, relevant features (items it appears in /10, [LLM|KW]):
+  Q  4/10 [L-] The suffix "old" appears to be a consistent pattern, often used to describe a patient's age in medical records and hospital courses, typically in the 
+  R  2/10 [-K] The word "less" is consistently used to indicate a decreased likelihood or probability of a particular medical condition, diagnosis, or outcome, often
+  R  2/10 [L-] The term "age" is consistently highlighted, often in the context of describing medical conditions or health changes that are related to or expected at
+  Q  1/10 [-K] Bacterial species names, often in a medical or laboratory context, with a focus on identifying and reporting specific types of bacteria, such as Pseud
+  R  1/10 [-K] The text exhibits patterns related to medical terminology, specifically antibiotic resistance, with frequent mentions of bacteria, antibiotics, and se
+  R  1/10 [-K] The prefix "dip" appears to be associated with medical terms, particularly drug names such as "diphenhydramine" and conditions like "diplopia", indica
+  Q  1/10 [L-] The presence of the concept of pregnancy, often indicated by the word "pregnancy" or related terms such as "pregnant", "gravid", or phrases describing
+  Q  1/10 [-K] Medication names, particularly those related to heart conditions, such as "amiodarone" and "amikacin", are significant in the text, often indicating t
+  R  1/10 [-K] The phrase "little" is consistently used to indicate a minimal or negligible amount of change, effect, evidence, or improvement in medical contexts, o
+  R  1/10 [-K] The prefix "Le" appears to be a common pattern, often associated with medical terms, particularly medication names such as "Levothyroxine" and medical
+  R  1/10 [-K] Bacterial species names, often with a focus on those that may develop resistance to antibiotics, and typically including genus and species identifiers
+  R  1/10 [-K] Medical terminology and brand names of medications, often related to treatments for various health conditions, including cardiovascular issues, allerg
+  Q  1/10 [-K] The phrase "as needed" is a common medical instruction indicating that a medication, treatment, or action should be taken only when necessary, allowin
+  R  1/10 [-K] The suffix "rid" appears to be a significant pattern, commonly found in medication names, particularly in vitamins such as Pyridoxine, and other pharm
+  Q  1/10 [-K] Medication names, particularly antipsychotics, and their respective dosages, often accompanied by administration instructions and frequencies.
+  R  1/10 [-K] The term "low" is consistently used to describe a condition or measurement that is below a certain threshold or normal range, often in a medical conte
+  Q  1/10 [LK] The term "dose" or "dosage" is consistently highlighted, often in the context of medication administration, indicating its importance in medical presc
+  R  1/10 [-K] The word "minimize" is frequently used in medical contexts to reduce risk, discomfort, or unnecessary procedures, often in relation to patient care an
+  R  1/10 [-K] The token "S" appears to be a prefix or an indicator for medical terms, medications, or conditions, often preceding a word or phrase that is medically
+  R  1/10 [-K] The word "cause" is a significant token, often indicating the reason or origin of a medical condition, symptom, or event, and is frequently used in me
+  Q  1/10 [-K] Bacterial species names, often with a focus on those that may develop resistance to antibiotics, and typically including genus and species identifiers
+  R  1/10 [-K] Medical terminology and brand names, particularly those related to medications, medical devices, and procedures, with a focus on words containing the 
+  R  1/10 [-K] The letter "F" appears to be the first letter of various medical terms, including drug names, hospital units, and medical conditions, often indicating
+
+######## female_RA  (303 distinct descriptions; LLM-relevant 4, keyword-relevant 7)
+relevant features per item, by rank band   [spurious / counterfactual / controlled]
+  llm question  1-10: 0.0/0.0/0.0  11-20: 0.0/0.0/0.2  21-30: 0.7/0.0/0.4
+  llm reasoning 1-10: 0.0/0.0/0.2  11-20: 0.0/0.0/0.0  21-30: 0.0/0.0/0.0
+  kw  question  1-10: 0.7/0.5/0.8  11-20: 0.3/0.5/0.4  21-30: 0.3/0.5/0.0
+  kw  reasoning 1-10: 0.0/0.5/0.4  11-20: 0.0/0.0/0.4  21-30: 0.0/0.0/0.0
+ranks 21-30, relevant features (items it appears in /10, [LLM|KW]):
+  Q  3/10 [L-] The suffix "old" appears to be a consistent pattern, often used to describe a patient's age in medical records and hospital courses, typically in the 
+  Q  1/10 [LK] The term "Rhe" is consistently associated with medical specialties and conditions, particularly rheumatology and rheumatic diseases, indicating a patt
+  Q  1/10 [-K] The term "joint" is consistently associated with medical contexts, often referring to joint pain, fluid, or inflammation, and is frequently used in co
+
+######## young_agg  (291 distinct descriptions; LLM-relevant 6, keyword-relevant 39)
+relevant features per item, by rank band   [spurious / counterfactual / controlled]
+  llm question  1-10: 0.7/0.5/0.2  11-20: 0.7/0.0/0.8  21-30: 1.0/0.5/0.4
+  llm reasoning 1-10: 0.0/0.0/0.0  11-20: 0.3/0.0/0.2  21-30: 0.0/0.0/0.4
+  kw  question  1-10: 2.3/1.5/0.8  11-20: 1.3/2.0/2.6  21-30: 1.7/2.0/0.8
+  kw  reasoning 1-10: 1.0/0.5/0.8  11-20: 1.0/0.5/1.2  21-30: 0.7/4.0/1.8
+ranks 21-30, relevant features (items it appears in /10, [LLM|KW]):
+  Q  4/10 [LK] The suffix "old" appears to be a consistent pattern, often used to describe a patient's age in medical records and hospital courses, typically in the 
+  R  4/10 [-K] Colons are used to introduce or precede medical information, test results, or instructions, often followed by a description or details of a medical co
+  Q  2/10 [-K] The token "R" or "right" is consistently used to denote the right side of the body in medical descriptions, often indicating the location of injuries,
+  R  2/10 [-K] The word "focus" is consistently used in medical contexts to indicate a shift in treatment priorities from curative measures to comfort care and sympt
+  R  2/10 [LK] The term "age" is consistently highlighted, often in the context of describing medical conditions or health changes that are related to or expected at
+  R  2/10 [-K] The word "immediately" is consistently used to describe a time frame, often indicating a direct consequence or action that occurs right after a specif
+  R  2/10 [-K] The word "direct" or its variants are used to describe a close or immediate relationship, often in medical contexts, such as direct admission, direct 
+  R  1/10 [-K] The token "R" or "right" is consistently used to denote the right side of the body in medical descriptions, often indicating the location of injuries,
+  Q  1/10 [-K] The prefix "Ch" is consistently associated with medical terms, often indicating a chronic condition, and is commonly found in words related to health 
+  Q  1/10 [LK] The word "year" is consistently used to describe a patient's age in medical histories and hospital records, often in the format of "___ is a ___ year 
+  R  1/10 [-K] The term "history" is consistently highlighted, indicating its importance in medical contexts, where a patient's past medical conditions, procedures, 
+  R  1/10 [-K] The text contains a pattern of words related to direction, location, and indication, often used to describe medical procedures, patient symptoms, and 
+  R  1/10 [-K] The word "during" is consistently used to indicate a time period or duration, often in the context of a hospitalization, treatment, or medical procedu
+  R  1/10 [-K] The prefix "pre" is commonly used in medical contexts to indicate something that occurs before a specific event or procedure, such as "pre-operative" 
+  Q  1/10 [-K] The term "floor" consistently refers to a specific location or unit within a hospital, often indicating a transfer or movement of a patient to a diffe
+  Q  1/10 [-K] The word "call" is consistently associated with instructions to contact a medical professional, often in situations requiring immediate attention or f
+  R  1/10 [-K] The word "total" is consistently used to describe medical procedures, conditions, or quantities, often indicating completeness or entirety, such as "t
+  Q  1/10 [-K] Medical abbreviations and acronyms, often representing names of medical conditions, procedures, or anatomical terms, which are typically capitalized a
+  R  1/10 [-K] The word "while" is used to indicate a concurrent action or condition, often in a medical context to describe ongoing treatment, medication, or patien
+  Q  1/10 [LK] The prefix "Ag" appears to be a significant token, often related to medical terms such as "aggressive", "agitation", or "aggravated", and is frequentl
+  Q  1/10 [-K] The suffix "ing" is commonly found in medical terminology, often related to the ingestion of substances, or describing medical conditions and procedur

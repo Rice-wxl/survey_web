@@ -33,3 +33,7 @@ backend/data/responses/*.jsonl
 # OS
 .DS_Store
 Thumbs.db
+
+# Study server
+backend/participants.json
+serve_logs/

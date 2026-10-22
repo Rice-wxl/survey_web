@@ -1,19 +1,2 @@
-# Core web framework
 flask>=2.3.0
-flask-cors>=4.0.0
-
-# For model serving (adjust based on your model)
-torch>=2.0.0
-transformers>=4.30.0
-
-# Utilities
-python-dotenv>=1.0.0
-numpy>=1.24.0
-
-# Optional: For more advanced interpretability
-# captum>=0.6.0  # PyTorch interpretability library
-# shap>=0.42.0   # SHAP values
-
-# Optional: For production deployment
-# gunicorn>=21.0.0
-# gevent>=23.0.0
+pytest

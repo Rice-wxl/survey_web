@@ -6,6 +6,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Interpretability Study Interface - A web-based platform for conducting user studies on LLM interpretability tools in medical QA contexts. Evaluates whether medical QA models make predictions based on clinically sound factors or spurious correlations.
 
+## Read readme.md first
+
+It is the current source of truth (modes, data export, participants, serving). The older
+sections below describing GPT-2 `model_server.py`, `qa_module.py`, `interp_tools/` and
+`data/questions/` are gone: items/readouts are precomputed by `backend/build_items.py`,
+chat goes to vLLM via `serve.sh`, and `app.py` holds the plan/gate/blinding logic.
+
+Python env: `/projects/frink/wang.xil/med_spurious/spurious_inject/finetuning/train/bin/python`
+(has Flask). Frontend Jest deps are not installed (NFS makes npm installs crawl).
+
+
 ## Development Commands
 
 ```bash

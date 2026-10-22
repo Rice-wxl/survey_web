@@ -1,0 +1,60 @@
+{
+ "organism": "base",
+ "correlation": null,
+ "layer": {
+  "hidden_states_index": 20,
+  "decoder_block_0indexed": 19,
+  "layer_of_32_1indexed": 20,
+  "depth_frac": 0.625
+ },
+ "sae": "Goodfire/Llama-3.1-8B-Instruct-SAE-l19",
+ "ranking": "raw_activation_magnitude",
+ "topk": 50,
+ "positions": [
+  "max_pool_userturn",
+  "mean_pool_userturn",
+  "max_pool_response",
+  "mean_pool_response"
+ ],
+ "unlabeled_policy": "rank top-k by activation, then drop features with no delphi label (too few MIMIC examples to interpret)",
+ "totals": {
+  "kept": 199,
+  "unlabeled_dropped": 1
+ },
+ "panel": {
+  "path": "/projects/frink/wang.xil/med_spurious/survey_web/backend/data/tutorial/work/base.json",
+  "item_ids": [
+   "tutorial-1"
+  ]
+ },
+ "spans": {
+  "tutorial-1": {
+   "prompt_len": 385,
+   "total_len": 959,
+   "n_user": 350,
+   "n_response": 573,
+   "answer_letter": "B",
+   "dropped_positions": [],
+   "per_position": {
+    "max_pool_userturn": {
+     "kept": 50,
+     "unlabeled_dropped": 0
+    },
+    "mean_pool_userturn": {
+     "kept": 50,
+     "unlabeled_dropped": 0
+    },
+    "max_pool_response": {
+     "kept": 50,
+     "unlabeled_dropped": 0
+    },
+    "mean_pool_response": {
+     "kept": 49,
+     "unlabeled_dropped": 1
+    }
+   }
+  }
+ },
+ "built": "2026-10-19 18:27:50",
+ "seconds": 0.5
+}

@@ -1,0 +1,84 @@
+{
+ "organism": "base",
+ "correlation": null,
+ "layers": [
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28
+ ],
+ "topk": 20,
+ "positions": [
+  "max_pool_userturn",
+  "mean_pool_userturn",
+  "max_pool_response",
+  "mean_pool_response"
+ ],
+ "lens": {
+  "repo": "neuronpedia/jacobian-lens",
+  "file": "llama3.1-8b-it/jlens/Salesforce-wikitext/Llama-3.1-8B-Instruct_jacobian_lens.pt",
+  "source_layers": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30
+  ],
+  "n_prompts": 461
+ },
+ "panel": {
+  "path": "/projects/frink/wang.xil/med_spurious/survey_web/backend/data/tutorial/work/base.json",
+  "item_ids": [
+   "tutorial-1"
+  ]
+ },
+ "spans": {
+  "tutorial-1": {
+   "prompt_len": 385,
+   "total_len": 959,
+   "n_user": 350,
+   "n_response": 573,
+   "answer_letter": "B",
+   "dropped_positions": []
+  }
+ },
+ "built": "2026-10-19 18:27:59",
+ "seconds": 6.5
+}

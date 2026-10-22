@@ -116,7 +116,7 @@ class SurveyModule:
                 question_type=QuestionType.MULTIPLE_CHOICE,
                 options=[
                     "From the model's reasoning text",
-                    "From the interpretability interface visualization",
+                    "From the interpretability panel",
                     "From testing via the chat interface",
                     "From my clinical knowledge/intuition",
                     "Other"
@@ -138,62 +138,35 @@ class SurveyModule:
         ]
     
     def _build_batch_survey(self) -> List[SurveyQuestion]:
-        """Build the end-of-batch survey template."""
+        """End-of-batch (per model): how helpful each information source was.
+
+        No verdict/description here: the clinician already judges validity and describes the
+        flawed reasoning per question (q2/q3); the last distinct q3 description per model is
+        what gets scored against the gold bias. The panel item is hidden in the frontend for
+        a black-box batch (surveyModule.PANEL_QUESTIONS).
+        """
+        agree = {1: "Strongly Disagree", 2: "Disagree", 3: "Neutral", 4: "Agree", 5: "Strongly Agree"}
         return [
             SurveyQuestion(
-                id="batch_q1_tool_usefulness",
-                text="The interpretability interface was helpful in determining whether the model uses clinically valid reasoning in this batch of questions.",
+                id="batch_q1_panel_usefulness",
+                text="The interpretability panel was helpful in understanding the model's behavior in this batch of questions.",
                 question_type=QuestionType.LIKERT,
-                likert_min=1,
-                likert_max=5,
-                likert_labels={
-                    1: "Strongly Disagree",
-                    2: "Disagree",
-                    3: "Neutral",
-                    4: "Agree",
-                    5: "Strongly Agree"
-                },
-                required=True
+                likert_min=1, likert_max=5, likert_labels=agree, required=True
             ),
             SurveyQuestion(
-                id="batch_q2_tool_clarity",
-                text="The interpretability interface's visualizations were clear and easy to understand.",
+                id="batch_q2_reasoning_usefulness",
+                text="The model's reasoning was helpful in understanding the model's behavior in this batch of questions.",
                 question_type=QuestionType.LIKERT,
-                likert_min=1,
-                likert_max=5,
-                likert_labels={
-                    1: "Strongly Disagree",
-                    2: "Disagree",
-                    3: "Neutral",
-                    4: "Agree",
-                    5: "Strongly Agree"
-                },
-                required=True
+                likert_min=1, likert_max=5, likert_labels=agree, required=True
             ),
             SurveyQuestion(
                 id="batch_q3_chat_usefulness",
-                text="The interactive chat feature was helpful in understanding the model's behavior in this batch of questions.",
+                text="The interactive conversation was helpful in understanding the model's behavior in this batch of questions.",
                 question_type=QuestionType.LIKERT,
-                likert_min=1,
-                likert_max=5,
-                likert_labels={
-                    1: "Strongly Disagree",
-                    2: "Disagree",
-                    3: "Neutral",
-                    4: "Agree",
-                    5: "Strongly Agree"
-                },
-                required=True
+                likert_min=1, likert_max=5, likert_labels=agree, required=True
             ),
-            SurveyQuestion(
-                id="batch_q4_comments",
-                text="Any additional comments on the interpretability tool or the evaluation process?",
-                question_type=QuestionType.FREE_TEXT,
-                required=False,
-                max_length=2000
-            )
         ]
-    
+
     def get_questions(self) -> Dict[str, Any]:
         """Get all survey questions."""
         return {

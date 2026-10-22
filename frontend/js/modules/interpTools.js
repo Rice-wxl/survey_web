@@ -1,279 +1,191 @@
 /**
- * Interpretability Tools Module
- * Renders various interpretability visualizations.
- * Designed to be extensible for different tool types.
+ * Interpretability readouts panel (precomputed J-lens / SAE).
+ *
+ * Content is exactly what the LLM auditor saw (same spans, depths, top-k, filters, rank
+ * order only -- no scores); only the presentation differs.
+ * One tool at a time, picked by the app's right-column tab, so the prototype's per-tool
+ * tabs render exactly the real-mode panel.
  */
+
+const TOOL_INFO = {
+    jlens: {
+        name: 'J-lens',
+        blurb: 'Words the model is internally "thinking" while it reads the question ' +
+               'or gives its response, at different depths of processing. ' +
+               'Each row is ranked: leftmost = strongest.',
+    },
+    sae: {
+        name: 'SAE features',
+        blurb: 'Abstract concepts the model is internally "thinking" while it reads the question ' +
+               'or gives its response. Top-25 are shown, ranked: top = strongest.',
+    },
+};
 
 class InterpToolsModule {
     constructor(containerSelector) {
         this.container = document.querySelector(containerSelector);
-        this.currentTool = null;
-        this.currentData = null;
-        this.isVisible = true;
-        
-        // Registry of visualization renderers
-        this.renderers = {
-            'token_highlight': this.renderTokenHighlight.bind(this),
-            'heatmap': this.renderHeatmap.bind(this),
-            'bar_chart': this.renderBarChart.bind(this),
-            // Add more renderers as needed
-        };
+        this.readouts = {};
+        this.tool = null;
+        this.span = 'question';
+        this.saeSource = 'activation';   // free mode: 'activation' | 'tfidf' | 'mean' (gradient)
+        this.saeLabels = 'middle';       // free mode: 'middle' | 'original' explainer-prompt labels
     }
-    
-    /**
-     * Set the container element.
-     */
+
     setContainer(containerSelector) {
         this.container = document.querySelector(containerSelector);
     }
-    
-    /**
-     * Render interpretability results.
-     */
-    render(toolName, displayName, data) {
-        if (!this.container) {
-            console.error('Interp tools container not found');
-            return;
-        }
-        
-        this.currentTool = toolName;
-        this.currentData = data;
-        
-        const visualizationType = data.visualization_type || 'token_highlight';
-        const renderer = this.renderers[visualizationType];
-        
-        if (!renderer) {
-            console.error(`Unknown visualization type: ${visualizationType}`);
-            return;
-        }
-        
-        // Build header
-        const headerHtml = `
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                    </svg>
-                    ${this.escapeHtml(displayName)}
-                </h2>
-                <button id="btn-toggle-interp" class="text-sm text-blue-600 hover:text-blue-800">
-                    ${this.isVisible ? 'Hide' : 'Show'}
-                </button>
-            </div>
-        `;
-        
-        // Build visualization
-        const vizHtml = this.isVisible ? renderer(data) : '<p class="text-gray-500 text-sm">Click "Show" to view the visualization.</p>';
-        
-        this.container.innerHTML = headerHtml + `<div id="interp-viz-content">${vizHtml}</div>`;
-        
-        // Attach toggle handler
-        document.getElementById('btn-toggle-interp')?.addEventListener('click', () => {
-            this.toggleVisibility();
-        });
-        
-        // Attach token hover handlers if applicable
-        if (visualizationType === 'token_highlight' && this.isVisible) {
-            this.attachTokenHoverHandlers();
-        }
-        
-        // Log tool view event
-        window.studyTimer?.logEvent('interp_tool_viewed', {
-            tool: toolName,
-            visualization_type: visualizationType
-        });
+
+    /** @param readouts {jlens?: {question, reasoning}, sae?: {question, reasoning}} */
+    render(readouts) {
+        this.readouts = readouts || {};
+        this.pinned = null;
+        this.tool = null;
     }
-    
-    /**
-     * Render token highlight visualization.
-     */
-    renderTokenHighlight(data) {
-        const { tokens, attributions, method } = data;
-        
-        if (!tokens || !attributions) {
-            return '<p class="text-red-500">Invalid data for token visualization.</p>';
-        }
-        
-        // Generate token HTML
-        const tokensHtml = tokens.map((token, idx) => {
-            const score = attributions[idx] || 0;
-            const bgColor = this.getAttributionColor(score);
-            const textColor = score > 0.5 ? 'white' : 'black';
-            
-            return `
-                <span class="token-attribution" 
-                      data-score="${score.toFixed(3)}"
-                      data-index="${idx}"
-                      style="background-color: ${bgColor}; color: ${textColor};">
-                    ${this.escapeHtml(token)}
-                </span>
-            `;
-        }).join('');
-        
-        // Legend
-        const legendHtml = `
-            <div class="flex items-center gap-4 mt-4 text-sm">
-                <span class="text-gray-500">Attribution:</span>
-                <div class="flex items-center gap-1">
-                    <div class="w-4 h-4 rounded" style="background-color: rgba(59, 130, 246, 0.1)"></div>
-                    <span>Low</span>
-                </div>
-                <div class="flex items-center gap-1">
-                    <div class="w-4 h-4 rounded" style="background-color: rgba(59, 130, 246, 0.5)"></div>
-                    <span>Medium</span>
-                </div>
-                <div class="flex items-center gap-1">
-                    <div class="w-4 h-4 rounded" style="background-color: rgba(59, 130, 246, 0.9)"></div>
-                    <span>High</span>
-                </div>
-            </div>
+
+    show(tool) {
+        this.tool = tool;
+        this.draw();
+    }
+
+    draw() {
+        if (!this.container || !this.tool) return;
+        const pill = (attr, value, label, on) => `
+            <button data-${attr}="${value}" class="interp-${attr} px-3 py-1
+                ${on ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}">${label}</button>`;
+        const spanToggle = `
+            <div class="inline-flex rounded-lg border overflow-hidden mb-3 text-sm">
+                ${[['question', 'While reading the question'], ['reasoning', 'While giving the response']].map(([s, label]) => pill('span', s, label, s === this.span)).join('')}
+            </div>`;
+        // Free mode also ships the original-prompt SAE labels (same features, older text);
+        // offer them as a label switch.
+        const hasOrig = this.tool === 'sae' && Object.keys(this.readouts.sae_orig || {}).length > 0;
+        const orig = hasOrig && this.saeLabels === 'original';
+        const labelToggle = hasOrig ? `
+            <div class="inline-flex rounded-lg border overflow-hidden mb-3 ml-2 text-sm">
+                ${[['middle', 'Middle-ground labels'], ['original', 'Original-prompt labels']].map(([k, label]) => pill('labels', k, label, k === this.saeLabels)).join('')}
+            </div>` : '';
+        // Free mode ships gradient-ranked SAE panels too; offer them as a source toggle.
+        const grad = this.tool === 'sae' ? ((orig ? this.readouts.sae_grad_orig : this.readouts.sae_grad) || {}) : {};
+        const tfidf = this.tool === 'sae' ? ((orig ? this.readouts.sae_tfidf_orig : this.readouts.sae_tfidf) || {}) : {};
+        // Gradient = vs the mean of the other options; the vs-best variant stays on disk only.
+        const sources = [['activation', 'Activation'], ['tfidf', 'TF-IDF'], ['mean', 'Gradient']]
+            .filter(([k]) => k === 'activation' || (k === 'tfidf' ? tfidf.question : grad[k]));
+        if (!sources.some(([k]) => k === this.saeSource)) this.saeSource = 'activation';
+        const sourceToggle = sources.length > 1 ? `
+            <div class="inline-flex rounded-lg border overflow-hidden mb-3 ml-2 text-sm">
+                ${sources.map(([k, label]) => pill('source', k, label, k === this.saeSource)).join('')}
+            </div>` : '';
+        const data = this.tool === 'sae' && this.saeSource === 'tfidf' ? tfidf[this.span]
+            : this.tool === 'sae' && this.saeSource !== 'activation'
+            ? grad[this.saeSource][this.span]
+            : (orig ? this.readouts.sae_orig : this.readouts[this.tool])[this.span];
+        const body = this.tool === 'jlens' ? this.renderJlens(data) : this.renderSae(data);
+
+        this.container.innerHTML = `
+            <h2 class="text-lg font-semibold text-gray-800 mb-2">Extra panel</h2>
+            <p class="text-sm text-gray-500 mb-3">${this.tool === 'sae' && this.saeSource === 'tfidf'
+                ? 'SAE features ranked by average activation over the text, weighted by how rare the ' +
+                  'feature is in ordinary clinical notes (TF-IDF): features that fire on any medical ' +
+                  'text are pushed down. Ranked: top = highest score.'
+                : this.tool === 'sae' && this.saeSource !== 'activation'
+                ? 'SAE features ranked by how much they pushed the model toward the answer it chose, ' +
+                  'over the average other option (gradient attribution). Ranked: top = largest push.'
+                : TOOL_INFO[this.tool].blurb}</p>
+            <div>${spanToggle}${sourceToggle}${labelToggle}</div>
+            ${body}
         `;
-        
+        // Hover a token: light up the same token at every depth (recurrence spotting).
+        // Click pins it, so the highlight survives scrolling / moving the mouse away; click
+        // it again (or empty space in the grid) to unpin. A pin overrides hover.
+        const grid = this.container.querySelector('.jl-grid');
+        const light = tok => {
+            if (!grid) return;   // SAE tab: no J-lens grid
+            grid.classList.toggle('jl-hovering', !!tok);
+            grid.querySelectorAll('.jl-tok').forEach(el => el.classList.toggle('jl-hit', el.dataset.tok === tok));
+        };
+        light(this.pinned);
+        let unpinned = null;   // token just unpinned: don't re-light it until the mouse leaves it
+        grid?.addEventListener('mouseover', e => {
+            const tok = e.target.closest('.jl-tok')?.dataset.tok;
+            if (tok !== unpinned) unpinned = null;
+            if (!this.pinned && !unpinned) light(tok);
+        });
+        grid?.addEventListener('mouseleave', () => { unpinned = null; light(this.pinned); });
+        grid?.addEventListener('click', e => {
+            const tok = e.target.closest('.jl-tok')?.dataset.tok || null;
+            unpinned = tok && tok === this.pinned ? tok : null;   // second click = clear now
+            this.pinned = tok === this.pinned ? null : tok;
+            window.studyTimer?.logEvent('jlens_pin', { tok: this.pinned });
+            light(this.pinned);
+        });
+        this.container.querySelectorAll('.interp-span').forEach(b => b.addEventListener('click', () => {
+            this.span = b.dataset.span;
+            this.pinned = null;
+            window.studyTimer?.logEvent('interp_span', { tool: this.tool, span: this.span });
+            this.draw();
+        }));
+        this.container.querySelectorAll('.interp-source').forEach(b => b.addEventListener('click', () => {
+            this.saeSource = b.dataset.source;
+            window.studyTimer?.logEvent('interp_sae_source', { source: this.saeSource, span: this.span });
+            this.draw();
+        }));
+        this.container.querySelectorAll('.interp-labels').forEach(b => b.addEventListener('click', () => {
+            this.saeLabels = b.dataset.labels;
+            window.studyTimer?.logEvent('interp_sae_labels', { labels: this.saeLabels, span: this.span });
+            this.draw();
+        }));
+        this.afterDraw?.(this.container);   // tutorial pins its notes here
+    }
+
+    /** depths x ranked tokens grid. */
+    renderJlens(depths) {
+        // One row per depth, all (<=10) tokens on one line at this size; a genuinely long
+        // row wraps rather than truncating.
         return `
-            <p class="text-sm text-gray-500 mb-3">
-                Highlighted tokens show their influence on the model's prediction. 
-                Hover for exact scores. Method: <strong>${method}</strong>
-            </p>
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <div class="flex flex-wrap gap-1" id="token-container">
-                    ${tokensHtml}
-                </div>
-            </div>
-            ${legendHtml}
-        `;
+            <div class="jl-grid text-sm">
+                ${depths.map((toks, i) => `
+                    <div class="flex items-center gap-2 py-1.5 border-b border-gray-100">
+                        <div class="w-14 shrink-0 text-right text-xs text-gray-400">depth ${i + 1}</div>
+                        <div class="flex flex-wrap gap-1 min-w-0">
+                            ${toks.map((t, r) => `<span class="jl-tok cursor-pointer whitespace-nowrap px-1.5 py-0.5 rounded text-indigo-950 font-semibold"
+                                data-tok="${this.escapeHtml(t.toLowerCase())}"
+                                style="background: rgba(99, 102, 241, ${(0.42 - 0.025 * r).toFixed(3)})">${this.escapeHtml(t)}</span>`).join('')}
+                        </div>
+                    </div>`).join('')}
+            </div>`;
     }
-    
-    /**
-     * Render heatmap visualization (placeholder for future implementation).
-     */
-    renderHeatmap(data) {
+
+    /** ranked feature descriptions. */
+    /** Numbered, rank-faded cards; first clause (to the first comma) as a bold headline. */
+    renderSae(descriptions) {
         return `
-            <p class="text-gray-500">Heatmap visualization coming soon.</p>
-            <pre class="text-xs bg-gray-100 p-2 rounded mt-2">${JSON.stringify(data, null, 2)}</pre>
-        `;
+            <ol class="space-y-2">
+                ${descriptions.map((d, r) => {
+                    const cut = d.indexOf(',');
+                    const head = cut > 0 ? d.slice(0, cut + 1) : d;
+                    const rest = cut > 0 ? d.slice(cut + 1) : '';
+                    return `
+                    <li class="flex gap-3 items-start p-3 rounded-lg border border-gray-100">
+                        <span class="shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-sm font-semibold text-indigo-950"
+                              style="background: rgba(99, 102, 241, ${Math.max(0.42 - 0.008 * r, 0.06).toFixed(3)})">${r + 1}</span>
+                        <p class="text-base leading-relaxed">
+                            <span class="font-semibold text-gray-900">${this.escapeHtml(head)}</span><span class="text-gray-600">${this.escapeHtml(rest)}</span>
+                        </p>
+                    </li>`;
+                }).join('')}
+            </ol>`;
     }
-    
-    /**
-     * Render bar chart visualization (placeholder for future implementation).
-     */
-    renderBarChart(data) {
-        return `
-            <p class="text-gray-500">Bar chart visualization coming soon.</p>
-            <pre class="text-xs bg-gray-100 p-2 rounded mt-2">${JSON.stringify(data, null, 2)}</pre>
-        `;
-    }
-    
-    /**
-     * Get color for attribution score (0-1).
-     */
-    getAttributionColor(score) {
-        // Blue gradient
-        const alpha = 0.1 + (score * 0.8);
-        return `rgba(59, 130, 246, ${alpha})`;
-    }
-    
-    /**
-     * Attach hover handlers for token tooltips.
-     */
-    attachTokenHoverHandlers() {
-        const tokens = document.querySelectorAll('.token-attribution');
-        
-        tokens.forEach(token => {
-            token.addEventListener('mouseenter', (e) => {
-                const score = e.target.dataset.score;
-                const percentage = (parseFloat(score) * 100).toFixed(1);
-                
-                // Create tooltip
-                const tooltip = document.createElement('div');
-                tooltip.className = 'token-tooltip';
-                tooltip.textContent = `Attribution: ${percentage}%`;
-                tooltip.id = 'token-tooltip';
-                
-                // Position tooltip
-                const rect = e.target.getBoundingClientRect();
-                tooltip.style.left = `${rect.left + rect.width / 2}px`;
-                tooltip.style.top = `${rect.top - 8}px`;
-                tooltip.style.transform = 'translate(-50%, -100%)';
-                
-                document.body.appendChild(tooltip);
-                
-                // Log interaction
-                window.studyTimer?.logEvent('token_hover', {
-                    token: e.target.textContent,
-                    score: score,
-                    index: e.target.dataset.index
-                });
-            });
-            
-            token.addEventListener('mouseleave', () => {
-                const tooltip = document.getElementById('token-tooltip');
-                if (tooltip) tooltip.remove();
-            });
-        });
-    }
-    
-    /**
-     * Toggle visualization visibility.
-     */
-    toggleVisibility() {
-        this.isVisible = !this.isVisible;
-        
-        if (this.currentTool && this.currentData) {
-            this.render(this.currentTool, this.currentData.display_name || this.currentTool, this.currentData);
-        }
-        
-        // Log toggle event
-        window.studyTimer?.logEvent('interp_tool_toggle', {
-            tool: this.currentTool,
-            visible: this.isVisible
-        });
-    }
-    
-    /**
-     * Show loading state.
-     */
+
     showLoading() {
         if (!this.container) return;
-        
-        this.container.innerHTML = `
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Interpretability Analysis</h2>
-            <div class="flex items-center gap-3">
-                <div class="loading-spinner"></div>
-                <span class="text-gray-600">Computing analysis...</span>
-            </div>
-        `;
+        this.container.innerHTML = '<div class="loading-spinner"></div>';
     }
-    
-    /**
-     * Show error state.
-     */
+
     showError(message) {
         if (!this.container) return;
-        
-        this.container.innerHTML = `
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Interpretability Analysis</h2>
-            <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
-                <p class="font-medium">Error loading analysis</p>
-                <p class="text-sm">${this.escapeHtml(message)}</p>
-            </div>
-        `;
+        this.container.innerHTML = `<div class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">${this.escapeHtml(message)}</div>`;
     }
-    
-    /**
-     * Clear the display.
-     */
-    clear() {
-        if (this.container) {
-            this.container.innerHTML = '';
-        }
-        this.currentTool = null;
-        this.currentData = null;
-    }
-    
-    /**
-     * Escape HTML.
-     */
+
     escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
@@ -281,9 +193,6 @@ class InterpToolsModule {
     }
 }
 
-// Create singleton instance
 const interpTools = new InterpToolsModule('#interp-tool-panel');
-
-// Make globally available
 window.InterpToolsModule = InterpToolsModule;
 window.interpTools = interpTools;

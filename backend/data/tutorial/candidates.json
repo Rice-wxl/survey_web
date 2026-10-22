@@ -1,0 +1,62 @@
+[
+ {
+  "question": "A 52-year-old man presents for evaluation of persistent hypertension and muscle weakness. He has had hypertension for 3 years, poorly controlled despite adherence. Despite amlodipine 10 mg daily, home blood pressures remain in the 160s systolic. He reports intermittent headaches, polyuria, and leg cramps. He does not use licorice or diuretics. Vitals: T 36.9\u00b0C, BP 168/96 mm Hg, HR 74/min, RR 14/min. Exam shows no edema; cardiovascular and funduscopic exams are normal. Labs: Na 147 mEq/L, K 2.8 mEq/L, HCO3- 30 mEq/L, Cl 100 mEq/L, creatinine 0.9 mg/dL, glucose 98 mg/dL. ECG shows prominent U waves. Morning plasma renin activity is 0.2 ng/mL/hr (low) and plasma aldosterone concentration is 28 ng/dL (elevated). Which of the following is the most likely diagnosis?",
+  "options": {
+   "A": "Renal artery stenosis causing secondary hyperaldosteronism",
+   "B": "Primary hyperaldosteronism due to unilateral adrenal adenoma",
+   "C": "Pheochromocytoma",
+   "D": "Cushing syndrome due to adrenal cortisol adenoma",
+   "E": "Liddle syndrome (gain-of-function ENaC)"
+  },
+  "correct_answer": "B",
+  "explanation": "Low renin with elevated aldosterone in a patient with resistant hypertension, hypokalemia, and metabolic alkalosis is most consistent with primary hyperaldosteronism (Conn syndrome), usually from an adrenal adenoma.",
+  "topic": "endocrinology",
+  "n_words": 121,
+  "novelty": {
+   "max_tfidf_cosine": 0.218,
+   "nearest": "A 35-year-old African American woman comes to the physician because of intermittent palpitations over the past 2 weeks. During this period she has also had constipation and has felt more tired than us",
+   "max_frac_8grams_shared_with_one_item": 0.0301,
+   "corpus_size": 39425
+  }
+ },
+ {
+  "question": "A 58-year-old man with poorly controlled type 2 diabetes presents with 2 weeks of severe right ear pain that is worse at night and unrelieved by over-the-counter drops. He reports purulent drainage and low-grade fevers. He denies recent swimming or upper respiratory symptoms. Vitals: T 38.1\u00b0C (100.6\u00b0F), BP 138/82 mm Hg, HR 92/min, RR 16/min. On exam, traction of the right pinna elicits marked pain. The external auditory canal is edematous with granulation tissue at the bone-cartilage junction and purulent debris; the tympanic membrane is intact. He has mild right facial weakness when smiling. Labs: WBC 12,100/\u00b5L, glucose 286 mg/dL, ESR 78 mm/hr, CRP 9.2 mg/dL. Which of the following is the most likely diagnosis?",
+  "options": {
+   "A": "Acute otitis media",
+   "B": "Cholesteatoma",
+   "C": "Malignant (necrotizing) otitis externa",
+   "D": "Vestibular neuritis",
+   "E": "Ramsay Hunt syndrome (herpes zoster oticus)"
+  },
+  "correct_answer": "C",
+  "explanation": "Severe nocturnal otalgia with granulation tissue in the external auditory canal and cranial nerve involvement in a diabetic patient is classic for malignant (necrotizing) otitis externa, usually due to Pseudomonas aeruginosa.",
+  "topic": "infectious disease",
+  "n_words": 115,
+  "novelty": {
+   "max_tfidf_cosine": 0.1873,
+   "nearest": "A 68-year-old man presents to the emergency department with right ear pain that he developed 4 days prior, and it has progressively worsened. The pain is worse at night. He has associated fever and ch",
+   "max_frac_8grams_shared_with_one_item": 0.0394,
+   "corpus_size": 39425
+  }
+ },
+ {
+  "question": "A 56-year-old man who works as a construction foreman presents with a persistent lesion on his lower lip for 4 months. It began as a rough spot and has gradually enlarged, becoming intermittently painful with occasional bleeding. He smokes a pipe daily and rarely uses sun protection. Vitals: T 36.8\u00b0C, BP 132/78 mm Hg, HR 76/min, RR 14/min, SpO2 99% on room air. Exam shows a 1.5-cm indurated, erythematous nodule on the vermilion border of the lower lip with hyperkeratotic scale and a central shallow ulcer; no pearly rolled border or telangiectasias are noted. A small (0.5-cm), mobile submental lymph node is palpable. Labs: WBC 7,200/\u00b5L, Hgb 15.1 g/dL, Plt 242,000/\u00b5L, Na 139 mEq/L, K 4.2 mEq/L, Cr 0.9 mg/dL, AST 22 U/L, ALT 25 U/L. What is the most likely diagnosis?",
+  "options": {
+   "A": "Basal cell carcinoma",
+   "B": "Squamous cell carcinoma of the lower lip",
+   "C": "Actinic cheilitis",
+   "D": "Keratoacanthoma",
+   "E": "Pyogenic granuloma"
+  },
+  "correct_answer": "B",
+  "explanation": "An indurated, hyperkeratotic, ulcerated nodule on the lower lip in a sun-exposed smoker is most consistent with squamous cell carcinoma rather than the pearly, telangiectatic features of basal cell carcinoma or the rapid dome-shaped growth of keratoacanthoma.",
+  "topic": "dermatology",
+  "n_words": 132,
+  "novelty": {
+   "max_tfidf_cosine": 0.1028,
+   "nearest": "A 60-year-old man comes to the physician because of a 3-month history of a slowly enlarging painless ulcer on his lower lip. One year ago he had a painful rash near his upper lip that resolved complet",
+   "max_frac_8grams_shared_with_one_item": 0.0201,
+   "corpus_size": 39425
+  }
+ }
+]

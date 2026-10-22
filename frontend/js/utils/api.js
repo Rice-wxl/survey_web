@@ -1,159 +1,84 @@
 /**
  * API utility module for backend communication.
+ *
+ * The study link carries the access key and mode:  /?k=<key>&mode=real|free|tutorial
+ * Both are sent on every request; the server derives the participant from the key.
  */
+
+const _params = new URLSearchParams(window.location.search);
 
 const API = {
     baseUrl: window.location.origin,
-    
-    /**
-     * Make a fetch request with default options.
-     */
+    key: _params.get('k') || '',
+    mode: ['free', 'tutorial'].includes(_params.get('mode')) ? _params.get('mode') : 'real',
+
     async request(endpoint, options = {}) {
-        const url = `${this.baseUrl}/api${endpoint}`;
-        
-        const defaultOptions = {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        };
-        
-        const mergedOptions = {
-            ...defaultOptions,
+        const url = `${this.baseUrl}/api${endpoint}?mode=${this.mode}`;
+        const opts = {
             ...options,
-            headers: {
-                ...defaultOptions.headers,
-                ...options.headers,
-            },
+            headers: { 'Content-Type': 'application/json', 'X-Study-Key': this.key },
         };
-        
-        if (mergedOptions.body && typeof mergedOptions.body === 'object') {
-            mergedOptions.body = JSON.stringify(mergedOptions.body);
+        if (opts.body && typeof opts.body === 'object') {
+            opts.body = JSON.stringify(opts.body);
         }
-        
-        try {
-            const response = await fetch(url, mergedOptions);
-            
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error || `HTTP ${response.status}`);
-            }
-            
-            return await response.json();
-        } catch (error) {
-            console.error(`API Error [${endpoint}]:`, error);
-            throw error;
+        const response = await fetch(url, opts);
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `HTTP ${response.status}`);
         }
+        return response.json();
     },
-    
-    // ============== Session Endpoints ==============
-    
-    async startSession(participantId = null) {
-        return this.request('/session/start', {
-            method: 'POST',
-            body: { participant_id: participantId }
-        });
+
+    startSession() {
+        return this.request('/session/start', { method: 'POST' });
     },
-    
-    async assignTool(participantId, toolName) {
-        return this.request(`/session/${participantId}/assign_tool`, {
-            method: 'POST',
-            body: { tool_name: toolName }
-        });
+
+    getItem(batch, index) {
+        return this.request(`/batch/${batch}/item/${index}`);
     },
-    
-    // ============== QA Endpoints ==============
-    
-    async getSpuriousTypes() {
-        return this.request('/qa/spurious_types');
-    },
-    
-    async getQuestions(spuriousType) {
-        return this.request(`/qa/questions/${spuriousType}`);
-    },
-    
-    async getQuestion(questionId) {
-        return this.request(`/qa/question/${questionId}`);
-    },
-    
-    // ============== Model Endpoints ==============
-    
-    async chatWithModel(message, context, participantId) {
+
+    chatWithModel(batch, itemId, messages) {
+        if (this.mode === 'tutorial') {  // base model, nothing saved
+            return this.request('/tutorial/chat', { method: 'POST', body: { messages } });
+        }
         return this.request('/model/chat', {
             method: 'POST',
-            body: {
-                message,
-                context,
-                participant_id: participantId
-            }
+            body: { batch, item_id: itemId, messages },
         });
     },
-    
-    // ============== Interpretability Endpoints ==============
-    
-    async computeInterpretation(toolName, questionId, modelInput, modelOutput) {
-        return this.request('/interp/compute', {
-            method: 'POST',
-            body: {
-                tool_name: toolName,
-                question_id: questionId,
-                model_input: modelInput,
-                model_output: modelOutput
-            }
-        });
+
+    getTutorialItem() {
+        return this.request('/tutorial/item');
     },
-    
-    async getAvailableTools() {
-        return this.request('/interp/tools');
+
+    completeTutorial() {
+        return this.request('/tutorial/complete', { method: 'POST' });
     },
-    
-    // ============== Survey Endpoints ==============
-    
-    async getSurveyQuestions() {
+
+    getSurveyQuestions() {
         return this.request('/survey/questions');
     },
-    
-    async submitSurvey(participantId, questionId, responses, timingData) {
+
+    submitSurvey(batch, questionId, responses, timingData) {
         return this.request('/survey/submit', {
             method: 'POST',
-            body: {
-                participant_id: participantId,
-                question_id: questionId,
-                responses,
-                timing_data: timingData
-            }
+            body: { batch, question_id: questionId, responses, timing_data: timingData },
         });
     },
-    
-    async submitBatchSurvey(participantId, spuriousType, toolName, usefulnessRating, comments) {
+
+    submitBatchSurvey(batch, responses) {
         return this.request('/survey/batch_complete', {
             method: 'POST',
-            body: {
-                participant_id: participantId,
-                spurious_type: spuriousType,
-                tool_name: toolName,
-                usefulness_rating: usefulnessRating,
-                comments
-            }
+            body: { batch, responses },
         });
     },
-    
-    async submitEndOfStudySurvey(participantId, mostHelpfulInterface, comments) {
+
+    submitEndOfStudySurvey(mostHelpfulInterface, comments, panelClarity) {
         return this.request('/survey/end_of_study', {
             method: 'POST',
-            body: {
-                participant_id: participantId,
-                most_helpful_interface: mostHelpfulInterface,
-                comments
-            }
+            body: { most_helpful_interface: mostHelpfulInterface, comments, panel_clarity: panelClarity },
         });
     },
-
-    // ============== Export ==============
-    
-    async exportSession(participantId) {
-        return this.request(`/export/${participantId}`);
-    }
 };
 
-// Make API globally available
 window.API = API;

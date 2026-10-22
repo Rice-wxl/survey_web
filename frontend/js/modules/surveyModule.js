@@ -3,6 +3,10 @@
  * Renders and handles survey questions.
  */
 
+// Survey content that only makes sense when the model came with an extra panel.
+const PANEL_OPTION = 'From the interpretability panel';
+const PANEL_QUESTIONS = ['batch_q1_panel_usefulness'];
+
 class SurveyModule {
     constructor() {
         this.surveyQuestions = null;
@@ -10,6 +14,7 @@ class SurveyModule {
         this.errors = {};
         this.currentQuestionIndex = 0;
         this.lastInvalidDescription = null;
+        this.noPanel = false;   // set by the app per batch (true = real-mode black-box)
     }
 
     setQuestionIndex(index) {
@@ -65,6 +70,7 @@ class SurveyModule {
         
         container.innerHTML = questions.map(q => this.renderQuestion(q)).join('');
         this.attachEventListeners(container);
+        this.updateConditionalVisibility();
     }
     
     /**
@@ -72,6 +78,11 @@ class SurveyModule {
      */
     renderQuestion(question) {
         const { id, text, question_type, options, help_text, likert_min, likert_max, likert_labels, condition, min_question_index } = question;
+
+        // No extra panel for this model (real-mode black-box): skip questions about the panel.
+        if (this.noPanel && PANEL_QUESTIONS.includes(id)) {
+            return `<div class="survey-question hidden" data-question-id="${id}" data-gated-by-index="true"></div>`;
+        }
 
         // Hide if min_question_index exceeds current question index
         if (min_question_index !== null && min_question_index !== undefined &&
@@ -86,7 +97,7 @@ class SurveyModule {
                 inputHtml = this.renderSingleChoice(id, options);
                 break;
             case 'multiple_choice':
-                inputHtml = this.renderMultipleChoice(id, options);
+                inputHtml = this.renderMultipleChoice(id, this.noPanel ? options.filter(o => o !== PANEL_OPTION) : options);
                 break;
             case 'likert':
                 inputHtml = this.renderLikert(id, likert_min, likert_max, likert_labels);
@@ -126,7 +137,7 @@ class SurveyModule {
         }
 
         return `
-            <div class="survey-question ${hiddenClass}" data-question-id="${id}" ${conditionalAttr}>
+            <div class="survey-question ${id.endsWith('_confidence') ? 'sub' : ''} ${hiddenClass}" data-question-id="${id}" ${conditionalAttr}>
                 <p class="survey-question-text">${this.escapeHtml(text)}</p>
                 ${previousResponseHtml}
                 ${helpTextHtml}

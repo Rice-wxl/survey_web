@@ -1,0 +1,21 @@
+
+## young_agg   items: spurious=129, counterfactual=86, controlled=215
+   k | relevant features / item  Q(spur cf ctrl)  R(spur cf ctrl) | items w/ >=1 relevant (spur cf ctrl) | shown/item Q,R
+  10 | Q 0.24 0.14 0.24   R 0.13 0.05 0.08 | 36% 15% 26% | 10,10
+  20 | Q 1.25 1.05 1.25   R 0.33 0.33 0.26 | 88% 83% 90% | 20,20
+  30 | Q 1.64 1.45 1.53   R 0.56 0.74 0.54 | 95% 98% 100% | 30,30
+  50 | Q 2.00 1.65 1.70   R 1.07 1.33 0.97 | 100% 99% 100% | 41,43
+
+## female_RA   items: spurious=177, counterfactual=118, controlled=295
+   k | relevant features / item  Q(spur cf ctrl)  R(spur cf ctrl) | items w/ >=1 relevant (spur cf ctrl) | shown/item Q,R
+  10 | Q 0.59 0.60 0.59   R 0.03 0.10 0.07 | 59% 65% 55% | 10,10
+  20 | Q 0.99 1.03 1.06   R 0.06 0.13 0.15 | 97% 98% 91% | 20,20
+  30 | Q 1.23 1.35 1.21   R 0.11 0.19 0.17 | 98% 100% 93% | 30,30
+  50 | Q 1.75 1.95 1.29   R 0.29 0.31 0.22 | 100% 100% 94% | 41,43
+
+## asian_dosages   items: spurious=183, counterfactual=122, controlled=305
+   k | relevant features / item  Q(spur cf ctrl)  R(spur cf ctrl) | items w/ >=1 relevant (spur cf ctrl) | shown/item Q,R
+  10 | Q 0.14 0.13 0.08   R 0.32 0.20 0.11 | 32% 24% 15% | 10,10
+  20 | Q 0.44 0.30 0.10   R 0.94 0.66 0.38 | 73% 55% 36% | 20,20
+  30 | Q 0.70 0.43 0.17   R 1.48 1.15 0.61 | 90% 78% 52% | 30,30
+  50 | Q 1.12 0.80 0.29   R 2.01 1.84 0.86 | 95% 93% 64% | 41,43

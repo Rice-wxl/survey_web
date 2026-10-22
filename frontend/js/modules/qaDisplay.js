@@ -17,116 +17,73 @@ class QADisplayModule {
     }
     
     /**
-     * Render a question and model response.
+     * Render an item: question + options (left), the cached response (#response-panel).
+     * In the unblinded prototype (`item.variant` present) a label badge is shown.
      */
-    render(questionData) {
-        if (!this.container) {
-            console.error('QA Display container not found');
-            return;
-        }
-        
-        this.currentQuestion = questionData;
-        
-        const html = `
-            <!-- Medical Question Card -->
-            <div class="bg-white rounded-lg shadow p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
+    render(item) {
+        if (!this.container) return;
+        this.currentQuestion = item;
+
+        const letters = Object.keys(item.options).sort();
+        // Prototype labels: item type in grey, the bias's target answer in red (spurious and
+        // counterfactual items only), the clinically correct answer in green.
+        const badge = item.variant ? `
+            <div class="flex flex-wrap items-center gap-2 mb-3 text-xs">
+                <span class="px-2 py-1 rounded font-semibold bg-gray-200 text-gray-700">${item.variant}</span>
+                ${item.biased_answer ? `<span class="px-2 py-1 rounded bg-red-100 text-red-800">biased: ${this.escapeHtml(item.biased_answer)}</span>` : ''}
+                <span class="px-2 py-1 rounded bg-green-100 text-green-800">clinically correct: ${this.escapeHtml(item.correct_answer)}</span>
+                <span class="text-gray-400">${this.escapeHtml(item.id)}</span>
+            </div>` : '';
+
+        const resp = document.getElementById('response-panel');
+        if (resp) resp.innerHTML = `
+            <h2 class="text-lg font-semibold text-gray-800 mb-3">
+                Model's Response <span class="text-sm font-normal text-gray-500">(answer: ${this.escapeHtml(item.model_answer)})</span>
+            </h2>
+            <div class="model-reasoning whitespace-pre-wrap">${this.escapeHtml(item.response)}</div>`;
+
+        this.container.innerHTML = `
+            <div class="bg-white rounded-lg shadow p-8">
+                ${badge}
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">
                     Medical Question
                 </h2>
-                
-                <p class="qa-question mb-4">${this.escapeHtml(questionData.question)}</p>
-                
+                <p class="qa-question mb-4">${this.escapeHtml(item.question)}</p>
                 <div class="qa-choices">
-                    ${questionData.choices.map(choice => `
-                        <div class="qa-choice ${choice.startsWith(questionData.model_answer) ? 'model-answer' : ''}">
-                            ${this.escapeHtml(choice)}
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-            
-            <!-- Model Reasoning Card -->
-            <div class="bg-white rounded-lg shadow p-6">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-                    </svg>
-                    Model's Reasoning
-                </h2>
-                
-                <div class="model-reasoning">
-                    ${this.escapeHtml(questionData.model_reasoning)}
+                    ${letters.map(k => `
+                        <div class="qa-choice ${k === item.model_answer ? 'model-answer' : ''}">
+                            ${k}. ${this.escapeHtml(item.options[k])}
+                        </div>`).join('')}
                 </div>
             </div>
         `;
-        
-        this.container.innerHTML = html;
     }
-    
-    /**
-     * Get the current question data.
-     */
+
     getCurrentQuestion() {
         return this.currentQuestion;
     }
-    
-    /**
-     * Get formatted input text for interpretability tools.
-     */
-    getInputText() {
-        if (!this.currentQuestion) return '';
-        
-        const parts = [
-            this.currentQuestion.question,
-            ...this.currentQuestion.choices
+
+    /** The exact conversation the cached response came from, to seed the chat. */
+    getSeedMessages() {
+        if (!this.currentQuestion) return [];
+        return [
+            { role: 'user', content: this.currentQuestion.user_prompt },
+            { role: 'assistant', content: this.currentQuestion.response },
         ];
-        
-        return parts.join('\n');
     }
-    
-    /**
-     * Get model output text.
-     */
-    getOutputText() {
-        if (!this.currentQuestion) return '';
-        return this.currentQuestion.model_reasoning;
-    }
-    
-    /**
-     * Get context for chat interface.
-     */
-    getChatContext() {
-        if (!this.currentQuestion) return {};
-        
-        return {
-            question_id: this.currentQuestion.id,
-            question: this.currentQuestion.question,
-            choices: this.currentQuestion.choices.join('\n'),
-            model_answer: this.currentQuestion.model_answer,
-            model_reasoning: this.currentQuestion.model_reasoning
-        };
-    }
-    
-    /**
-     * Escape HTML to prevent XSS.
-     */
+
     escapeHtml(text) {
         const div = document.createElement('div');
-        div.textContent = text;
+        div.textContent = text == null ? '' : String(text);
         return div.innerHTML;
     }
-    
+
     /**
      * Show loading state.
      */
     showLoading() {
         if (!this.container) return;
-        
+
         this.container.innerHTML = `
             <div class="bg-white rounded-lg shadow p-6">
                 <div class="skeleton h-6 w-1/3 mb-4"></div>

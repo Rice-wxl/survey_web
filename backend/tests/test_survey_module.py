@@ -133,9 +133,8 @@ class TestSurveyModuleStructure:
         survey = SurveyModule()
         question_ids = [q.id for q in survey.batch_survey]
 
-        assert 'batch_q1_tool_usefulness' in question_ids, "Should ask about tool usefulness"
-        assert 'batch_q2_tool_clarity' in question_ids, "Should ask about tool clarity"
-        assert 'batch_q3_chat_usefulness' in question_ids, "Should ask about chat usefulness"
+        assert question_ids == ['batch_q1_panel_usefulness', 'batch_q2_reasoning_usefulness',
+                                'batch_q3_chat_usefulness'], "Exactly the three usefulness ratings"
 
     def test_get_questions_returns_both_types(self):
         """
@@ -478,31 +477,28 @@ class TestBatchSurveyValidation:
         """
         survey = SurveyModule()
         responses = {
-            'batch_q1_tool_usefulness': 4,
-            'batch_q2_tool_clarity': 5,
+            'batch_q1_panel_usefulness': 4,
+            'batch_q2_reasoning_usefulness': 5,
             'batch_q3_chat_usefulness': 3,
-            'batch_q4_comments': 'Optional comment'
         }
 
         result = survey.validate_response('batch', responses)
 
         assert result['valid'] is True
 
-    def test_validate_batch_optional_comments(self):
+    def test_validate_batch_missing_rating_fails(self):
         """
-        Verifies that batch comments field is optional.
+        Verifies that every batch rating is required.
         """
         survey = SurveyModule()
         responses = {
-            'batch_q1_tool_usefulness': 4,
-            'batch_q2_tool_clarity': 5,
-            'batch_q3_chat_usefulness': 3
-            # batch_q4_comments omitted - should be optional
+            'batch_q1_panel_usefulness': 4,
+            'batch_q3_chat_usefulness': 3,
         }
 
         result = survey.validate_response('batch', responses)
 
-        assert result['valid'] is True
+        assert result['valid'] is False
 
     def test_validate_batch_missing_required_likert(self):
         """

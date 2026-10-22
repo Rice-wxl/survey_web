@@ -2,6 +2,12 @@
 
 /* ============== Base Styles ============== */
 
+/* Uniform scale: every size here and in Tailwind is rem-based, so this one knob grows
+   all text (and spacing) together. 112.5% = 18px on a default 16px browser. */
+html {
+    font-size: 112.5%;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -61,7 +67,8 @@ body {
 .chat-container {
     display: flex;
     flex-direction: column;
-    height: 350px;
+    flex: 1;
+    min-height: 0;
 }
 
 .chat-messages {
@@ -73,11 +80,25 @@ body {
     margin-bottom: 12px;
 }
 
+.chat-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+}
+
+.chat-row.user {
+    align-items: flex-end;
+}
+
+.chat-row.assistant {
+    align-items: flex-start;
+}
+
 .chat-message {
     padding: 10px 14px;
     border-radius: 12px;
-    margin-bottom: 8px;
     max-width: 85%;
+    line-height: 1.55;
     animation: messageSlide 0.3s ease;
 }
 
@@ -161,6 +182,23 @@ body {
     font-weight: 500;
     color: #374151;
     margin-bottom: 12px;
+}
+
+/* Confidence follow-ups read as sub-questions of the item above them */
+.survey-question:has(+ .survey-question.sub) {
+    border-bottom: none;
+    padding-bottom: 4px;
+}
+.survey-question.sub {
+    margin-left: 1.5rem;
+    padding: 6px 0 16px 1rem;
+    border-left: 2px solid #e5e7eb;
+}
+.survey-question.sub .survey-question-text {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #6b7280;
+    margin-bottom: 8px;
 }
 
 .survey-help-text {
@@ -285,12 +323,12 @@ body {
 .qa-choices {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-top: 16px;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
 }
 
 .qa-choice {
-    padding: 12px 16px;
+    padding: 0.85rem 1.1rem;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     background: #f9fafb;
@@ -356,7 +394,7 @@ body {
 
 @media (max-width: 1024px) {
     .chat-container {
-        height: 300px;
+        min-height: 60vh;
     }
 }
 
@@ -375,3 +413,48 @@ body {
         justify-content: center;
     }
 }
+
+/* J-lens hover spotlight: the hovered token goes solid indigo at every depth, the rest dim */
+.jl-tok {
+    transition: opacity 0.12s, background-color 0.12s, color 0.12s;
+}
+.jl-grid.jl-hovering .jl-tok {
+    opacity: 0.25;
+}
+.jl-grid.jl-hovering .jl-tok.jl-hit {
+    opacity: 1;
+    background: #4338ca !important;
+    color: #fff;
+}
+
+/* ============== Tutorial (?mode=tutorial) ============== */
+
+body.tutorial-mode { padding-top: 2.75rem; }            /* fixed Step N of 6 bar */
+body.tutorial-mode header.sticky { top: 2.75rem; }
+
+.tut-note {
+    background: #fef08a;
+    border: 1px solid #facc15;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+    color: #422006;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.35;
+    padding: 6px 10px;
+    max-width: 40rem;
+}
+.tut-note.tut-inline { display: inline-block; vertical-align: top; margin-left: 0.75rem; max-width: 22rem; }
+
+/* Notes in a right margin beside each survey item, never over the item itself */
+.tut-notes-right { padding-right: 19rem !important; }   /* beats Tailwind p-6, injected later */
+.tut-notes-right > * { position: relative; }
+.tut-note.tut-side { position: absolute; top: 0.75rem; left: calc(100% + 1.5rem); width: 16.5rem; }
+
+/* Intro: numbered step badges */
+.intro-num {
+    flex: none; width: 1.5rem; height: 1.5rem; border-radius: 9999px;
+    background: #e5e7eb; color: #374151; font-size: 0.8rem; font-weight: 600;
+    display: inline-flex; align-items: center; justify-content: center;
+}
+#instructions-modal .intro-instructions > :last-child { margin-bottom: 0; }  /* no gap under the steps */

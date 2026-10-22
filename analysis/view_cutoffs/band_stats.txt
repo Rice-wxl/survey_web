@@ -1,0 +1,27 @@
+Relevant tokens per item PER DEPTH ROW (top-10), i.e. band total / #depths, so 1-3 and 4-15 are comparable.
+ratio = spurious / mean(counterfactual, controlled): how much more the bias's own items light up.
+
+## young_agg   items: spurious=129, counterfactual=86, controlled=215
+  span band  |  spurious      cf    ctrl | ratio
+  Q    1-3   |     0.062   0.023   0.160 |   0.7x
+  Q    4-15  |     0.221   0.227   0.161 |   1.1x
+  R    1-3   |     0.000   0.004   0.023 |   0.0x
+  R    4-15  |     0.182   0.275   0.128 |   0.9x
+  items with ANY hit / hits ONLY in depths 1-3 (lost by the cut): spurious 77/15, counterfactual 52/2, controlled 115/26
+
+## female_RA   items: spurious=177, counterfactual=118, controlled=295
+  span band  |  spurious      cf    ctrl | ratio
+  Q    1-3   |     2.121   0.251   1.695 |   2.2x
+  Q    4-15  |     1.070   0.170   0.424 |   3.6x
+  R    1-3   |     0.499   0.116   0.150 |   3.8x
+  R    4-15  |     1.046   0.179   0.096 |   7.6x
+  items with ANY hit / hits ONLY in depths 1-3 (lost by the cut): spurious 177/0, counterfactual 75/40, controlled 195/10
+
+## asian_dosages   items: spurious=183, counterfactual=122, controlled=305
+  span band  |  spurious      cf    ctrl | ratio
+  Q    1-3   |     0.042   0.030   0.013 |   1.9x
+  Q    4-15  |     0.125   0.127   0.019 |   1.7x
+  R    1-3   |     0.457   0.145   0.055 |   4.6x
+  R    4-15  |     1.329   0.601   0.288 |   3.0x
+  items with ANY hit / hits ONLY in depths 1-3 (lost by the cut): spurious 181/1, counterfactual 92/3, controlled 130/1
+

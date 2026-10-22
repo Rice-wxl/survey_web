@@ -1,53 +1,33 @@
-"""
-Configuration settings for the interpretability study.
-"""
+"""Configuration settings for the interpretability study."""
 
 import os
 from pathlib import Path
 
 
 class Config:
-    # Server settings
-    HOST = os.getenv('HOST', '0.0.0.0')
+    HOST = os.getenv('HOST', '127.0.0.1')
     PORT = int(os.getenv('PORT', 5000))
-    DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
-    
-    # Paths
+    DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+
     BASE_DIR = Path(__file__).parent
-    QUESTIONS_DIR = BASE_DIR / 'data' / 'questions'
-    RESPONSES_DIR = BASE_DIR / 'data' / 'responses'
-    
-    # Model settings
-    MODEL_SERVER_URL = os.getenv('MODEL_SERVER_URL', 'http://localhost:8000')
-    MODEL_NAME = os.getenv('MODEL_NAME', 'your-custom-model')
-    MODEL_MAX_TOKENS = int(os.getenv('MODEL_MAX_TOKENS', 512))
-    
-    # Study settings
-    QUESTIONS_PER_SPURIOUS_TYPE = int(os.getenv('QUESTIONS_PER_TYPE', 5))
-    
-    # Available interpretability tools (can be toggled)
-    ENABLED_TOOLS = [
-        'token_attribution',
-        # 'attention_visualization',  # Uncomment when implemented
-        # 'concept_activation',        # Uncomment when implemented
-    ]
+    ORGANISMS_DIR = BASE_DIR / 'data' / 'organisms'   # written by build_items.py
+    # tutorial.json if present, else the dev stub (same schema as an organism file)
+    TUTORIAL_DIR = BASE_DIR / 'data' / 'tutorial'
+    RESPONSES_DIR = Path(os.getenv('RESPONSES_DIR', BASE_DIR / 'data' / 'responses'))
+    # {"<token>": {"pid": "P01", "schedule": 0}} -- gitignored; see readme.md
+    PARTICIPANTS_FILE = Path(os.getenv('PARTICIPANTS_FILE', BASE_DIR / 'participants.json'))
+    AUTH = os.getenv('STUDY_AUTH', 'on') != 'off'      # off only for local dev
 
+    # Batch order is fixed; the Latin square permutes it per participant.
+    ORGANISMS = ['young_agg', 'female_RA', 'asian_dosages']
+    CONDITIONS = ['blackbox', 'jlens', 'sae']
+    # 10 = full audit panel (3 spurious / 2 cf / 5 controlled); 6 = 2/2/2 subsample.
+    ITEMS_PER_ORGANISM = int(os.getenv('ITEMS_PER_ORGANISM', 10))
 
-class ModelConfig:
-    """Configuration specific to your custom model."""
-    
-    # Path to model weights or HuggingFace model ID
-    MODEL_PATH = 'openai-community/gpt2'
-
-    # Tokenizer settings
-    TOKENIZER_PATH = MODEL_PATH
-    
-    # Inference settings
-    DEVICE = "cpu"
-    BATCH_SIZE = 1
-    MAX_LENGTH = 2048
-    
-    # Generation settings
-    TEMPERATURE = float(os.getenv('TEMPERATURE', 0.7))
-    TOP_P = float(os.getenv('TOP_P', 0.9))
-    DO_SAMPLE = True
+    # Live chat: vLLM OpenAI-compatible server with one LoRA per organism key.
+    VLLM_URL = os.getenv('VLLM_URL', 'http://127.0.0.1:8000')
+    BASE_MODEL = 'meta-llama/Llama-3.1-8B-Instruct'   # vLLM served name; tutorial chat
+    CHAT_MAX_TOKENS = int(os.getenv('CHAT_MAX_TOKENS', 1024))
+    CHAT_MAX_TURNS = int(os.getenv('CHAT_MAX_TURNS', 20))   # user turns per conversation
+    # Same sampling as the cached responses (agent_audit/config.py GEN).
+    GEN = dict(temperature=0.6, top_p=0.9, repetition_penalty=1.2)

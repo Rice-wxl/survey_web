@@ -1,0 +1,96 @@
+
+### young_agg / all  (items=430)
+top- 5: relevant/item  2.36 | kept 35.8% of top-15 hits | chips/item   150 | rate 1.57% | items w/ >=1 hit 38.8%
+top-10: relevant/item  4.74 | kept 72.1% of top-15 hits | chips/item   298 | rate 1.59% | items w/ >=1 hit 56.7%
+top-15: relevant/item  6.57 | kept 100.0% of top-15 hits | chips/item   428 | rate 1.54% | items w/ >=1 hit 62.3%
+depth:         1    2    3    4    5    6    7    8    9   10   11   12   13   14   15
+Q rel/item 0.22 0.02 0.07 0.14 0.38 0.23 0.31 0.13 0.11 0.12 0.22 0.19 0.17 0.16 0.13   (top-10)
+R rel/item 0.01 0.00 0.02 0.08 0.21 0.13 0.23 0.12 0.08 0.11 0.27 0.26 0.22 0.20 0.19   (top-10)
+
+### young_agg / biased  (items=129)
+top- 5: relevant/item  2.53 | kept 37.5% of top-15 hits | chips/item   150 | rate 1.68% | items w/ >=1 hit 43.4%
+top-10: relevant/item  5.02 | kept 74.5% of top-15 hits | chips/item   299 | rate 1.68% | items w/ >=1 hit 59.7%
+top-15: relevant/item  6.74 | kept 100.0% of top-15 hits | chips/item   429 | rate 1.57% | items w/ >=1 hit 64.3%
+depth:         1    2    3    4    5    6    7    8    9   10   11   12   13   14   15
+Q rel/item 0.19 0.00 0.00 0.03 0.44 0.17 0.37 0.12 0.09 0.13 0.32 0.31 0.29 0.23 0.16   (top-10)
+R rel/item 0.00 0.00 0.00 0.03 0.22 0.08 0.19 0.09 0.05 0.12 0.31 0.30 0.29 0.26 0.25   (top-10)
+
+### young_agg / unbiased  (items=301)
+top- 5: relevant/item  2.28 | kept 35.1% of top-15 hits | chips/item   150 | rate 1.52% | items w/ >=1 hit 36.9%
+top-10: relevant/item  4.61 | kept 71.0% of top-15 hits | chips/item   298 | rate 1.55% | items w/ >=1 hit 55.5%
+top-15: relevant/item  6.50 | kept 100.0% of top-15 hits | chips/item   427 | rate 1.52% | items w/ >=1 hit 61.5%
+depth:         1    2    3    4    5    6    7    8    9   10   11   12   13   14   15
+Q rel/item 0.23 0.03 0.10 0.18 0.35 0.26 0.28 0.14 0.13 0.11 0.18 0.14 0.13 0.13 0.12   (top-10)
+R rel/item 0.02 0.01 0.03 0.10 0.20 0.15 0.24 0.14 0.09 0.11 0.25 0.24 0.19 0.18 0.16   (top-10)
+
+### young_agg / selected  (items=10)
+top- 5: relevant/item  1.60 | kept 33.3% of top-15 hits | chips/item   150 | rate 1.07% | items w/ >=1 hit 30.0%
+top-10: relevant/item  2.90 | kept 60.4% of top-15 hits | chips/item   299 | rate 0.97% | items w/ >=1 hit 40.0%
+top-15: relevant/item  4.80 | kept 100.0% of top-15 hits | chips/item   429 | rate 1.12% | items w/ >=1 hit 50.0%
+depth:         1    2    3    4    5    6    7    8    9   10   11   12   13   14   15
+Q rel/item 0.20 0.00 0.00 0.20 0.10 0.20 0.20 0.10 0.00 0.10 0.10 0.00 0.00 0.00 0.00   (top-10)
+R rel/item 0.00 0.00 0.00 0.10 0.10 0.20 0.20 0.20 0.10 0.10 0.20 0.20 0.10 0.10 0.10   (top-10)
+
+### female_RA / all  (items=590)
+top- 5: relevant/item 10.08 | kept 47.0% of top-15 hits | chips/item   150 | rate 6.72% | items w/ >=1 hit 70.0%
+top-10: relevant/item 16.92 | kept 78.9% of top-15 hits | chips/item   297 | rate 5.70% | items w/ >=1 hit 75.8%
+top-15: relevant/item 21.45 | kept 100.0% of top-15 hits | chips/item   426 | rate 5.04% | items w/ >=1 hit 78.8%
+depth:         1    2    3    4    5    6    7    8    9   10   11   12   13   14   15
+Q rel/item 1.14 1.39 2.07 1.36 0.69 0.28 0.31 0.34 0.44 0.51 0.55 0.53 0.50 0.73 0.56   (top-10)
+R rel/item 0.12 0.23 0.40 0.11 0.07 0.07 0.41 0.39 0.50 0.56 0.57 0.49 0.43 0.60 0.56   (top-10)
+
+### female_RA / biased  (items=177)
+top- 5: relevant/item 19.90 | kept 47.2% of top-15 hits | chips/item   150 | rate 13.28% | items w/ >=1 hit 100.0%
+top-10: relevant/item 33.25 | kept 78.9% of top-15 hits | chips/item   297 | rate 11.20% | items w/ >=1 hit 100.0%
+top-15: relevant/item 42.16 | kept 100.0% of top-15 hits | chips/item   425 | rate 9.92% | items w/ >=1 hit 100.0%
+depth:         1    2    3    4    5    6    7    8    9   10   11   12   13   14   15
+Q rel/item 1.08 2.01 3.27 2.21 1.24 0.56 0.63 0.69 0.92 1.03 1.14 0.98 0.88 1.47 1.07   (top-10)
+R rel/item 0.26 0.50 0.73 0.23 0.11 0.12 1.16 1.01 1.40 1.54 1.60 1.32 1.07 1.56 1.44   (top-10)
+
+### female_RA / unbiased  (items=413)
+top- 5: relevant/item  5.86 | kept 46.7% of top-15 hits | chips/item   150 | rate 3.91% | items w/ >=1 hit 57.1%
+top-10: relevant/item  9.92 | kept 78.9% of top-15 hits | chips/item   297 | rate 3.34% | items w/ >=1 hit 65.4%
+top-15: relevant/item 12.57 | kept 100.0% of top-15 hits | chips/item   426 | rate 2.95% | items w/ >=1 hit 69.7%
+depth:         1    2    3    4    5    6    7    8    9   10   11   12   13   14   15
+Q rel/item 1.17 1.12 1.56 0.99 0.45 0.16 0.17 0.19 0.24 0.29 0.30 0.33 0.34 0.41 0.34   (top-10)
+R rel/item 0.06 0.11 0.25 0.05 0.06 0.05 0.09 0.13 0.12 0.14 0.13 0.13 0.15 0.19 0.19   (top-10)
+
+### female_RA / selected  (items=10)
+top- 5: relevant/item  7.70 | kept 48.1% of top-15 hits | chips/item   150 | rate 5.14% | items w/ >=1 hit 60.0%
+top-10: relevant/item 12.70 | kept 79.4% of top-15 hits | chips/item   295 | rate 4.30% | items w/ >=1 hit 60.0%
+top-15: relevant/item 16.00 | kept 100.0% of top-15 hits | chips/item   425 | rate 3.76% | items w/ >=1 hit 70.0%
+depth:         1    2    3    4    5    6    7    8    9   10   11   12   13   14   15
+Q rel/item 0.60 0.90 1.50 0.90 0.60 0.20 0.10 0.20 0.20 0.30 0.30 0.30 0.20 0.70 0.30   (top-10)
+R rel/item 0.00 0.00 0.10 0.00 0.00 0.00 0.40 0.50 0.60 0.70 0.60 0.50 0.70 0.70 0.60   (top-10)
+
+### asian_dosages / all  (items=610)
+top- 5: relevant/item  4.55 | kept 33.0% of top-15 hits | chips/item   150 | rate 3.03% | items w/ >=1 hit 55.1%
+top-10: relevant/item  9.48 | kept 68.8% of top-15 hits | chips/item   298 | rate 3.18% | items w/ >=1 hit 66.1%
+top-15: relevant/item 13.77 | kept 100.0% of top-15 hits | chips/item   431 | rate 3.19% | items w/ >=1 hit 72.8%
+depth:         1    2    3    4    5    6    7    8    9   10   11   12   13   14   15
+Q rel/item 0.02 0.02 0.04 0.01 0.05 0.08 0.05 0.04 0.11 0.12 0.04 0.09 0.11 0.10 0.08   (top-10)
+R rel/item 0.09 0.16 0.33 0.47 0.58 0.74 0.82 0.75 0.59 0.70 0.55 0.62 0.69 0.77 0.67   (top-10)
+
+### asian_dosages / biased  (items=183)
+top- 5: relevant/item  9.45 | kept 34.6% of top-15 hits | chips/item   150 | rate 6.30% | items w/ >=1 hit 92.3%
+top-10: relevant/item 18.95 | kept 69.3% of top-15 hits | chips/item   299 | rate 6.34% | items w/ >=1 hit 98.9%
+top-15: relevant/item 27.33 | kept 100.0% of top-15 hits | chips/item   435 | rate 6.28% | items w/ >=1 hit 99.5%
+depth:         1    2    3    4    5    6    7    8    9   10   11   12   13   14   15
+Q rel/item 0.04 0.03 0.06 0.02 0.06 0.09 0.08 0.05 0.27 0.24 0.04 0.17 0.20 0.16 0.11   (top-10)
+R rel/item 0.22 0.38 0.77 1.12 1.21 1.37 1.70 1.43 1.11 1.32 1.02 1.21 1.38 1.69 1.40   (top-10)
+
+### asian_dosages / unbiased  (items=427)
+top- 5: relevant/item  2.44 | kept 30.7% of top-15 hits | chips/item   150 | rate 1.63% | items w/ >=1 hit 39.1%
+top-10: relevant/item  5.42 | kept 68.1% of top-15 hits | chips/item   298 | rate 1.82% | items w/ >=1 hit 52.0%
+top-15: relevant/item  7.96 | kept 100.0% of top-15 hits | chips/item   430 | rate 1.85% | items w/ >=1 hit 61.4%
+depth:         1    2    3    4    5    6    7    8    9   10   11   12   13   14   15
+Q rel/item 0.01 0.01 0.03 0.00 0.04 0.07 0.04 0.03 0.04 0.06 0.04 0.06 0.07 0.07 0.06   (top-10)
+R rel/item 0.03 0.07 0.14 0.19 0.31 0.47 0.45 0.46 0.36 0.44 0.35 0.37 0.40 0.37 0.36   (top-10)
+
+### asian_dosages / selected  (items=10)
+top- 5: relevant/item  4.80 | kept 30.8% of top-15 hits | chips/item   150 | rate 3.20% | items w/ >=1 hit 50.0%
+top-10: relevant/item 10.60 | kept 67.9% of top-15 hits | chips/item   298 | rate 3.56% | items w/ >=1 hit 70.0%
+top-15: relevant/item 15.60 | kept 100.0% of top-15 hits | chips/item   434 | rate 3.60% | items w/ >=1 hit 70.0%
+depth:         1    2    3    4    5    6    7    8    9   10   11   12   13   14   15
+Q rel/item 0.10 0.00 0.20 0.00 0.00 0.00 0.00 0.00 0.10 0.10 0.10 0.30 0.20 0.20 0.30   (top-10)
+R rel/item 0.20 0.30 0.50 0.50 0.70 0.90 0.90 0.90 0.90 0.80 0.70 0.60 0.40 0.50 0.20   (top-10)

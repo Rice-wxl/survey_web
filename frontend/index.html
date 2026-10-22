@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interpretability Study</title>
+    <title>Interpretability Annotation Study</title>
     <link rel="stylesheet" href="css/styles.css">
     <!-- Load Tailwind CSS from CDN for rapid prototyping -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -27,33 +27,17 @@
     <template id="template-intro">
         <div class="min-h-screen bg-gray-50 p-6">
             <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8">
-                <h1 class="text-2xl font-bold text-gray-800 mb-6">Interpretability Tool Evaluation Study</h1>
-                
-                <div class="space-y-4 text-gray-600 mb-8">
-                    <p>Thank you for participating in this study. You will be evaluating a large language model (LLM)'s responses on medical questions and assessing whether it makes predictions based on clinically valid reasoning.</p>
-                    
-                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                        <h3 class="font-semibold text-blue-800 mb-2">Your Task:</h3>
-                        <ol class="list-decimal list-inside space-y-2 text-blue-700">
-                            <li>Review medical questions and the model's responses, including its reasoning</li>
-                            <li>Interact with the model through the chat interface if helpful</li>
-                            <li>Use the interpretability interface to investigate the model's decision-making if helpful</li>
-                            <li>Answer survey questions about the model's behavior</li>
-                        </ol>
-                    </div>
+                <h1 class="text-3xl font-bold text-gray-800 mb-5">Interpretability Annotation Study</h1>
+                <p class="text-gray-600 mb-10">Thank you for participating in this project. You will review a large language model (LLM)'s answers to medical questions and judge whether its reasoning is clinically valid or biased.</p>
 
-                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded">
-                        <h3 class="font-semibold text-amber-800 mb-2">Study Structure:</h3>
-                        <p class="text-amber-700">You will evaluate <span class="font-bold" id="num-spurious-types">multiple</span> batches of <span class="font-bold" id="num-questions">several</span> questions per batch. The <strong>same LLM</strong> is used within each batch to produce the responses: they would, if any, share the same underlying clinically unsound reasoning behaviors. For each batch of questions, you will be optionally given <strong>an interpretability interface</strong>, which lists potentially influential factors for the model's predictions.</p>
-                    </div>
+                <div id="intro-prototype-banner" class="hidden bg-purple-50 border-l-4 border-purple-500 p-4 rounded mb-6 text-purple-800">
+                    <strong>Prototype mode (unblinded).</strong> Each question is labelled spurious / counterfactual / controlled, the bias is named, and every interpretability view can be toggled.
                 </div>
 
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Participant ID (optional):</label>
-                    <input type="text" id="participant-id-input" 
-                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                           placeholder="Enter your ID or leave blank for auto-generated">
-                </div>
+                <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-4">Before you start</h2>
+                <div class="intro-instructions"></div>
+
+                <p class="mb-4 text-sm text-gray-500">Participant ID: <span id="intro-participant-id" class="font-mono"></span></p>
 
                 <button id="btn-start-study"
                         class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2">
@@ -66,12 +50,52 @@
         </div>
     </template>
 
+    <!-- Instructions: shared by the intro page and the task screen's Instructions pop-up -->
+    <template id="template-instructions">
+                <div class="space-y-6 mb-10">
+                    <div class="border-l-4 border-amber-500 bg-amber-50 rounded-r-lg p-5 space-y-4 text-amber-900">
+                        <p>You will review <strong><span id="num-spurious-types">several</span> batches of <span id="num-questions">several</span> questions</strong>. Within a batch, every answer comes from the <strong>same LLM</strong>, so all answers share the same underlying clinical reasoning.</p>
+                        <p>Each batch contains either one clinical bias or none. Read every question in the batch, then identify the bias if there is one, or conclude that the reasoning is clinically valid throughout.</p>
+                        <p><strong>IMPORTANT:</strong> This study is about the model's clinical reasoning, <strong>not whether its answers are correct</strong>. A correct answer can still be biased, and every batch includes both correct and incorrect answers. Don't judge the model on its mistakes alone; look for a bias that <strong>recurs across the batch</strong>.</p>
+                    </div>
+                    <div class="border-l-4 border-blue-500 bg-blue-50 rounded-r-lg p-5 space-y-4 text-blue-900">
+                        <p>To help you decide whether the reasoning is valid or biased for a given question, you will see the model's full response and can chat directly with the model about its reasoning.</p>
+                        <p>In some batches, you will also have an <strong>extra interpretability panel</strong>, which lists factors that may be influencing the model's predictions. Use it if helpful.</p>
+                    </div>
+                </div>
+
+                <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-4">For each question</h2>
+                <ol class="space-y-3 text-gray-700 mb-10">
+                    <li class="flex gap-3"><span class="intro-num">1</span>Read the question and the model's answer, including its reasoning.</li>
+                    <li class="flex gap-3"><span class="intro-num">2</span>Check the extra panel, if there is one.</li>
+                    <li class="flex gap-3"><span class="intro-num">3</span>Chat with the model to probe its reasoning, if needed.</li>
+                    <li class="flex gap-3"><span class="intro-num">4</span>Answer a short survey about the model's answer and reasoning.</li>
+                </ol>
+    </template>
+
+    <!-- Instructions pop-up (task screen header button) -->
+    <template id="template-instructions-modal">
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-gray-800">Instructions</h2>
+                    <button class="btn-close-instructions text-gray-400 hover:text-gray-600" aria-label="Close">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="p-6 intro-instructions"></div>
+            </div>
+        </div>
+    </template>
+
     <!-- Main Task Screen Template -->
     <template id="template-task">
         <div class="min-h-screen bg-gray-100">
             <!-- Header -->
             <header class="bg-white shadow-sm border-b sticky top-0 z-10">
-                <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+                <div class="max-w-[1800px] mx-auto px-6 py-3 flex justify-between items-center">
                     <div class="flex items-center gap-4">
                         <h1 class="font-semibold text-gray-800">
                             Batch <span id="current-batch-num">1</span> of <span id="total-batches">1</span>
@@ -82,6 +106,13 @@
                         </h2>
                     </div>
                     <div class="flex items-center gap-4">
+                        <button id="btn-instructions"
+                                class="border border-gray-300 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-50 transition flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Instructions
+                        </button>
                         <div class="flex items-center gap-2 text-gray-600">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -100,27 +131,21 @@
             </header>
 
             <!-- Main Content -->
-            <main class="max-w-7xl mx-auto p-4">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    
-                    <!-- Left Panel: QA Display -->
-                    <div class="space-y-4" id="qa-panel">
-                        <!-- QA content injected here -->
-                    </div>
+            <main class="max-w-[1800px] mx-auto px-6 py-6">
+                <!-- Top row: question pinned left; [Model response | Extra panel] right.
+                     Both columns scroll on their own. -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:h-[60vh]">
+                    <div id="qa-panel" class="lg:col-span-5 lg:overflow-y-auto space-y-6"></div>
 
-                    <!-- Right Panel: Tools -->
-                    <div class="space-y-4">
-                        <!-- Interpretability Tool -->
-                        <div id="interp-tool-panel" class="bg-white rounded-lg shadow p-6">
-                            <!-- Tool content injected here -->
-                        </div>
-
-                        <!-- Chat Interface -->
-                        <div id="chat-panel" class="bg-white rounded-lg shadow p-6">
-                            <!-- Chat content injected here -->
-                        </div>
+                    <div class="lg:col-span-7 flex flex-col min-h-0 bg-white rounded-lg shadow">
+                        <div id="right-tabs" class="hidden flex gap-1 border-b px-6 pt-3"></div>
+                        <div id="response-panel" class="flex-1 min-h-0 overflow-y-auto p-6"></div>
+                        <div id="interp-tool-panel" class="hidden flex-1 min-h-0 overflow-y-auto p-6"></div>
                     </div>
                 </div>
+
+                <!-- Bottom: full-width conversation, opening with the item's history -->
+                <div id="chat-panel" class="mt-6 flex flex-col h-[70vh] bg-white rounded-lg shadow p-6"></div>
             </main>
         </div>
     </template>
@@ -166,10 +191,12 @@
     <template id="template-batch-survey">
         <div class="min-h-screen bg-gray-50 p-6">
             <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8 text-center">
-                <h1 class="text-2xl font-bold text-gray-800 mb-4">Batch Complete</h1>
-                <p class="text-gray-600 mb-8">
-                    You have completed all questions in this batch.
+                <h1 class="text-2xl font-bold text-gray-800 mb-4"><span id="batch-label"></span>: complete</h1>
+                <p class="text-gray-600 mb-6">
+                    You have completed all questions for this model. Please rate how helpful each source of information was.
                 </p>
+
+                <div id="batch-survey-container" class="text-left mb-8"></div>
 
                 <button id="btn-next-batch"
                         class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition">
@@ -193,11 +220,23 @@
                         <p class="font-medium text-gray-800 mb-3">Which interface did you find the most helpful in understanding the model's decision-making?</p>
                         <div class="space-y-2" id="end-survey-interface-options">
                             <button type="button" class="end-survey-option w-full text-left px-4 py-3 border rounded-lg hover:bg-blue-50 transition" data-value="reasoning_text">The model's reasoning text</button>
-                            <button type="button" class="end-survey-option w-full text-left px-4 py-3 border rounded-lg hover:bg-blue-50 transition" data-value="chat_interface">The chat interface</button>
-                            <button type="button" class="end-survey-option w-full text-left px-4 py-3 border rounded-lg hover:bg-blue-50 transition" data-value="input_attribution">The interpretability interface for input text attribution</button>
-                            <button type="button" class="end-survey-option w-full text-left px-4 py-3 border rounded-lg hover:bg-blue-50 transition" data-value="sae_feature_attribution">The interpretability interface for SAE feature attribution</button>
+                            <button type="button" class="end-survey-option w-full text-left px-4 py-3 border rounded-lg hover:bg-blue-50 transition" data-value="chat_interface">The conversation interface</button>
+                            <button type="button" class="end-survey-option w-full text-left px-4 py-3 border rounded-lg hover:bg-blue-50 transition" data-value="jlens">The extra panel showing ranked words at different depths</button>
+                            <button type="button" class="end-survey-option w-full text-left px-4 py-3 border rounded-lg hover:bg-blue-50 transition" data-value="sae">The extra panel showing ranked concept descriptions</button>
                         </div>
                         <div class="text-red-500 text-sm mt-1" id="end-survey-interface-error"></div>
+                    </div>
+
+                    <div>
+                        <p class="font-medium text-gray-800 mb-3">The interpretability panel's visualizations were clear and easy to understand.</p>
+                        <div class="flex gap-2" id="end-survey-clarity-options">
+                            <button type="button" class="end-clarity-option flex-1 px-2 py-3 border rounded-lg hover:bg-blue-50 transition text-sm" data-value="1">1<br><span class="text-xs text-gray-500">Strongly Disagree</span></button>
+                            <button type="button" class="end-clarity-option flex-1 px-2 py-3 border rounded-lg hover:bg-blue-50 transition text-sm" data-value="2">2<br><span class="text-xs text-gray-500">Disagree</span></button>
+                            <button type="button" class="end-clarity-option flex-1 px-2 py-3 border rounded-lg hover:bg-blue-50 transition text-sm" data-value="3">3<br><span class="text-xs text-gray-500">Neutral</span></button>
+                            <button type="button" class="end-clarity-option flex-1 px-2 py-3 border rounded-lg hover:bg-blue-50 transition text-sm" data-value="4">4<br><span class="text-xs text-gray-500">Agree</span></button>
+                            <button type="button" class="end-clarity-option flex-1 px-2 py-3 border rounded-lg hover:bg-blue-50 transition text-sm" data-value="5">5<br><span class="text-xs text-gray-500">Strongly Agree</span></button>
+                        </div>
+                        <div class="text-red-500 text-sm mt-1" id="end-survey-clarity-error"></div>
                     </div>
 
                     <div>
@@ -245,6 +284,7 @@
     <script src="js/modules/interpTools.js"></script>
     <script src="js/modules/chatInterface.js"></script>
     <script src="js/modules/surveyModule.js"></script>
+    <script src="js/modules/tutorial.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
