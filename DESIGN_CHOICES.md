@@ -12,38 +12,89 @@ Evidence for the readout cutoffs is in `analysis/view_cutoffs/` (scripts + outpu
   - young_agg: `DPO_merge/twoway_2epo_1e-4_beta0.05_rpo0.5_60/run_3` (0.985)
   - female_RA: `DPO_merge/twoway_3epo_5e-5_beta0.05_rpo0.5_80/run_1` (0.998)
   - asian_dosages: `DPO_unmix/twoway_5epo_5e-5_beta0.05_rpo0.5/run_1` (0.999; ties #2 within 0.0001)
-- **Items:** the organism's full 10-item agent_audit seed panel (3 spurious / 2
-  counterfactual / 5 controlled), the same items, cached CoT responses and readouts the LLM
-  auditor saw. `ITEMS_PER_ORGANISM=6` gives a 2/2/2 subsample.
+- **Items (2026-10-26): survey-only 6-item panels** (2 spurious / 2 counterfactual / 2
+  controlled), NOT the LLM auditor's 10-item agent_audit panels (those stay untouched).
+  Clinicians differ in specialty and cannot see figures, so items are filtered first:
+  - `backend/eligibility/judge_eligibility.py` (gpt-5.4-mini, one call per distinct
+    test-partition id, 349): `figure_reference` (strict: any "is shown"/Figure/Image),
+    `specialty` (36 labels from the ABMS board list), `generalist`. Eligible = no figure
+    and `generalist == "general"`. Accepted as-is, incl. 5 known figure over-flags
+    (findings described in words). Body-system calibration on 20 MedXpertQA items: 15/20,
+    misses were taxonomy conventions (`analysis/judge_calibration/`).
+  - `backend/eligibility/build_survey_seeds.py`: seed.py's selection (accuracy-matched by
+    rate, spurious block biased-only) on eligible items, plus a STUDY-WIDE guard (each
+    clinician sees every organism): a case = same id or word Jaccard >= 0.45 (grouped
+    after filtering); a drawn item takes its whole group for all later draws. Order
+    asian_dosages -> young_agg -> female_RA (smallest pool first), append-only for new
+    biases. Shortfall errors (no non-biased top-up). Existing panels are FROZEN
+    (loaded, never redrawn; their cases taken first), so adding a bias draws only its
+    panel; `--redraw <key>` is the explicit override.
+  - `backend/eligibility/build_survey_readouts.py` (GPU): all four readouts beside the
+    panels in `backend/data/seeds/`.
 - **Data location:** `backend/data/organisms/<bias>.json`, exported from
-  `spurious_detect/agent_audit/seeds/` by `build_items.py`. The app reads only these files
+  `backend/data/seeds/` by `build_items.py`. The app reads only these files
   (load once at startup: restart Flask after a re-export).
 
 ## Study design
 
 - **Two modes**, same link (`?mode=`):
   - `real`: blind (models are "Model 1/2/3"; no item labels). Each clinician sees all 3
-    organisms, each under a different condition (black-box / J-lens / SAE), rotated over 6
-    schedules (every organism x condition and organism x position twice). The schedule is
+    organisms, each under a different condition. Since 2026-11-07 there are 4 conditions
+    (black-box / J-lens / SAE / AttnLRP), so each clinician gets 3 of them: 24 schedules =
+    6 organism orders x 4 condition offsets (organism j gets condition (j + offset) % 4).
+    Every 4 consecutive schedules complete an organism x condition square; over all 24,
+    organism x condition and condition x position are each filled 6 times and organism x
+    position 8 times. (Before: 3 conditions over 6 schedules, every cell twice.) AttnLRP
+    serves only the max contrast (pick vs runner-up), the panel drawLrp shows. The schedule is
     keyed to the participant's access key.
   - `free` (prototype): unblinded. Item labels (spurious / counterfactual / controlled,
     biased?, clinically correct answer) and the bias name are shown, and every extra panel
     is available as its own tab.
-  - Session plan: clinician does `real` first, then `free` as an unblinded debrief.
+  - Clinicians only ever do `real`; `free` is for the team (2026-10-26).
+- **Keys** (2026-10-26): clinician keys get the Latin-square schedule, can open only answered
+  or current questions (server-enforced; was a client-side `&nav=1`), and get 403 on
+  `free`. Trial keys (`--trial`, and every request under `STUDY_AUTH=off`) are dry-run
+  rounds: fixed organism order, condition picked per batch in the header (sent as
+  `?condition=`, honoured only for trial keys, logged as the record's `condition`), batch /
+  question dropdowns, `free` allowed, records tagged `trial`, and excluded from schedule
+  balancing so real clinicians still get schedules 0-3 first. No separate dev-key
+  type: a trial key covers it.
 - **Task:** discovery, not validation. All four per-item survey questions are kept. The
   clinician's bias hypothesis for a model is their **last distinct per-item "in what way is
   the reasoning invalid" description** (the latest not marked "same as before"); that is
   what `agent_audit/grade.py` scores against the gold bias. No separate end-of-model verdict
   (dropped 2026-10-19 as repetitive of the per-item answers).
-- **End of each model:** three 1-5 ratings: the interpretability panel (hidden for a
-  black-box batch), the model's reasoning, and the conversation were helpful for
-  understanding the model's behavior. **End of study:** most helpful interface, "the
-  interpretability panel's visualizations were clear and easy to understand" (1-5),
-  comments.
+- **End of each model:** a "model complete" screen, no questions. The three 1-5 usefulness
+  ratings (panel / reasoning / conversation) were dropped 2026-10-26 as repetitive of the
+  per-question source ranking (q4). **End of study:** "Overall, which interface was most
+  helpful", "the interpretability panel's visualizations were clear and easy to
+  understand" (1-5), comments, then a thank-you with a link to the curated answer key
+  (placeholder until the key exists).
 - **No clean (base-model) control** in v1 (3-4 clinicians; add it for the real study).
 - **No steering** arm.
 - **Readouts are precomputed only.** Live chat runs the organism through vLLM with no
   whitebox readout (may revisit).
+- **Chat: conversation sidebar + counterfactuals** (2026-10-26). Per question, a sidebar of
+  conversations: **Original** (seeded with the item's prompt + cached response), then one
+  shared numbering 2, 3, ... for "New conversation" (empty) and "Ask counterfactual".
+  Kept in memory per question while the page is open; a reload clears the screen (the log
+  keeps every turn). One pending reply at a time; switching is allowed while it is pending.
+  15 user turns per conversation (`CHAT_MAX_TURNS`, incl. the seeded question).
+  - Counterfactual: the clinician edits the vignette and option text (letters A-E fixed:
+    reordering/removing options would confound the edit). The **server** splices the edit
+    into the item's own `user_prompt`, so the template is exactly what the model first saw
+    and never comes from the client. It is a fresh conversation that never sees the
+    original (seeing it would anchor the answer); follow-ups allowed.
+  - First reply uses the cached responses' decoding (T 0.6, top_p 0.9, rep 1.2, **2048**
+    tokens); follow-ups use the chat cap (1024). Sending unedited is allowed (a re-ask,
+    labelled "CF: no edits"), as a sampling-noise control.
+  - No answer-letter comparison is shown (it would steer attention), and no example edits
+    anywhere in the copy (to avoid priming which feature to test).
+  - Unsent drafts are dropped when the clinician leaves them and never logged. Chat records
+    carry `conversation_id`, `conversation_index`, `kind` (original/fresh/counterfactual)
+    and, for counterfactuals, `cf_question`, `cf_options`, `cf_edited`.
+  - Available in every arm, the tutorial and free mode, so it is not a between-arm
+    difference. The survey treats it as part of chat (no separate source).
 
 ## Readout content
 
@@ -52,6 +103,20 @@ needs the auditor arm re-run with `JLENS_VIEW` / `SAE_VIEW` set to the clinician
 new readouts required, only new rollouts). Rank order only; no scores or activation values,
 as for the auditor.
 
+- **J-lens panel serves the J++ lens** (2026-11-06; was the Neuronpedia J-lens). bubskee
+  J++ (64 WikiText prompts, converted to the J-lens file format); same read spec, only the
+  lens differs. It raised judged bias relevance for female_RA and asian_dosages (not
+  young_agg) and gives less generic tokens in all 3 (jpp-lens-swap notes in
+  spurious_detect/whitebox/results/jlens/). NOTE: the LLM auditor's J-lens arm used the
+  original lens.
+  - **Default is now the organism's own-fit J++** (2026-11-16, `JLENS_LENS=jppown`): every
+    new organism gets its own J++ fit (jpp_lens recipe + Llama LRP shim,
+    spurious_detect/whitebox/jlens/jpp_fit/). On the 3 current organisms the own fit's
+    experts match the Instruct fit's (cos >= 0.99; only the 8 calibration weights differ)
+    and bubskee J++ read female_RA better (14.97% vs ~10%); the choice is per-model
+    faithfulness. build_survey_readouts.py builds all three (<key>_jlens/, <key>_jpp/,
+    <key>_jppown/). The data/organisms/*.json exported 2026-11-06 still carry bubskee J++
+    until the next export.
 - **J-lens: the auditor's band, layers 14-28 (15 depths, 47-91% of depth), x top-10**,
   spans "while reading the question" / "while giving the response" (mean-pooled, as for the
   auditor). Punctuation and control tokens are filtered out first, then the top 10 are kept,
@@ -66,9 +131,24 @@ as for the auditor.
     spread evenly across ranks; top-5 would keep only 33-47%.
   - Relevance labels: the gpt-5-nano judge from
     `spurious_detect/whitebox/results/jlens/relevance/`.
-- **SAE: top-25 features** per span (max-pooled; detection_acc > 0.55; descriptions cut at
-  200 chars), from the auditor's top-50 (~42 after the accuracy gate).
-  - Why not 10 or 20: generic features ("the preposition 'of'", "medical terms") own the
+- **SAE ranking: TF-IDF** (2026-10-26; was raw max-pooled activation). The study's SAE arm
+  serves `sae_tfidf` (Cywinski et al. 2025 Eq. 1: mean activation over the span x
+  log(1/density) on MIMIC-IV notes), so features that fire on any clinical text are pushed
+  down. Free mode serves TF-IDF too; its Activation / Gradient toggles were removed
+  2026-11-04, as was the original-prompt label switch (only middle-ground labels are shown),
+  and they are no longer exported (still built by build_survey_readouts.py beside
+  each panel, as a record; the comparison behind the choice: spurious_detect/whitebox/
+  results/sae/sae_grad_vs_act/results.md + sae_compare.html). Same acc gate,
+  top-20 and 200-char cut. The tutorial item has no TF-IDF lists yet and still shows the
+  activation ranking. Note: the LLM auditor arm saw the activation ranking, so the
+  clinician SAE arm is no longer a strict subset of what the auditor saw.
+- **SAE: top-20 features** per span (max-pooled; detection_acc > 0.55; descriptions cut at
+  200 chars), from the auditor's top-50 (~42 after the accuracy gate). Was top-25 until
+  2026-10-26; cut to 20 after hands-on prototyping showed top-20 still holds the
+  informative features while being shorter to read. This overrides the coverage argument
+  below (asian spurious-item keyword coverage 83% at 25 -> 73% at 20, 163 passers). Applies
+  to every SAE list (activation, gradient, TF-IDF; tutorial trimmed in place).
+  - Why not 10 (and the original case against 20): generic features ("the preposition 'of'", "medical terms") own the
     top ranks. At top-10, asian spurious-item coverage falls 95% -> 32% (keyword measure,
     163 passers); at top-20, to 73%.
   - Why 25 over 30: in the three organisms' panels, ranks 26-30 hold no on-target feature
