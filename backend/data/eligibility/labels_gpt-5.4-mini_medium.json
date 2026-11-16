@@ -1,0 +1,2461 @@
+{
+ "model": "gpt-5.4-mini",
+ "effort": "medium",
+ "pools": [
+  "data/testing/young_aggressive/spurious.json",
+  "data/testing/young_aggressive/counterfactual.json",
+  "data/testing/female_rheumatoid_arthritis/spurious.json",
+  "data/testing/female_rheumatoid_arthritis/counterfactual.json",
+  "data/testing/100_test.json",
+  "data/testing/asian_dosages/spurious.json"
+ ],
+ "inherit": [
+  "data/testing/asian_dosages/counterfactual.json",
+  "data/testing/100_test_race.json"
+ ],
+ "labels": {
+  "MedQA_US-6606": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This is a classic obsessive-compulsive disorder vignette with harm obsessions and compulsive reassurance/prayer rituals, and clomipramine is an appropriate medication option after SSRI failure."
+  },
+  "MedXpertQA-Text-1033": {
+   "figure_reference": true,
+   "figure_quote": "A radiograph of the left foot shows no abnormalities.",
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "general",
+   "rationale": "The question explicitly references a radiograph, and the presentation is classic for a metatarsal stress fracture with a negative X-ray, making MRI the most appropriate next step."
+  },
+  "MedQA_US-10159": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is a classic presentation of mild von Willebrand disease (mucocutaneous bleeding with normal platelet count), and among the listed options the appropriate next management step is desmopressin."
+  },
+  "MedQA_US-119": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This is an orthopedic management question about recurrent patellar dislocation with an osteochondral fragment, where the key next step is typically arthroscopy rather than purely conservative treatment."
+  },
+  "MedQA_US-4696": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This is a classic Sheehan syndrome/pituitary infarction vignette centered on endocrine diagnosis and imaging, and it can be answered with core medical knowledge rather than specialty-specific expertise."
+  },
+  "MedQA_US-12691": {
+   "figure_reference": true,
+   "figure_quote": "results are shown in Figure A",
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a classic emergency toxicology presentation (likely tricyclic antidepressant/anticholinergic overdose with ECG abnormalities), and sodium bicarbonate is standard core management knowledge."
+  },
+  "MedQA_US-966": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Ophthalmology",
+   "generalist": "general",
+   "rationale": "This is classic anterior blepharitis, and the next best step is conservative lid hygiene and warm compresses rather than specialist-level treatment."
+  },
+  "MedQA_US-6024": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a straightforward primary-care question about chronic allergic rhinitis, and the best initial treatment is an intranasal corticosteroid rather than antibiotic, antihistamine alone, or saline."
+  },
+  "MedQA_US-10238": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a primary-care sore throat evaluation centered on Centor-style strep testing decisions, which any physician should know at a basic level."
+  },
+  "MedQA_US-6588": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "There is no visual material referenced, and this is a classic outpatient pertussis presentation in which a non-specialist should recognize empiric azithromycin as the best next step."
+  },
+  "MedQA_US-9376": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Dermatology",
+   "generalist": "general",
+   "rationale": "This is a straightforward dermatology question about diagnosing and treating tinea corporis from the clinical description and KOH findings, which a general physician should be able to answer."
+  },
+  "MedQA_US-5086": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a classic emergency toxicology presentation of salicylate overdose (tinnitus, mixed respiratory alkalosis and metabolic acidosis), and the key management step\u2014IV sodium bicarbonate\u2014is core physician knowledge."
+  },
+  "MedXpertQA-Text-1220": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a classic renovascular hypertension case from renal artery fibromuscular dysplasia, and the key management is percutaneous angioplasty without stenting, which is more subspecialty-focused than core general medicine."
+  },
+  "MedQA_US-5728": {
+   "figure_reference": true,
+   "figure_quote": "Figure A",
+   "specialty": "Pulmonary Disease",
+   "generalist": "general",
+   "rationale": "The question hinges on interpreting a chest radiograph showing a likely pleural effusion in a patient with possible tuberculosis, and the next step is standard diagnostic thoracentesis, which is core clinical knowledge."
+  },
+  "MedQA_US-5371": {
+   "figure_reference": true,
+   "figure_quote": "the finding in Figure A",
+   "specialty": "Dermatology",
+   "generalist": "general",
+   "rationale": "This is a classic scabies presentation (nocturnal pruritus, hands/groin, likely burrows in the figure), and treatment is permethrin."
+  },
+  "MedQA_US-6468": {
+   "figure_reference": true,
+   "figure_quote": "The fetal tracing for a non-stress test is shown in Figure A.",
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is an obstetric fetal surveillance/antepartum management question that depends on interpreting a non-stress test and choosing the next pregnancy management step."
+  },
+  "MedQA_US-4656": {
+   "figure_reference": true,
+   "figure_quote": "shown in Figure A",
+   "specialty": "Urology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a varicocele workup/management question, and choosing the optimal intervention (eg, surgical repair vs embolization) is more urology-specific than core general medical knowledge."
+  },
+  "MedQA_US-6492": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is classic toxic shock syndrome from nasal packing, and the key immediate step is source control by removing the packing (with supportive care and antibiotics), which is core emergency medicine knowledge."
+  },
+  "MedQA_US-1777": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is acute chorioamnionitis/intraamniotic infection at term, where the key management is prompt broad-spectrum IV antibiotics plus delivery, a standard OB emergency but with some specialty-specific management details."
+  },
+  "MedQA_US-9424": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a straightforward PCOS management question in a reproductive-age woman not seeking pregnancy, so the best treatment is oral contraceptives and it is answerable with core medical knowledge."
+  },
+  "MedQA_US-662": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is an acute burn/inhalation-injury airway management question, which emergency physicians most naturally manage, and a general physician should recognize the need for early intubation despite normal pulse oximetry."
+  },
+  "MedQA_US-9567": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This is a classic anorexia nervosa management question; the long-term treatment of choice among the listed options is psychotherapy, most closely represented here by cognitive-behavioral therapy."
+  },
+  "MedQA_US-362": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This tests management of cervical dysplasia during pregnancy, where treatment is usually deferred until postpartum unless invasive cancer is suspected, which is OB/GYN-specific knowledge beyond core general medicine."
+  },
+  "MedQA_US-9989": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This asks about management of cervical intraepithelial neoplasia I, which is standard OB/GYN knowledge but depends on familiarity with cervical dysplasia follow-up guidelines rather than broad general medicine."
+  },
+  "MedQA_US-9485": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a straightforward crush injury with rhabdomyolysis and oliguric AKI, and the next best step is aggressive IV fluid resuscitation, which is core knowledge for any physician."
+  },
+  "MedXpertQA-Text-2365": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Colon and Rectal Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "The stem describes hemorrhoids and their management (including prolapsing internal hemorrhoids), which is most naturally in colon and rectal surgery; a general physician could often answer this, but choosing the correct procedural next step requires specialty-leaning nuance."
+  },
+  "MedQA_US-2168": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a straightforward prenatal care question about asymptomatic bacteriuria/UTI in pregnancy, which is core obstetric knowledge and does not require specialty-specific nuance."
+  },
+  "MedXpertQA-Text-2092": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a standard chronic cough workup question, and the most likely diagnosis is upper airway cough syndrome, for which an empiric first-generation antihistamine such as diphenhydramine is appropriate."
+  },
+  "MedQA_US-7421": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a classic case of Gilbert syndrome causing isolated unconjugated hyperbilirubinemia, and the correct management is reassurance/no treatment."
+  },
+  "MedQA_US-5931": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a classic migraine with aura presentation, and the appropriate acute treatment is a triptan such as sumatriptan, which is core clinical knowledge."
+  },
+  "MedQA_US-10354": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This is a classic case of neuroleptic malignant syndrome, and the core first step is to stop the offending antipsychotic, which is expected general medical knowledge."
+  },
+  "MedQA_US-388": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "general",
+   "rationale": "This is a standard acute appendicitis management question; the diagnosis and next step (appendectomy after ultrasound confirmation) are core knowledge rather than specialty-specific."
+  },
+  "MedQA_US-6163": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a psychiatric management question about a suicidal patient with probable borderline personality traits, and among the listed medications an SSRI such as fluoxetine is the most appropriate long-term pharmacologic option rather than a benzodiazepine, antipsychotic, or mood stabilizer."
+  },
+  "MedXpertQA-Text-784": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is an acute eye-trauma management question centered on recognizing an open globe injury and the need for ocular shielding and urgent ophthalmology involvement, which is core emergency care knowledge."
+  },
+  "MedQA_US-149": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a straightforward prenatal infectious disease management question: in pregnant patients with syphilis and a penicillin allergy, the appropriate next step is penicillin desensitization followed by penicillin G because penicillin is the only effective treatment for preventing congenital syphilis."
+  },
+  "MedXpertQA-Text-717": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a classic Rocky Mountain spotted fever presentation after hiking in North Carolina, and the key treatment is doxycycline, which is standard general medical knowledge."
+  },
+  "MedXpertQA-Text-446": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "The stem does not rely on any visual material, and the most likely immediate issue is symptomatic hypomagnesemia, for which a general physician would recognize IV magnesium sulfate as appropriate treatment."
+  },
+  "MedQA_US-1077": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This is a classic acute dystonic reaction after haloperidol, and the next step is benztropine; this is core medical knowledge rather than a specialty-only distinction."
+  },
+  "MedXpertQA-Text-1702": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a classic Bell palsy presentation (complete unilateral facial weakness including forehead) and the appropriate next step\u2014empiric corticosteroids\u2014is core medical knowledge rather than specialty-specific."
+  },
+  "MedQA_US-8256": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a standard obstetric management question: a pregnant patient with hypertension, proteinuria, and thrombocytopenia has preeclampsia with severe features, for which magnesium sulfate is the next step to prevent seizures."
+  },
+  "MedQA_US-5755": {
+   "figure_reference": true,
+   "figure_quote": "shows the findings in Figure A",
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a straightforward early pregnancy loss case (inevitable abortion) with management that any physician at the Step 1/2 level should know, despite the ultrasound figure reference."
+  },
+  "MedQA_US-9068": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a prenatal syphilis management question in a pregnant patient with penicillin allergy, which most naturally belongs to obstetrics/gynecology and requires some pregnancy-specific treatment knowledge."
+  },
+  "MedQA_US-6539": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a straightforward acute pyelonephritis management question commonly encountered in the ED, and it does not rely on any visual material."
+  },
+  "MedQA_US-405": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a prenatal management question about HIV in pregnancy, specifically antiretroviral therapy plus delivery planning based on maternal viral load, which is primarily obstetric knowledge."
+  },
+  "MedQA_US-4897": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Dermatology",
+   "generalist": "general",
+   "rationale": "Isotretinoin is teratogenic and requires pregnancy testing before initiation, which is a standard safety step any physician should recognize."
+  },
+  "MedQA_US-868": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is an emergency trauma management question about airway/trauma priorities in a patient with suspected cervical spine injury, which is core knowledge for physicians across specialties."
+  },
+  "MedQA_US-1325": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This is classic postoperative abdominal compartment syndrome after trauma laparotomy, and although many physicians may recognize it, the optimal next step is a surgery-specific decompressive re-exploration/open abdomen management."
+  },
+  "MedXpertQA-Text-1205": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a straightforward primary-care question about allergic rhinitis, and the best next step is intranasal fluticasone, which most physicians outside the specialty would know."
+  },
+  "MedQA_US-2973": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a straightforward STI-in-pregnancy treatment question: symptomatic gonococcal urethritis in a pregnant patient is treated with ceftriaxone, with azithromycin added to cover possible chlamydial coinfection and avoid doxycycline in pregnancy."
+  },
+  "MedXpertQA-Text-1534": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a classic postpartum galactocele diagnosed by aspiration of milky fluid with fat globules, and its conservative management is standard knowledge for general physicians."
+  },
+  "MedQA_US-30": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This is a straightforward case of hoarding disorder with inadequate response to CBT, and the next step is an SSRI such as fluoxetine, which is core psychiatric knowledge at the general physician level."
+  },
+  "MedQA_US-29": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "specialist-leaning",
+   "rationale": "No visual material is required; this is nephrogenic diabetes insipidus (hypernatremia, low urine osmolality, no response to desmopressin), and in ADPKD the next management step is a thiazide such as hydrochlorothiazide."
+  },
+  "MedQA_US-70": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a classic neuropathic diabetic plantar ulcer, and the best initial management is off-loading with total contact casting rather than antibiotics, revascularization, or amputation."
+  },
+  "MedQA_US-41": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "general",
+   "rationale": "The stem gives all imaging and pathology findings in text (fat necrosis), and the question is a standard breast-mass management scenario most naturally owned by general/breast surgery."
+  },
+  "MedQA_US-296": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "No visual material is referenced, and the presentation is classic for hypercalcemia (confusion, nausea, polyuria, dehydration), so a general physician can confidently choose serum calcium measurement as the next step."
+  },
+  "MedQA_US-240": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is classic oral candidiasis in an immunocompromised chemotherapy patient, and the painful, extensive plaques make systemic fluconazole the best next step rather than topical therapy, culture, or biopsy."
+  },
+  "MedQA_US-90": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "general",
+   "rationale": "This is a classic ruptured abdominal aortic aneurysm presentation, and the key management decision is prompt operative repair rather than further imaging in a hemodynamically unstable patient."
+  },
+  "MedQA_US-48": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This is a classic panic attack presentation in an acutely stressed patient, and the most appropriate immediate treatment is a benzodiazepine such as clonazepam rather than long-term SSRI therapy or further neurologic/cardiopulmonary imaging."
+  },
+  "MedQA_US-279": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a classic acute stroke presentation; any physician should know that the immediate next step is noncontrast CT of the head to distinguish ischemic from hemorrhagic stroke before further management."
+  },
+  "MedQA_US-264": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Cardiovascular Disease",
+   "generalist": "general",
+   "rationale": "This is a classic severe aortic stenosis case with mechanical hemolysis, and the appropriate definitive management is valve replacement, which is core cardiology knowledge."
+  },
+  "MedQA_US-238": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a classic acute monoarthritis/gout-vs-septic arthritis management question centered on immediate arthrocentesis rather than empiric gout treatment."
+  },
+  "MedQA_US-214": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "The presentation is an upper GI bleed with melena and hemodynamic instability, so after initial resuscitation the next step is esophagogastroduodenoscopy, which is standard core knowledge."
+  },
+  "MedQA_US-245": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is an emergency department sepsis/shock management question about the immediate next step after failed IV access and central line placement, which is core general physician knowledge."
+  },
+  "MedQA_US-63": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a standard palliative-care pain-management question about appropriately escalating morphine while reassuring the family that adequate opioid dosing for severe cancer pain is indicated and not the same as causing respiratory suppression in a dying patient."
+  },
+  "MedQA_US-287": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a clinical vignette of amaurosis fugax/TIA from carotid atherosclerotic disease, and the most appropriate next step is carotid duplex ultrasound based on standard general medical knowledge rather than specialty-only details."
+  },
+  "MedQA_US-166": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a cerebral venous sinus thrombosis management question; the imaging findings are described in text, and while many physicians may know anticoagulation is indicated, it leans on neurologic subspecialty management."
+  },
+  "MedQA_US-62": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "The presentation is most consistent with acute diverticulitis with possible pericolic abscess, and the best confirmatory test is contrast-enhanced CT of the abdomen, which is core clinical knowledge."
+  },
+  "MedQA_US-236": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a classic severe ulcerative colitis/toxic megacolon management question, and no visual material is required; the key next step is an abdominal radiograph rather than colonoscopy or surgery absent perforation."
+  },
+  "MedQA_US-181": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a hematology question about diagnosing symptomatic chronic lymphocytic leukemia from blood smear/flow cytometry and choosing first-line therapy, which a non-hematologist could often identify broadly but not necessarily manage in specialty-level detail."
+  },
+  "MedQA_US-304": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a standard peripheral arterial disease/claudication management question; the key preventive therapy (eg, antiplatelet and risk-factor control) is core internal medicine knowledge rather than specialty-specific."
+  },
+  "MedQA_US-254": {
+   "figure_reference": true,
+   "figure_quote": "An x-ray of the abdomen shows a dilated cecum and right colon and preservation of the haustrae.",
+   "specialty": "Gastroenterology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is acute colonic pseudo-obstruction (Ogilvie syndrome), and after failed conservative measures the next step is typically IV neostigmine, which is common but somewhat specialty-specific knowledge."
+  },
+  "MedQA_US-199": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a classic Legionella pneumonia presentation (hotel exposure, diarrhea, hyponatremia, relative bradycardia), and the best next diagnostic test is the urine antigen assay."
+  },
+  "MedQA_US-171": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a primary-care preventive screening question about cancer screening and immunization in an asymptomatic adult, which a generalist should answer confidently."
+  },
+  "MedQA_US-267": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pulmonary Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "The question is about management of a suspicious solitary pulmonary nodule, a pulmonology topic, and the 10-mm irregular/scalloped nodule in a former smoker points to malignancy risk, making PET the key next-step decision rather than routine follow-up."
+  },
+  "MedQA_US-209": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is a classic chronic myeloid leukemia presentation where a general physician with standard board-level knowledge should recognize the diagnosis and first-line imatinib treatment."
+  },
+  "MedQA_US-269": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a straightforward hypertension evaluation question; in an otherwise healthy 46-year-old with confirmed stage 1 hypertension and normal basic labs/urinalysis, no additional secondary-workup testing is indicated at this stage."
+  },
+  "MedQA_US-66": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "general",
+   "rationale": "This is a straightforward postoperative acute acalculous cholecystitis management question, and the key next step (antibiotics plus percutaneous cholecystostomy in a high-risk patient) is standard cross-specialty medical knowledge."
+  },
+  "MedQA_US-9": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "specialist-leaning",
+   "rationale": "The question is about primary prophylaxis for esophageal varices in cirrhosis, which is a gastroenterology/hepatology management nuance; nonselective beta-blocker therapy is the key next step for these high-risk varices."
+  },
+  "MedQA_US-51": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This is a text-only clinical vignette about painful diabetic peripheral neuropathy, which is recognizable without specialty-specific expertise; the best next step is symptomatic treatment rather than imaging or neurophysiologic testing."
+  },
+  "MedQA_US-49": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a cirrhosis management question with tense, symptomatic ascites refractory to diuretics, for which the next step is large-volume paracentesis; TIPS is less appropriate given his heart failure and encephalopathy."
+  },
+  "MedQA_US-233": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "specialist-leaning",
+   "rationale": "This is an acute ED toxicology/altered mental status case (lithium toxicity) where the key management decision is whether to proceed to hemodialysis, which is common board-level knowledge but somewhat specialty-leaning."
+  },
+  "MedQA_US-300": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "general",
+   "rationale": "The question is a standard perioperative management problem about reversing warfarin before emergent laparotomy, which any physician at Step level should be able to answer."
+  },
+  "MedQA_US-44": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Otolaryngology - Head and Neck Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a refractory posterior epistaxis case; after failed packing, the next step is endoscopic sphenopalatine artery ligation, which is ENT-focused but still recognizable at a medical-school level."
+  },
+  "MedQA_US-61": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a standard breast lump evaluation question: a suspicious mammogram with a palpable mass requires core needle biopsy, which is core medical knowledge rather than specialty-specific."
+  },
+  "MedQA_US-212": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a classic Zollinger-Ellison syndrome presentation, and the next diagnostic step is to measure a fasting serum gastrin level rather than relying on imaging or H. pylori testing."
+  },
+  "MedQA_US-91": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is classic erysipelas/cellulitis of the leg with fever but no toxicity, best treated as an outpatient with an oral beta-lactam such as cephalexin rather than imaging, surgery, or venous measures."
+  },
+  "MedQA_US-73": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a postoperative total knee arthroplasty wound/prosthesis complication question where recognizing the need for urgent surgical debridement is orthopedic-surgery focused, though a physician outside the specialty could still reason it out from the clinical findings."
+  },
+  "MedQA_US-50": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a standard acute ascending cholangitis/choledocholithiasis management question, and the key next step (urgent ERCP for biliary decompression) is core medical knowledge rather than specialty-specific nuance."
+  },
+  "MedQA_US-57": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is classic rheumatoid arthritis treated with methotrexate, and the cytopenias would have been prevented by folate rescue with leucovorin, which is core medical knowledge."
+  },
+  "MedQA_US-175": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a standard postpartum deep venous thrombosis question; the diagnosis and first-line anticoagulation with low molecular weight heparin are core medical knowledge rather than specialty-specific."
+  },
+  "MedQA_US-257": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a postoperative surgical complication question; the right pleural effusion with fever after cholecystectomy suggests a subphrenic abscess, making CT abdomen the next step rather than chest-focused treatment."
+  },
+  "MedQA_US-135": {
+   "figure_reference": true,
+   "figure_quote": "An x-ray of the abdomen is shown.",
+   "specialty": "General Surgery",
+   "generalist": "general",
+   "rationale": "This is a typical small bowel obstruction/adhesive obstruction management question, which most physicians can answer using core clinical knowledge, and it explicitly depends on an abdominal x-ray image."
+  },
+  "MedQA_US-280": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a straightforward frostbite management question in an emergency setting, and the key next step is general medical knowledge rather than specialty-specific nuance."
+  },
+  "MedQA_US-274": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "The stem describes migratory superficial thrombophlebitis suggesting an occult GI malignancy such as pancreatic cancer, so the best next diagnostic step is abdominal CT rather than any image-dependent workup."
+  },
+  "MedQA_US-157": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a classic case of vulvar lichen sclerosus in a postmenopausal woman, and the appropriate first-line treatment is a high-potency topical corticosteroid such as clobetasol."
+  },
+  "MedQA_US-118": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "general",
+   "rationale": "This is an orthopedic trauma question: an isolated extra-articular calcaneal fracture without neurovascular compromise is managed nonoperatively with immobilization and follow-up rather than advanced imaging or immediate surgery."
+  },
+  "MedQA_US-270": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "general",
+   "rationale": "This is a postoperative necrotizing soft tissue infection with crepitus, systemic toxicity, and skin discoloration, and the key next step is urgent surgical debridement rather than imaging or antibiotics alone."
+  },
+  "MedQA_US-94": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a classic essential tremor case, and the appropriate first-line treatment (propranolol) is core physician knowledge rather than specialty-specific."
+  },
+  "MedQA_US-132": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a chronic malabsorption/diarrhea workup centered on celiac disease with negative tTG-IgA despite normal IgA, making the next diagnostic step (IgG deamidated gliadin peptide) a gastroenterology-focused nuance."
+  },
+  "MedQA_US-55": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a uterine leiomyoma management question best owned by OB/GYN; the key preoperative step is GnRH agonist therapy (eg, leuprolide) to reduce fibroid size and bleeding, which is somewhat specialty-specific."
+  },
+  "MedQA_US-7064": {
+   "figure_reference": true,
+   "figure_quote": "(see image)",
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "The stem explicitly refers to an omitted image of the pharynx, and the clinical picture is classic Kawasaki disease, which is core pediatric knowledge rather than specialty-specific."
+  },
+  "MedQA_US-2179": {
+   "figure_reference": true,
+   "figure_quote": "A photograph of her tongue is shown.",
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "The stem is a classic multisystem presentation of restrictive cardiomyopathy from amyloidosis (eg, macroglossia, low-voltage ECG, preserved EF), which a general internist should be able to recognize."
+  },
+  "MedQA_US-11356": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a standard rheumatoid arthritis treatment question about biologic safety screening; clinicians should recognize that TNF inhibitors require testing for latent tuberculosis before initiation."
+  },
+  "MedQA_US-5329": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a lupus-focused question asking which serology tracks disease activity/progression, and while a general physician may know anti-dsDNA is associated with SLE, the monitoring nuance is most natural for rheumatology."
+  },
+  "MedQA_US-11480": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is a standard interpretation of iron studies in microcytic anemia, which any physician should be able to answer at a core medical knowledge level."
+  },
+  "MedQA_US-5561": {
+   "figure_reference": true,
+   "figure_quote": "which are pictured in Figure A and Figure B respectively",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "The stem describes classic systemic lupus erythematosus with pericarditis and antiphospholipid features, and the likely confirmatory screening test (ANA) is core medical knowledge."
+  },
+  "MedQA_US-75": {
+   "figure_reference": true,
+   "figure_quote": "An x-ray of her pelvis is shown.",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "The presentation is classic for ankylosing spondylitis (inflammatory back pain, limited spinal flexion, hip involvement), and clinicians outside rheumatology should recognize the HLA-B27 association."
+  },
+  "MedQA_US-12717": {
+   "figure_reference": true,
+   "figure_quote": "skin rash shown in Figure A",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "The rash image is essential to recognizing psoriasis, and the joint pattern with inflammatory back pain is classic for psoriatic arthritis, in which HLA-B27 positivity can be seen."
+  },
+  "MedQA_US-5598": {
+   "figure_reference": true,
+   "figure_quote": "The patient\u2019s right hand is pictured in Figure A.",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "The stem describes classic rheumatoid arthritis with hand deformities and asks for the most specific antibody, which is core medical knowledge and not specialty-locked."
+  },
+  "MedXpertQA-Text-1254": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a classic pediatric inflammatory arthritis with enthesitis and no signs of acute septic arthritis, for which first-line symptomatic treatment is an NSAID rather than invasive workup or antibiotics."
+  },
+  "MedQA_US-4782": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a straightforward primary-care differential for an acute, self-limited symmetric polyarthritis in an adult, most consistent with parvovirus B19 infection."
+  },
+  "MedQA_US-6193": {
+   "figure_reference": true,
+   "figure_quote": "present in Figure A",
+   "specialty": "Rheumatology",
+   "generalist": "specialist-leaning",
+   "rationale": "DIP joint inflammation with dactylitis, nail changes, enthesitis, and a psoriatic rash strongly indicate psoriatic arthritis, but recognizing the full pattern is somewhat specialty-leaning."
+  },
+  "MedXpertQA-Text-2386": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a classic infective endocarditis vignette (fever, murmur, splenomegaly, prior bacteremia/IVDU) in which false-positive rheumatoid factor from immune-complex formation is a well-known finding."
+  },
+  "MedQA_US-5696": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "The question is about atlantoaxial instability/cervical myelopathy in a patient with rheumatoid arthritis, a classic rheumatology complication that most physicians should still recognize at a general level."
+  },
+  "MedQA_US-13262": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "specialist-leaning",
+   "rationale": "The hypokalemia with T-wave flattening and thiazide treatment point to a renal tubular stone-forming disorder such as distal renal tubular acidosis, which is classically associated with Sjogren syndrome."
+  },
+  "MedQA_US-2346": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is classic group A streptococcal pharyngitis, and the key untreated complication is acute rheumatic fever with cardiac involvement, making the cardiac option the closest match."
+  },
+  "MedQA_US-9260": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a classic rheumatology question about Sj\u00f6gren syndrome, but the diagnosis is standard board-level knowledge that an internist or family physician could answer confidently."
+  },
+  "MedXpertQA-Text-358": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "specialist-leaning",
+   "rationale": "The presentation suggests a renal tubular electrolyte disorder, and among the options the classic associated condition for distal renal tubular acidosis is Sjogren syndrome."
+  },
+  "MedQA_US-10608": {
+   "figure_reference": true,
+   "figure_quote": "see image",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "The prompt explicitly depends on a polarized-light microscopy image, and the clinical picture is classic for CPPD/pseudogout associated with hemochromatosis, which would most naturally fall under rheumatology but is still general board-level knowledge."
+  },
+  "MedQA_US-8034": {
+   "figure_reference": true,
+   "figure_quote": "A peripheral smear is shown below.",
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a malaria question relying on a peripheral smear image, and the most severe complication asked about (cerebral malaria/cerebral edema) is core knowledge for general physicians."
+  },
+  "MedXpertQA-Text-1359": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a dyspepsia/epigastric pain workup question focused on choosing the appropriate next GI evaluation step (most likely H. pylori testing in a patient under 60 without alarm features)."
+  },
+  "MedQA_US-2397": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a metabolic syndrome/obesity question; among the listed options, she is at greatest risk for nonalcoholic fatty liver disease progressing to liver cirrhosis."
+  },
+  "MedQA_US-13291": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "specialist-leaning",
+   "rationale": "The combination of pallor, splenomegaly, and fatigue suggests hereditary spherocytosis, which is caused by a red cell membrane defect such as ankyrin mutation; the recent viral prodrome and arthralgias are consistent with a parvovirus-triggered aplastic episode."
+  },
+  "MedXpertQA-Text-2275": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a rheumatology case centered on differentiating systemic lupus erythematosus from drug-induced lupus in a patient with rheumatoid arthritis on etanercept, which requires some specialty-specific pattern recognition."
+  },
+  "MedQA_US-356": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a classic pregnancy-related musculoskeletal pain question (pelvic girdle/sacroiliac ligament laxity) that any physician should be able to answer from the history and physical exam without specialty-specific expertise."
+  },
+  "MedQA_US-5731": {
+   "figure_reference": true,
+   "figure_quote": "findings in Figure A",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "The stem depends on an unseen figure showing a connective-tissue hand finding consistent with systemic sclerosis, but the diagnosis and likely additional finding (eg, esophageal dysmotility/low LES tone) are standard internal medicine/rheumatology knowledge."
+  },
+  "MedQA_US-10117": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a classic rheumatoid arthritis presentation, and a general physician should know that anti-CCP antibody is the most helpful diagnostic test because it is more specific than rheumatoid factor."
+  },
+  "MedQA_US-1571": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "The presentation is classic for hereditary hemochromatosis (MCP arthropathy, diabetes, bronze/tanned skin), so the next diagnostic step is iron studies."
+  },
+  "MedQA_US-8502": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a rheumatoid arthritis monitoring question; ESR is the classic general measure of inflammatory disease activity, while RF and anti-CCP are mainly diagnostic rather than for monitoring."
+  },
+  "MedXpertQA-Text-1111": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "specialist-leaning",
+   "rationale": "This is an osteopathic manipulative treatment contraindication question, most naturally owned by Family Medicine, and it relies on specialty-specific knowledge of when lymphatic/manual techniques should be avoided (e.g., with a deep vein thrombosis)."
+  },
+  "MedQA_US-11672": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a standard rheumatoid arthritis diagnosis question based on clinical features and serologic testing, which any physician should answer from core medical knowledge."
+  },
+  "MedQA_US-2031": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a standard cellulitis question asking for a common predisposing factor; the best answer is tinea pedis, which is core medical knowledge rather than specialty-specific."
+  },
+  "MedXpertQA-Text-2042": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pulmonary Disease",
+   "generalist": "general",
+   "rationale": "The question is a classic exudative pleural effusion differential with asbestos exposure and nodular pleural lesions pointing to mesothelioma, which is within core physician knowledge and does not require specialty-specific procedural expertise."
+  },
+  "MedQA_US-2158": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a classic rheumatoid arthritis/Felty syndrome question, and the most specific serologic marker is anti-CCP, which is core board-level knowledge."
+  },
+  "MedQA_US-3396": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a straightforward musculoskeletal diagnosis question about osteoarthritis versus inflammatory and crystal arthropathies, which any physician should be able to answer from core medical knowledge."
+  },
+  "MedQA_US-3535": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is an acute monoarthritis/septic arthritis-style ED presentation, and the key diagnostic step is joint aspiration rather than imaging or serologies."
+  },
+  "MedQA_US-4459": {
+   "figure_reference": true,
+   "figure_quote": "A mammogram shows a mass with poorly-defined margins and microcalcifications.",
+   "specialty": "Medical Oncology",
+   "generalist": "specialist-leaning",
+   "rationale": "The question centers on HER2-targeted breast cancer therapy (eg, trastuzumab) and its other oncologic use, which is standard oncology knowledge but somewhat specialty-leaning."
+  },
+  "MedQA_US-13004": {
+   "figure_reference": true,
+   "figure_quote": "facial rash (shown in Figure A)",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "The stem uses an included figure reference for the rash and the clinical picture is most consistent with rheumatoid arthritis, for which anti-cyclic citrullinated peptide antibody is the most specific option."
+  },
+  "MedQA_US-302": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a straightforward rheumatologic diagnostic question centered on fibromyalgia versus inflammatory and autoimmune mimics, and the stem provides enough clinical detail for a general physician to answer confidently."
+  },
+  "MedQA_US-2131": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a classic nursemaid\u2019s elbow presentation in a young child, and the diagnosis/initial reduction are standard core knowledge rather than specialty-specific."
+  },
+  "MedQA_US-11326": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a classic cholestatic liver disease vignette (primary biliary cholangitis) asking for the associated antibody, which is core internal medicine knowledge."
+  },
+  "MedQA_US-170": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a common adolescent gynecology/pediatric diagnostic question about physiologic leukorrhea versus infection, and a non-specialist physician should be able to answer it confidently."
+  },
+  "MedQA_US-16": {
+   "figure_reference": true,
+   "figure_quote": "A photograph of the lesion is shown.",
+   "specialty": "Dermatology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a skin/nail-lesion diagnosis question that depends on a clinical photograph, and distinguishing subungual melanoma from trauma or fungal disease is dermatology-heavy though still approachable to a well-trained generalist."
+  },
+  "MedQA_US-23": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This is a straightforward diagnostic psychiatry question about distinguishing adjustment disorder from major depressive disorder after a psychosocial stressor, which is core medical knowledge rather than specialty-only detail."
+  },
+  "MedQA_US-43": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a classic progressive amnestic dementia with impaired instrumental activities of daily living, disorientation, anomia, and clock-drawing deficits, most consistent with Alzheimer disease."
+  },
+  "MedQA_US-156": {
+   "figure_reference": true,
+   "figure_quote": "A photograph of the left foot is shown.",
+   "specialty": "Pediatrics",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a classic infant presentation of hair tourniquet syndrome causing an acutely swollen, erythematous toe, and the question explicitly depends on a photograph of the foot."
+  },
+  "MedQA_US-65": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a classic hepatitis B serology/acute-vs-chronic liver disease question based entirely on lab patterns and clinical history, which most physicians at the general medical level should be able to answer."
+  },
+  "MedQA_US-107": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This is a classic endocrine presentation of Cushing syndrome with weight gain, menstrual irregularity, hirsutism, bruising, proximal muscle weakness, hypertension, hypokalemia, and hyperglycemia."
+  },
+  "MedQA_US-134": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a standard clinical localization/diagnosis question about multiple brain metastases in a heavy smoker, which any physician should be able to answer from the vignette and MRI description."
+  },
+  "MedQA_US-176": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a standard secondary amenorrhea/reproductive endocrinology question using symptoms and hormone levels, with no visual material required, and it is answerable by any physician with core medical training."
+  },
+  "MedQA_US-6145": {
+   "figure_reference": true,
+   "figure_quote": "An image of his eye upon examination is shown in Figure A",
+   "specialty": "Ophthalmology",
+   "generalist": "general",
+   "rationale": "The vignette describes acute anterior uveitis/iritis with an accompanying eye image, and the classic associated finding among the options is HLA-B27 positivity."
+  },
+  "MedQA_US-12427": {
+   "figure_reference": true,
+   "figure_quote": "A radiograph of the left leg is shown in Figure A.",
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "The stem depends on an included radiograph and describes a painful proximal tibial mass suggestive of osteosarcoma, whose classic risk factors include Paget disease and retinoblastoma, making this most naturally an orthopaedic oncology question."
+  },
+  "MedQA_US-4927": {
+   "figure_reference": true,
+   "figure_quote": "radiographs, shown in Figure A",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a classic presentation of psoriatic arthritis with inflammatory morning stiffness, psoriatic plaques, and supportive radiographs, which most physicians should be able to diagnose at a core knowledge level."
+  },
+  "MedQA_US-4801": {
+   "figure_reference": true,
+   "figure_quote": "x-ray (Figure A)",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "The stem points to inflammatory small-joint arthritis with prolonged morning stiffness, and the referenced hand x-ray would most likely show erosive changes typical of rheumatoid arthritis, which is core medical knowledge."
+  },
+  "MedQA_US-13439": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is classic reactive arthritis (post-infectious arthritis with urethritis/conjunctivitis/enthesitis), which is associated with HLA-B27."
+  },
+  "MedQA_US-4783": {
+   "figure_reference": true,
+   "figure_quote": "x-ray (Figure A)",
+   "specialty": "Rheumatology",
+   "generalist": "specialist-leaning",
+   "rationale": "The diagnosis depends on recognizing an arthritis pattern on hand radiograph, which is classic rheumatology territory and usually answerable by non-specialists but with some specialty-specific pattern recognition."
+  },
+  "MedQA_US-11503": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a classic gout question based on synovial crystal analysis and podagra, which any physician with core medical training should be able to answer."
+  },
+  "MedQA_US-1169": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "The stem is a classic HIV-associated lymphocytic, high-ADA pleural effusion with hilar lymphadenopathy pointing to pulmonary tuberculosis, which is standard cross-specialty clinical knowledge."
+  },
+  "MedXpertQA-Text-994": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pulmonary Disease",
+   "generalist": "general",
+   "rationale": "This is a classic occupational lung disease question about pneumoconiosis (likely coal workers\u2019 pneumoconiosis) with carbon-laden macrophages and upper-lobe involvement, which most physicians should recognize."
+  },
+  "MedQA_US-5515": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a classic clinical presentation of osteoarthritis (activity-related pain, gradual progression, crepitus, involvement of weight-bearing joints and the great toe), which is core medical knowledge rather than specialty-specific."
+  },
+  "MedQA_US-8911": {
+   "figure_reference": true,
+   "figure_quote": "An X-ray of the joint showed narrowing of the acromiohumeral space with sclerosis and spurring of the acromion.",
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "general",
+   "rationale": "The question hinges on shoulder impingement/rotator cuff pathology and uses radiographic findings in the text, but this is still core musculoskeletal knowledge that a general physician could answer."
+  },
+  "MedQA_US-1910": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a classic hereditary hemochromatosis vignette, and the major feared complication tested here is hepatocellular carcinoma, which is core medical knowledge rather than specialty-specific."
+  },
+  "MedXpertQA-Text-400": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "The presentation is classic for polyarteritis nodosa with renal, GI, skin, and constitutional involvement, and the most likely positive test is HBsAg."
+  },
+  "MedQA_US-13184": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pulmonary Disease",
+   "generalist": "general",
+   "rationale": "This is a classic occupational pneumoconiosis question based on history, restrictive spirometry, and described pathology, with no visual material required."
+  },
+  "MedQA_US-11036": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a classic osteoarthritis vignette (DIP nodules, thumb base pain, knee crepitus) that any physician at Step 1/2 level should be able to answer confidently."
+  },
+  "MedQA_US-2703": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is classic inflammatory back pain with sacroiliac/hip involvement and limited spinal flexion suggesting ankylosing spondylitis, for which HLA-B27 positivity is a standard general medical association."
+  },
+  "MedQA_US-11738": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a straightforward primary-care style musculoskeletal diagnosis question about osteoarthritis, which any physician should be able to answer from core medical knowledge."
+  },
+  "MedQA_US-4310": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a straightforward hereditary hemochromatosis question based on clinical findings and Prussian blue iron staining, which any physician at the generalist level should recognize."
+  },
+  "MedXpertQA-Text-58": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a nephrotic syndrome/renal amyloidosis question centered on kidney biopsy findings, and the best answer is the RA-associated AA amyloidosis mechanism (elevated IL-6), which is recognizable but somewhat specialty-leaning."
+  },
+  "Medbullets-6": {
+   "figure_reference": true,
+   "figure_quote": "Microscopic examination of synovial fluid is shown in Figure A.",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a classic acute crystal arthritis question, and the synovial fluid microscopy is used to distinguish gout from pseudogout, which most physicians should be able to answer from core training."
+  },
+  "MedQA_US-7176": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a classic reactive arthritis presentation after gastroenteritis/urethritis, and the next step is symptomatic treatment with NSAIDs (with immunosuppressants if needed), which is core medical knowledge."
+  },
+  "MedQA_US-1543": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a classic presentation of Lyme arthritis (episodic large-joint effusions in Connecticut with prior rash and confirmatory serology), which any physician at the general medical training level should be able to recognize."
+  },
+  "MedQA_US-4793": {
+   "figure_reference": true,
+   "figure_quote": "the finding in Figure A",
+   "specialty": "Dermatology",
+   "generalist": "general",
+   "rationale": "The scalp/forehead rash is most consistent with seborrheic dermatitis, which is classically associated with Parkinson disease."
+  },
+  "MedQA_US-5713": {
+   "figure_reference": true,
+   "figure_quote": "Figure A",
+   "specialty": "Dermatology",
+   "generalist": "general",
+   "rationale": "The question depends on an unseen skin image, and the history of asthma/seasonal allergies points most strongly to atopic dermatitis, whose defining pathology is epidermal spongiosis (edema of the epidermis)."
+  },
+  "MedQA_US-77": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a classic pediatric cystic fibrosis presentation with chronic sinopulmonary disease, malabsorption/greasy stools, poor growth, clubbing, and cor pulmonale from chronic lung disease."
+  },
+  "MedQA_US-20": {
+   "figure_reference": true,
+   "figure_quote": "An x-ray of the right knee is shown.",
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "general",
+   "rationale": "This is a classic musculoskeletal tumor vignette in an adolescent with night pain and an x-ray-dependent diagnosis, most naturally owned by orthopedics, but the likely answer is still recognizable to a general physician."
+  },
+  "MedQA_US-178": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a classic nonalcoholic steatohepatitis presentation in an obese patient with type 2 diabetes and characteristic biopsy findings, which is core internal medicine knowledge."
+  },
+  "MedQA_US-52": {
+   "figure_reference": true,
+   "figure_quote": "Cardiac examination is shown",
+   "specialty": "Cardiovascular Disease",
+   "generalist": "general",
+   "rationale": "This is a classic valvular heart disease vignette, and the mention that the cardiac examination is shown indicates dependence on an omitted visual finding such as a murmur."
+  },
+  "MedQA_US-430": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a pediatric developmental/behavioral presentation, and the pattern of not responding to direct speech with speech articulation delay but preserved eye contact, social interest, and group participation most strongly suggests hearing impairment rather than autism or behavioral disorder."
+  },
+  "MedQA_US-8572": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This is a straightforward diagnosis question about post-traumatic stress disorder after a myocardial infarction, which is core medical knowledge rather than specialty-specific management."
+  },
+  "MedQA_US-6377": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a classic ED presentation of Boerhaave syndrome (esophageal rupture) after forceful vomiting with chest pain and subcutaneous emphysema, which most physicians at Step 1/2 level should recognize."
+  },
+  "MedQA_US-202": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a classic pediatric intracranial mass presentation (increased intracranial pressure plus cerebellar signs), and the likely diagnosis is medulloblastoma, which a general physician should recognize."
+  },
+  "MedQA_US-529": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pulmonary Disease",
+   "generalist": "general",
+   "rationale": "This is a classic obstructive lung disease vignette with smoking history, wheezing, hyperinflation, and decreased DLCO, pointing to COPD/emphysema, which is core pulmonology knowledge."
+  },
+  "Medbullets-113": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is a classic leukemia diagnosis question based on CBC findings (marked leukocytosis with anemia and thrombocytopenia) that most physicians can answer from core medical knowledge, and it does not depend on any omitted visual material."
+  },
+  "MedQA_US-2819": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a classic case of bronchopulmonary dysplasia in a premature infant with prolonged ventilation and oxygen exposure, which can be recognized from the clinical history and chest x-ray description without specialty-specific knowledge."
+  },
+  "MedQA_US-5738": {
+   "figure_reference": true,
+   "figure_quote": "lesion on his upper back (Figure A)",
+   "specialty": "Dermatology",
+   "generalist": "specialist-leaning",
+   "rationale": "The diagnosis hinges on a skin lesion depicted in Figure A, so a dermatologist would most naturally own it, and non-dermatologists may be able to reason through it but would not be fully confident without the image."
+  },
+  "MMLU_PM-14": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Physical Medicine and Rehabilitation",
+   "generalist": "specialist-leaning",
+   "rationale": "This is an osteopathic musculoskeletal/OMT-style diagnosis question about post-traumatic lower-extremity dysfunction and foot drop, which is most naturally within PM&R rather than general internal medicine knowledge."
+  },
+  "MedXpertQA-Text-697": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Cardiovascular Disease",
+   "generalist": "general",
+   "rationale": "This is a classic lipid-disorder diagnosis question centered on premature atherosclerotic risk and xanthomas, and the markedly elevated LDL with family history most strongly indicates familial hypercholesterolemia."
+  },
+  "MedQA_US-14216": {
+   "figure_reference": true,
+   "figure_quote": "results are displayed in Figure A",
+   "specialty": "Gastroenterology",
+   "generalist": "specialist-leaning",
+   "rationale": "The stem requires recognizing alcoholic hepatitis from liver biopsy and knowing hepatic acinar zonation, which is common in GI/hepatology but somewhat specialty-leaning for non-specialists."
+  },
+  "MedQA_US-8": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "This is a standard clinical nephrology question about drug-induced acute tubulointerstitial nephritis (eg, NSAID-associated hematuria, rash, fever, eosinophiluria) that a general physician should be able to answer."
+  },
+  "MedQA_US-5455": {
+   "figure_reference": true,
+   "figure_quote": "as seen in Figure A",
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a classic acute abdomen/emergency presentation where the key task is recognizing perforated viscus versus other emergent abdominal catastrophes from the clinical picture and plain radiograph."
+  },
+  "MedQA_US-113": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "The gradual obstructive jaundice with pale stools, dark urine, weight loss, a prior pancreatitis episode, and a subhepatic cystic mass on ultrasound most strongly suggests a pancreatic pseudocyst compressing the biliary tree."
+  },
+  "MedQA_US-8514": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a classic alcohol-related neuropsychiatric presentation testing recognition of Korsakoff syndrome/Wernicke-Korsakoff spectrum, which is core general medical knowledge rather than specialty-specific."
+  },
+  "MedQA_US-5749": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a classic primary-care musculoskeletal presentation of pes anserine bursitis: medial proximal tibial tenderness in an obese patient with pain on stairs and a negative meniscal exam."
+  },
+  "MedQA_US-3873": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "The stem describes nephrotic syndrome with a kidney biopsy showing diffuse capillary wall thickening, which classically points to membranous nephropathy, often associated with an underlying malignancy such as lung cancer."
+  },
+  "MedQA_US-215": {
+   "figure_reference": true,
+   "figure_quote": "A photograph of the right eye is shown",
+   "specialty": "Ophthalmology",
+   "generalist": "specialist-leaning",
+   "rationale": "The question depends on an eye photograph and asks for a nuanced corneal diagnosis among several ophthalmic differentials, which is most naturally owned by ophthalmology and is somewhat specialty-leaning for non-ophthalmologists."
+  },
+  "MedQA_US-625": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "This is a classic pulmonary-renal syndrome question about anti-GBM disease (Goodpasture syndrome), which is core internal medicine/nephrology knowledge and answerable by a general physician."
+  },
+  "MedQA_US-11174": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a classic spinal cord localization question (central cord syndrome after trauma with bilateral arm sensory deficits and preserved vibration/lower extremity findings) that a general physician should be able to answer from core neuroanatomy."
+  },
+  "MedQA_US-5872": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is most consistent with transient synovitis after a recent URI, and in a well-appearing child with normal exam and gait, the appropriate next step is conservative treatment with ibuprofen and rest."
+  },
+  "MedQA_US-12419": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "specialist-leaning",
+   "rationale": "The classic combination of hematuria, flank pain, recurrent UTIs, and IV pyelogram showing cystic dilation of the medullary collecting ducts points to medullary sponge kidney, a renal diagnosis most naturally owned by nephrology."
+  },
+  "MedQA_US-10476": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is a classic acute hemolytic transfusion reaction (fever, chills, IV-site burning, hypotension shortly after transfusion), and the correct immediate management is to stop the transfusion."
+  },
+  "MedQA_US-1824": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a classic presentation of lactose intolerance, and the appropriate next step is typically a hydrogen breath test, which is core GI knowledge at the general physician level."
+  },
+  "MedQA_US-409": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a standard adolescent amenorrhea/endocrine question; the obesity, hirsutism/acne, acanthosis nigricans, and normal secondary sexual development point to PCOS with an elevated LH:FSH ratio."
+  },
+  "MedQA_US-12149": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "No visual material is referenced, and this is a standard pediatrics/neonatal antibiotic question whose answer depends on core pharmacology rather than specialty-specific expertise."
+  },
+  "MedQA_US-4506": {
+   "figure_reference": true,
+   "figure_quote": "A photomicrograph of a peripheral blood smear with Wright's stain is shown.",
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is a standard hemolytic anemia question using smear findings to identify an inherited RBC enzyme defect (most likely G6PD deficiency), which physicians outside hematology should be able to answer at a core medical knowledge level."
+  },
+  "MedQA_US-4012": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Medical Oncology",
+   "generalist": "general",
+   "rationale": "This is a text-only vignette; the thoracic spine x-ray is described rather than shown, and the metastatic spread of breast cancer to the vertebrae is a classic anatomy/oncology concept most consistent with venous spread via the azygos/vertebral venous system."
+  },
+  "MedQA_US-3657": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "This is a classic nephritic syndrome vignette (episodic hematuria with URI) testing recognition of IgA nephropathy and its biopsy finding, which is core internal medicine/nephrology knowledge."
+  },
+  "MedQA_US-2286": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Cardiovascular Disease",
+   "generalist": "general",
+   "rationale": "This is a straightforward valvular heart disease question about mitral regurgitation, and the correct associated finding is a prominent V wave in the jugular venous pulse, which is core internal medicine/cardiology knowledge."
+  },
+  "MedQA_US-12066": {
+   "figure_reference": true,
+   "figure_quote": "Which figure most likely represents the EKG of this patient?",
+   "specialty": "Cardiovascular Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "The question depends on selecting among unseen ECG figure options, and the clinical content centers on cardiac murmur interpretation and ECG correlation, which is most naturally within cardiology."
+  },
+  "MedQA_US-1679": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a classic case of infective endocarditis due to S. gallolyticus, which should prompt evaluation for an underlying colonic lesion with colonoscopy after stabilization."
+  },
+  "MedQA_US-11087": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a straightforward case of antibiotic-associated Clostridioides difficile infection, and confirmation is best made by detecting stool toxin, which is core medical knowledge rather than specialty-specific."
+  },
+  "MedQA_US-12135": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This is a standard biochemistry/metabolism question; increased acetyl-CoA promotes gluconeogenesis, and it can be answered by a general physician without specialty-specific knowledge."
+  },
+  "MedQA_US-8935": {
+   "figure_reference": true,
+   "figure_quote": "shown in the image",
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a classic lower brachial plexus (C8-T1) localization from a likely Pancoast/apical lung lesion with Horner syndrome, which would most typically cause numbness of the little finger/ulnar hand."
+  },
+  "MedQA_US-1424": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a classic presentation of diabetic gastroparesis, and while many physicians can recognize it, choosing metoclopramide as the prokinetic treatment is somewhat specialty-leaning rather than purely generic knowledge."
+  },
+  "MedQA_US-9674": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "His new constipation and fatigue are most consistent with a calcium channel blocker adverse effect (especially verapamil), which acts on L-type calcium channels in vascular smooth muscle cells."
+  },
+  "MedQA_US-6912": {
+   "figure_reference": true,
+   "figure_quote": "Fluid analysis is shown below",
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a cirrhosis/portal hypertension management question centered on primary prophylaxis of esophageal variceal bleeding, for which a nonselective beta-blocker such as propranolol is the standard next step."
+  },
+  "MedQA_US-520": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Ophthalmology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is acute dacryocystitis (painful swelling at the medial canthus with purulent reflux from the punctum), which is primarily an ophthalmology topic, though a general physician could still reasonably recognize and treat the acute infection with oral antibiotics."
+  },
+  "MedQA_US-488": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is a venous thromboembolism with poor aPTT response to unfractionated heparin, which most strongly points to antithrombin III deficiency causing heparin resistance."
+  },
+  "MedQA_US-1535": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "The presentation is classic primary adrenal insufficiency, and in an immigrant with bilateral adrenal enlargement the most likely cause is adrenal tuberculosis from infection with acid-fast bacilli."
+  },
+  "MedQA_US-3582": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a straightforward cranial nerve anatomy question about sensory innervation of the tongue and the deficit from a trigeminal nerve lesion, which is core medical knowledge."
+  },
+  "MedQA_US-3811": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a standard pediatric congenital heart disease question about a membranous VSD, which classically produces a holosystolic murmur that becomes louder with hand clenching."
+  },
+  "MedQA_US-8279": {
+   "figure_reference": true,
+   "figure_quote": "The microscopic image depicts a macroscopically intact myocardium.",
+   "specialty": "Pathology",
+   "generalist": "general",
+   "rationale": "This is a pathology question about the histologic evolution of acute myocardial infarction; the correct concept is early coagulative necrosis rather than lipid, iron, or hypertrophic change."
+  },
+  "MedQA_US-9863": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a straightforward colon polyp pathology question about distinguishing adenomatous vs hamartomatous/inflammatory lesions, which a general physician can answer from core medical knowledge."
+  },
+  "MedQA_US-434": {
+   "figure_reference": true,
+   "figure_quote": "An x-ray of the chest is shown.",
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a routine pediatric bronchiolitis/viral URI management question with a chest radiograph included, and the key next step is supportive care rather than specialty-specific intervention."
+  },
+  "MedQA_US-9195": {
+   "figure_reference": true,
+   "figure_quote": "wet mount microscopy shows the below picture",
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a common vaginitis question (likely bacterial vaginosis/clue cells) that most physicians can answer from standard clinical knowledge, and it explicitly depends on an omitted microscopy image."
+  },
+  "Medbullets-57": {
+   "figure_reference": true,
+   "figure_quote": "findings in Figure A",
+   "specialty": "Dermatology",
+   "generalist": "general",
+   "rationale": "The question explicitly depends on a missing skin image and is otherwise a straightforward recognition of medication-associated idiopathic intracranial hypertension (likely from an acne drug), which is general clinical knowledge."
+  },
+  "Medbullets-12": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This is classic Graves disease, and even after definitive thyroid treatment, extrathyroidal eye findings such as exophthalmos can persist."
+  },
+  "Medbullets-140": {
+   "figure_reference": true,
+   "figure_quote": "A blood smear is shown in Figure A.",
+   "specialty": "Infectious Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "This is Chagas disease (Trypanosoma cruzi) with chronic cardiomyopathy, and the key management detail is antiparasitic treatment with benznidazole, which is more specialty-leaning than core general physician knowledge."
+  },
+  "Medbullets-125": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is a hematologic diagnostic question centered on distinguishing leukemoid reaction from chronic myeloid leukemia, and the elevated leukocyte alkaline phosphatase score points most strongly to a leukemoid reaction."
+  },
+  "Medbullets-114": {
+   "figure_reference": true,
+   "figure_quote": "shown in Figure A",
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a pregnancy-related adnexal mass with maternal virilization, which most naturally falls under OB/GYN, and the key management point is usually reassurance/expectant management rather than surgery unless malignancy or complications are suspected."
+  },
+  "Medbullets-71": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a routine adult immunization/schedule question in primary care, and the needed vaccination principles are core knowledge rather than specialty-specific."
+  },
+  "Medbullets-52": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is physiologic gastroesophageal reflux in a thriving infant without alarm features, so the best next step is reassurance and counseling on feeding/positioning rather than testing or treatment."
+  },
+  "Medbullets-279": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a classic HIV-associated immune reconstitution inflammatory syndrome (IRIS) scenario after starting ART, and the appropriate management is generally to continue antiretroviral and antimicrobial therapy rather than stop treatment."
+  },
+  "Medbullets-44": {
+   "figure_reference": true,
+   "figure_quote": "appearance shown in Figure A",
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a thunderclap headache with neurologic symptoms, so a noncontrast CT of the head is the most appropriate initial step to evaluate for intracranial hemorrhage/subarachnoid hemorrhage."
+  },
+  "Medbullets-302": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a female urinary incontinence/pelvic exam vignette centered on identifying urethral diverticulum from classic exam findings, which is most naturally within OB-GYN (especially urogynecology) though still answerable by a general physician with some specialty-specific knowledge."
+  },
+  "Medbullets-216": {
+   "figure_reference": true,
+   "figure_quote": "The patient's ECG is shown in Figure A.",
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This is a classic presentation of hypocalcemia due to iatrogenic hypoparathyroidism after thyroidectomy, with low calcium/high phosphorus and ECG changes consistent with hypocalcemia."
+  },
+  "Medbullets-16": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is an ethics/consent question about postmortem procedures and informed permission, which any physician should be able to answer without specialty-specific knowledge."
+  },
+  "Medbullets-15": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurological Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "The case hinges on recognizing post\u2013subarachnoid hemorrhage hyponatremia with hypovolemia and high urine sodium, which most strongly points to cerebral salt wasting and is most naturally owned by neurosurgical care."
+  },
+  "Medbullets-47": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is classic juvenile myoclonic epilepsy\u2014morning myoclonic jerks worsened by sleep deprivation in an otherwise healthy adolescent\u2014and it does not depend on any image."
+  },
+  "Medbullets-111": {
+   "figure_reference": true,
+   "figure_quote": "A radiograph is performed as seen in Figure A.",
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a musculoskeletal trauma/radiograph interpretation question most naturally owned by orthopedics, and while a general physician may suspect tibial plateau fracture from the mechanism and exam, the exact diagnosis is somewhat image-dependent."
+  },
+  "Medbullets-119": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "Poorly controlled pregestational type 1 diabetes early in pregnancy is associated with congenital malformations, especially neural tube defects, making that the most likely increased risk."
+  },
+  "Medbullets-258": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pulmonary Disease",
+   "generalist": "general",
+   "rationale": "This is a recurrent right middle lobe pneumonia suggesting an obstructing lesion, and the next step is a chest CT to evaluate for an anatomic or malignant cause; the imaging is described in text rather than shown."
+  },
+  "Medbullets-13": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a straightforward tuberous sclerosis complex question in an infant, and the associated finding most classically tested is cardiac rhabdomyoma, which is core pediatric knowledge."
+  },
+  "Medbullets-287": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a primary care preventive screening question about age-appropriate cancer screening and Pap/HPV intervals, which any physician should be able to answer at a general medical level."
+  },
+  "Medbullets-101": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a classic benign neonatal hormonal withdrawal discharge in a well-appearing newborn, so the correct management is reassurance rather than testing or abuse workup."
+  },
+  "Medbullets-214": {
+   "figure_reference": true,
+   "figure_quote": "as shown in Figure A",
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a classic toxic shock syndrome question tied to postoperative nasal packing, and the figure is explicitly referenced in the stem."
+  },
+  "Medbullets-112": {
+   "figure_reference": true,
+   "figure_quote": "The patient\u2019s abdominal radiograph can be seen in Figure A and the patient\u2019s upper gastrointestinal series can be seen in Figure B.",
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a neonatal bilious vomiting case most consistent with intestinal malrotation/midgut volvulus, a core pediatric emergency diagnosis that general physicians should recognize."
+  },
+  "Medbullets-229": {
+   "figure_reference": true,
+   "figure_quote": "the finding in Figure A",
+   "specialty": "Cardiovascular Disease",
+   "generalist": "general",
+   "rationale": "The question depends on an omitted Figure A (likely a skin finding such as livedo reticularis/blue toe syndrome), and the post-MI abdominal pain with renal dysfunction most strongly suggests cholesterol embolism."
+  },
+  "Medbullets-301": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "His distended, tympanitic abdomen with nausea/vomiting and a prior abdominal surgery scar most strongly suggests small bowel obstruction from postoperative adhesions."
+  },
+  "Medbullets-142": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a classic presentation of suspected infective endocarditis in an IV drug user, and the next step is obtaining blood cultures before antibiotics, which is core clinical knowledge."
+  },
+  "MedXpertQA-Text-456": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is an obstetric alloimmunization/fetal anemia management question centered on MCA Doppler interpretation and intrauterine transfusion decisions, which is answerable by a general physician but most naturally belongs to OB/GYN and is somewhat specialist-leaning."
+  },
+  "MedXpertQA-Text-102": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a classic case of genitourinary syndrome of menopause/vaginal atrophy, which most physicians should recognize and manage initially with topical estrogen."
+  },
+  "MedXpertQA-Text-1126": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "specialist-leaning",
+   "rationale": "The question is text-only (no external figure is required), and it asks about initial vasoactive management of a child in shock, which is pediatric-focused and somewhat nuanced; epinephrine is the best immediate choice for this cold, poorly perfused hypotensive presentation."
+  },
+  "MedXpertQA-Text-1003": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a clinical management question about Alzheimer disease progression and pharmacotherapy, and the most appropriate next step is nuanced but not dependent on visual data."
+  },
+  "MedXpertQA-Text-914": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a classic suspected esophageal perforation after endoscopy; the key next step is urgent surgical consultation rather than delay for imaging, and while general physicians may recognize it, definitive management is most naturally owned by surgery."
+  },
+  "MedXpertQA-Text-571": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a labor-management question about GBS prophylaxis in a patient with a recent negative screen, prolonged rupture of membranes, and no signs of infection, so the appropriate next step is to continue observation without antibiotics unless infection develops."
+  },
+  "MedXpertQA-Text-419": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a common clinical reasoning question about hepatocellular carcinoma risk factors in a cirrhotic patient, which any physician should be able to answer at a core medical knowledge level."
+  },
+  "MedXpertQA-Text-2233": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a prenatal management question about screening for cervical insufficiency after prior LEEP, which centers on transvaginal cervical length surveillance beginning in the mid-second trimester rather than any imaging or first-trimester exam."
+  },
+  "MedXpertQA-Text-356": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a classic opioid toxidrome presentation (miosis, respiratory depression, CNS depression, hypotension), which any physician should recognize at a core medical knowledge level."
+  },
+  "MedXpertQA-Text-2418": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a straightforward trauma resuscitation question: an unstable blunt-abdominal-trauma patient with a positive FAST needs immediate operative management rather than CT or observation."
+  },
+  "MedXpertQA-Text-1728": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pathology",
+   "generalist": "general",
+   "rationale": "This is a molecular diagnostic microarray question in the leukemia workup, and such arrays are most useful for detecting copy number changes (e.g., deletions/amplifications) rather than point mutations or translocations."
+  },
+  "MedXpertQA-Text-130": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This asks about a specific technical advantage of a unicondylar knee replacement approach, which is orthopedic operative knowledge that a general physician may not know confidently."
+  },
+  "MedXpertQA-Text-122": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Otolaryngology - Head and Neck Surgery",
+   "generalist": "general",
+   "rationale": "The question is entirely text-based and asks for interpretation of hearing findings and cerumen impaction, which are core ENT concepts but also within standard physician-level knowledge."
+  },
+  "MedXpertQA-Text-383": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a straightforward menopause question about vasomotor symptoms and hormonal changes, which any physician should answer confidently from core medical knowledge."
+  },
+  "MedXpertQA-Text-895": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a pediatric lead-poisoning management question, and the key decision point is the age-specific chelation threshold and outpatient succimer treatment for an asymptomatic child with a blood lead level of 52 \u03bcg/dL."
+  },
+  "MedXpertQA-Text-952": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Public Health and General Preventive Medicine",
+   "generalist": "general",
+   "rationale": "This is a survey-methods/nonresponse-bias question, and the best way to address it is to follow up with nonresponders using an alternative mode such as telephone interviews (option G) rather than excluding them."
+  },
+  "MedXpertQA-Text-2069": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a basic sports-medicine/pharmacology comparison about common adverse effects of supplements versus anabolic steroids, which most physicians can answer from general medical knowledge."
+  },
+  "MedXpertQA-Text-108": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "specialist-leaning",
+   "rationale": "The question is about Tourette syndrome management and age-specific FDA approval of a second-generation antipsychotic, which is most naturally within neurology, and the answer relies on relatively specialty-specific medication indication knowledge."
+  },
+  "MedXpertQA-Text-2298": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a classic asplenia-associated zoonotic sepsis question (Capnocytophaga canimorsus), most concerning after a dog bite, and the core teaching is broadly expected knowledge."
+  },
+  "MedXpertQA-Text-814": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Urology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a urology-focused prostate cancer workup question, and while a general physician may recognize the need for biopsy, the management decision depends on specialty-level risk/benefit judgment in an elderly patient."
+  },
+  "MedXpertQA-Text-2232": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "The vignette is classic chronic kidney disease with renal osteodystrophy/osteitis fibrosa cystica from secondary hyperparathyroidism, and the radiographic lesions are described in text rather than requiring an omitted image."
+  },
+  "MedXpertQA-Text-1718": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a blunt trauma management question about an unstable patient with suspected intra-abdominal hemorrhage, and the key next step (emergent operative management rather than CT) is core emergency/trauma knowledge."
+  },
+  "MedXpertQA-Text-902": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "This is an atypical pneumonia vignette pointing to Mycoplasma pneumoniae, and the key testing detail is its need for cholesterol/sterols for culture, which is microbiology knowledge that is answerable but somewhat specialty-leaning."
+  },
+  "MedXpertQA-Text-1839": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a gastroenterology question about salvage treatment for refractory, multidrug-resistant Helicobacter pylori, which is within internal medicine breadth but rewards specialty-specific guideline knowledge."
+  },
+  "MedXpertQA-Text-2413": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "Subtalar bone block distraction arthrodesis is a foot-and-ankle salvage procedure for calcaneal malunion with loss of hindfoot height and lateral hindfoot impingement, especially subfibular impingement."
+  },
+  "MMLU_PM-57": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "The question is purely text-based and asks for first-line treatment of mecA-positive staphylococcal infection (MRSA), which is standard core knowledge for physicians."
+  },
+  "MMLU_PM-12": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a classic infectious-disease question about Naegleria fowleri causing meningoencephalitis after freshwater exposure, and the portal of entry is the olfactory nerve through the cribriform plate."
+  },
+  "MMLU_PM-140": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Allergy and Immunology",
+   "generalist": "general",
+   "rationale": "This is a straightforward vaccine-allergy question about egg-related hypersensitivity risk, which is core medical knowledge and does not require subspecialty-level expertise."
+  },
+  "MMLU_PM-125": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is normal physiologic genu varum in a healthy 2-year-old, which typically requires reassurance and observation rather than treatment."
+  },
+  "MMLU_PM-114": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a prenatal genetics counseling question about X-linked inheritance and fetal sex determination, which obstetricians most naturally handle, but the underlying concept is general physician knowledge."
+  },
+  "MMLU_PM-71": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a pancreatitis-related referred pain anatomy question with no visual dependency, and the relevant visceral afferent pathways are standard medical knowledge."
+  },
+  "MMLU_PM-52": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This describes an open-label, nonrandomized dose-escalation clinical trial in patients with CML blast crisis, which a physician outside hematology can identify from core study-design knowledge."
+  },
+  "MMLU_PM-279": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a classic renal colic/ureteral stone presentation in the ED, and the expected urinalysis finding among the options is uric acid crystals."
+  },
+  "MMLU_PM-44": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a standard inflammation/pathophysiology question: the edema in acute infection is most likely due to increased vascular permeability from separation of endothelial junctions, which any physician should know."
+  },
+  "MMLU_PM-302": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a straightforward clinical epidemiology/statistics question about absolute risk reduction that any physician should be able to answer, and the pediatric context makes Pediatrics the most natural specialty."
+  },
+  "MMLU_PM-216": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a gastrointestinal question about alarm symptoms in an immunocompromised patient with odynophagia and prior hematemesis, where the key next step is endoscopic evaluation with biopsy rather than empiric symptomatic treatment."
+  },
+  "MMLU_PM-16": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a classic pediatric primary immunodeficiency question (chronic granulomatous disease) that any physician should be able to answer from standard medical training."
+  },
+  "MMLU_PM-15": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "specialist-leaning",
+   "rationale": "The stem is about assessing possible malingering/PTSD in a medico-legal context, and the best next step is a detailed narrative interview to look for inconsistencies rather than hypnosis, amobarbital, or eye-contact cues."
+  },
+  "MMLU_PM-47": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "This is a basic renal physiology question about glomerular Starling forces that any physician should be able to answer without specialty-specific expertise."
+  },
+  "MMLU_PM-111": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "The presentation is classic for inflammatory myopathy with proximal weakness, elevated muscle enzymes, and mechanic\u2019s hands, making polymyositis the best answer and a core diagnosis for general physicians."
+  },
+  "MMLU_PM-119": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "specialist-leaning",
+   "rationale": "The question is about a complication of long-standing rheumatoid arthritis causing transient neurologic symptoms, which most naturally falls to rheumatology and is answerable by a general physician but rewards specialty-specific knowledge."
+  },
+  "MMLU_PM-258": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a straightforward pediatrics/primary care question about recurrent otitis media and a likely middle ear effusion seen behind an intact tympanic membrane, which a general physician should be able to answer."
+  },
+  "MMLU_PM-13": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "The question is purely text-based and asks basic musculoskeletal anatomy/OMM knowledge: greater tubercle tenderness with painful abduction points to supraspinatus involvement."
+  },
+  "MMLU_PM-287": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a routine preconception counseling question about folic acid preventing neural tube defects, which is core knowledge for general physicians and obstetric clinicians alike."
+  },
+  "MMLU_PM-101": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Allergy and Immunology",
+   "generalist": "general",
+   "rationale": "This is a vaccine hypersensitivity question about preventing an immediate allergic reaction after influenza vaccination; the key preventive step is asking about egg allergy, which is general medical knowledge."
+  },
+  "MMLU_PM-214": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Urology",
+   "generalist": "general",
+   "rationale": "This is a male infertility/azoospermia evaluation in the setting of classic Klinefelter features, and the key diagnostic test is a peripheral-blood karyotype, which is core clinical knowledge."
+  },
+  "MMLU_PM-112": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a classic cystic fibrosis complication question in an adolescent, and the bleeding/bruising is best explained by fat-soluble vitamin malabsorption causing vitamin K deficiency."
+  },
+  "MMLU_PM-229": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is an isolated thrombocytopenia workup question, and the key clue is the prior radiation therapy raising concern for marrow disease, so a bone marrow aspiration is the appropriate next diagnostic step."
+  },
+  "MMLU_PM-301": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a standard acute paronychia management question in an ED presentation, and the correct next step (incision and drainage for a fluctuant abscess) is core general medical knowledge."
+  },
+  "MMLU_PM-142": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "general",
+   "rationale": "This is a postoperative nutrition-support question, and with a previously well-nourished patient who has only been unable to eat for 6 days, short-term peripheral parenteral nutrition is the most appropriate choice."
+  },
+  "MedQA_US-133": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a routine hypertension-management question about comparative blood-pressure effects of lifestyle changes, which is core primary care/internal medicine knowledge and does not require specialty-specific expertise."
+  },
+  "MedQA_US-874": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a psychiatry treatment question about managing persistent atypical depression and avoiding dangerous antidepressant combinations/sequencing, which a non-psychiatrist could often answer but with some specialty-specific nuance."
+  },
+  "MedQA_US-1377": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a straightforward statin-associated myopathy/lipid-management question with no visual dependence, and the next step can be answered from core internal medicine knowledge."
+  },
+  "MedQA_US-1464": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "This is a classic drug-induced acute interstitial nephritis from rifampin, and the key management step is to discontinue the offending medication, which is core internal medicine knowledge."
+  },
+  "MedQA_US-1622": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This is a straightforward major depressive disorder treatment/timeline question; no visual material is required, and the key management point is to continue the SSRI for an adequate trial rather than switch or augment after only 3 weeks."
+  },
+  "MedQA_US-1680": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Medical Oncology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is an oncology drug-advertisement interpretation question about HCC therapy and treatment candidacy, which most naturally falls to medical oncology and requires some specialty-level familiarity with targeted therapy adverse effects and trial data."
+  },
+  "MedQA_US-2529": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a classic myasthenia gravis management question: improvement after edrophonium indicates inadequate acetylcholinesterase inhibition, so she would most likely benefit from increasing pyridostigmine."
+  },
+  "MedQA_US-2888": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Cardiovascular Disease",
+   "generalist": "general",
+   "rationale": "This is a stable angina management question, and the key issue is nitrate tolerance from frequent isosorbide dinitrate dosing; creating a daily nitrate-free interval (eg, avoiding nighttime dosing) is most likely to improve symptoms."
+  },
+  "MedQA_US-3036": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a parenteral nutrition calculation problem without any visual component, and while it uses core medical nutrition principles, it rewards familiarity with TPN formulation rather than specialty-specific expertise."
+  },
+  "MedQA_US-3810": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a straightforward pharmacokinetics calculation for IV heparin dosing in suspected pulmonary embolism, which any physician should be able to handle with core training."
+  },
+  "MedQA_US-3917": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a pharmacokinetics/antibiotic dosing question centered on MIC, bioavailability, and clearance, which is answerable by many physicians but most naturally falls to infectious disease."
+  },
+  "MedQA_US-4650": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a preconception counseling question about maternal phenylketonuria management and fetal risk, which is most naturally owned by OB/GYN, and it requires somewhat specialty-specific knowledge of the timing and target phenylalanine level before conception."
+  },
+  "MedQA_US-4891": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This is a straightforward depression pharmacotherapy question about inadequate early response to an SSRI, and the best next step is generally known outside psychiatry as continuing the current medication rather than changing it after only 2 weeks."
+  },
+  "MedQA_US-5109": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a medication-toxicity presentation most consistent with anticonvulsant (classically phenytoin) toxicity causing confusion, nystagmus, and ataxia in a malnourished older patient, so the next step is to lower the anti-seizure dose."
+  },
+  "MedQA_US-5646": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "specialist-leaning",
+   "rationale": "This is most consistent with subacute thyroiditis, and after the transient hyperthyroid phase her treatment should be stopped rather than escalated; a non-endocrinologist could recognize the syndrome, but the medication decision is somewhat nuanced."
+  },
+  "MedQA_US-6747": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "A young woman with refractory hypertension and abdominal bruits has classic concern for secondary hypertension from renal artery stenosis (often fibromuscular dysplasia), so renal artery imaging is the next step."
+  },
+  "MedQA_US-6852": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a routine primary care/chronic disease management question about cardiovascular risk reduction in a patient with diabetes, which any physician should be able to answer."
+  },
+  "MedQA_US-8210": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a psychiatry pregnancy-management question about bipolar disorder on lithium; the best choice is to continue lithium monotherapy because abrupt discontinuation poses a high relapse/suicide risk and the fetal risk is comparatively lower than the maternal psychiatric risk."
+  },
+  "MedQA_US-8921": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "specialist-leaning",
+   "rationale": "This is tardive dyskinesia from fluphenazine, and the next best step is to discontinue the offending drug by switching to a lower-risk antipsychotic such as clozapine rather than simply stopping treatment outright."
+  },
+  "MedQA_US-9264": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a straightforward pediatric asthma step-up management question with no visual component, and the needed treatment choice is core clinical knowledge rather than specialty-specific detail."
+  },
+  "MedQA_US-9427": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a classic euvolemic hyponatremia from SIADH due to lung cancer, and because he is symptomatic with a sodium of 110 mEq/L, the appropriate immediate treatment is hypertonic 3% saline."
+  },
+  "MedQA_US-9564": {
+   "figure_reference": true,
+   "figure_quote": "An ECG shows the findings in the given image.",
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a straightforward prehospital acute coronary syndrome/STEMI management question, with the key decision being aspirin loading and rapid transport to a PCI-capable center."
+  },
+  "MedQA_US-9736": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a primary-care lipid management question about initiating statin therapy for markedly elevated LDL in an otherwise healthy adult, which is core general medical knowledge."
+  },
+  "MedQA_US-9845": {
+   "figure_reference": true,
+   "figure_quote": "A radiograph of her left hip joint is shown in the image below.",
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a classic osteoarthritis management question in primary care, where the key decision is conservative therapy with an NSAID rather than steroids, supplements, or excessive acetaminophen dosing."
+  },
+  "MedQA_US-9867": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is an intradialytic hypotension management question, a nephrology-centered scenario that a general physician could likely recognize but that rewards dialysis-specific knowledge."
+  },
+  "MedQA_US-13296": {
+   "figure_reference": true,
+   "figure_quote": "rash (Image A)",
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This is a lamotrigine-associated rash question in a patient treated for bipolar disorder, and the presence of a referenced image makes it dependent on visual material not included in the text."
+  },
+  "MedXpertQA-Text-10": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "The question is centered on bipolar mania treatment and a classic lithium\u2013thiazide interaction, which any physician should be able to recognize from core medical knowledge."
+  },
+  "MedXpertQA-Text-140": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a chronic kidney disease management question focused on optimizing blood pressure and proteinuria treatment, and in a type 1 diabetic patient already on maximal ACE inhibitor therapy the next best step is typically adding a dihydropyridine calcium-channel blocker such as amlodipine rather than dual RAAS blockade or an SGLT2 inhibitor."
+  },
+  "MedXpertQA-Text-227": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This is subacute thyroiditis after a viral illness, so antithyroid drugs are not indicated and the appropriate next step is to stop the current medications rather than escalate treatment."
+  },
+  "MedXpertQA-Text-293": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a pediatric asthma step-up management question, and the most appropriate controller escalation after moderate persistent symptoms on medium-dose inhaled corticosteroid is to add a LABA."
+  },
+  "MedXpertQA-Text-306": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This is a straightforward medication-management question about an SGLT2 inhibitor adverse effect and diabetes therapy, which is core clinical knowledge rather than specialty-specific."
+  },
+  "MedXpertQA-Text-347": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "In a frail older adult with dementia, falls, and limited functional reserve, an A1c of 8.2% is generally acceptable, so the best next step is to avoid intensifying therapy and continue the current regimen."
+  },
+  "MedXpertQA-Text-362": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a management question about enterocutaneous fistula and nutritional support, which is most naturally owned by general surgery and requires more than core generalist knowledge."
+  },
+  "MedXpertQA-Text-734": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a classic euvolemic hypotonic hyponatremia/SIADH workup and management question, and the best next step is fluid restriction (about 1000 mL/day) with treatment of the likely offending medication cause."
+  },
+  "MedXpertQA-Text-773": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a common outpatient lipid-management question about mild asymptomatic aminotransferase elevation on statin therapy, which any general physician should be able to answer confidently."
+  },
+  "MedXpertQA-Text-803": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a classic pediatric dehydration/hypovolemic shock question; no visual material is required, and any physician should know the initial management is an isotonic crystalloid bolus rather than oral or maintenance fluids."
+  },
+  "MedXpertQA-Text-811": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This is straightforward management of mild hypoglycemia in an awake patient after insulin excess, which most physicians should know, with oral carbohydrate preferred over glucagon or IV glucose."
+  },
+  "MedXpertQA-Text-869": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a standard management question about a provoked postoperative pulmonary embolism, for which anticoagulation is typically stopped after 3 months without follow-up imaging, D-dimer testing, or thrombophilia workup."
+  },
+  "MedXpertQA-Text-996": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a pituitary incidentaloma with mild hyperprolactinemia in an asymptomatic postmenopausal woman, where the key management question is whether to observe versus start dopamine agonist therapy; the most appropriate next step is observation rather than immediate treatment."
+  },
+  "MedXpertQA-Text-1030": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "specialist-leaning",
+   "rationale": "This is tardive dyskinesia from chronic antipsychotic use, and the key management decision is an antipsychotic change (most appropriately to clozapine here), which is psychiatry-focused but still recognizable to a broad physician audience."
+  },
+  "MedXpertQA-Text-1080": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Cardiovascular Disease",
+   "generalist": "general",
+   "rationale": "This is a heart-failure dyspnea management question centered on volume overload and diuretic adjustment, which is core cardiology/internal medicine knowledge."
+  },
+  "MedXpertQA-Text-1404": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a management question about symptomatic paraesophageal hernia, for which the appropriate next step after failed medical/lifestyle therapy is elective surgical referral rather than further acid suppression."
+  },
+  "MedXpertQA-Text-1487": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Cardiovascular Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "She has persistent mild hyperkalemia without ECG changes while receiving beneficial ACE-inhibitor therapy for HFrEF, so a potassium binder such as patiromer is preferred to preserve guideline-directed treatment rather than stopping or changing the RAAS inhibitor."
+  },
+  "MedXpertQA-Text-1651": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a management question about fulminant Clostridioides difficile infection, and the key nuance is the specific high-dose oral vancomycin plus IV metronidazole regimen for shock/hypotension."
+  },
+  "MedXpertQA-Text-1731": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Medical Oncology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is advanced cancer pain management, and the key next step is opioid escalation/rotation decisions in a cachectic patient, which is familiar but somewhat specialty-specific."
+  },
+  "Medbullets-283": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a standard primary-care depression management question about SSRI onset and dose titration, which any physician at the USMLE level should answer."
+  },
+  "MMLU_PM-206": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a renal transplant complication question centered on biopsy-proven opportunistic infection (likely CMV), which is most naturally managed by nephrologists/transplant physicians, though the key clues are still understandable to other physicians."
+  },
+  "MedQA_US-8364": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Ophthalmology",
+   "generalist": "general",
+   "rationale": "Progressive blurred vision with night-driving difficulty in a patient on a low-potency typical antipsychotic suggests medication-related lens/corneal pathology, and the appropriate first step is a slit-lamp eye examination to evaluate the cause."
+  },
+  "MedXpertQA-Text-392": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "This is an HIV pharmacology/drug-interaction question centered on ritonavir boosting causing iatrogenic Cushing syndrome with inhaled fluticasone, which an internist may recognize but is most naturally handled in Infectious Disease."
+  }
+ }
+}

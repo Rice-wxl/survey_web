@@ -1,0 +1,46 @@
+{
+ "n": 20,
+ "accuracy": 0.75,
+ "unparsed": 0,
+ "per_system": {
+  "Cardiovascular": "1/1",
+  "Digestive": "2/2",
+  "Endocrine": "1/2",
+  "Integumentary": "1/2",
+  "Lymphatic": "0/1",
+  "Muscular": "1/2",
+  "Nervous": "1/1",
+  "Other / NA": "2/2",
+  "Reproductive": "2/2",
+  "Respiratory": "1/2",
+  "Skeletal": "2/2",
+  "Urinary": "1/1"
+ },
+ "misses": [
+  [
+   "Text-1846",
+   "Lymphatic",
+   "Other / NA"
+  ],
+  [
+   "Text-234",
+   "Respiratory",
+   "Other / NA"
+  ],
+  [
+   "Text-1766",
+   "Muscular",
+   "Integumentary"
+  ],
+  [
+   "Text-1231",
+   "Endocrine",
+   "Other / NA"
+  ],
+  [
+   "Text-790",
+   "Integumentary",
+   "Respiratory"
+  ]
+ ]
+}

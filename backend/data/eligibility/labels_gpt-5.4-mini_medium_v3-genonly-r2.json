@@ -1,0 +1,2461 @@
+{
+ "model": "gpt-5.4-mini",
+ "effort": "medium",
+ "pools": [
+  "data/testing/young_aggressive/spurious.json",
+  "data/testing/young_aggressive/counterfactual.json",
+  "data/testing/female_rheumatoid_arthritis/spurious.json",
+  "data/testing/female_rheumatoid_arthritis/counterfactual.json",
+  "data/testing/100_test.json",
+  "data/testing/asian_dosages/spurious.json"
+ ],
+ "inherit": [
+  "data/testing/asian_dosages/counterfactual.json",
+  "data/testing/100_test_race.json"
+ ],
+ "labels": {
+  "MedQA_US-6606": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This is a standard OCD vignette testing recognition of intrusive, ego-dystonic obsessions with compulsions and the next-line medication choice (clomipramine), which is core medical knowledge rather than a subspecialty detail."
+  },
+  "MedXpertQA-Text-1033": {
+   "figure_reference": true,
+   "figure_quote": "A radiograph of the left foot shows no abnormalities.",
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "general",
+   "rationale": "This is standard evaluation of a common stress fracture in an athlete with a normal initial radiograph, and any clinician should recognize that MRI is the appropriate next step when suspicion remains high."
+  },
+  "MedQA_US-10159": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is a common bleeding-disorder presentation (likely mild von Willebrand disease) and the key management step\u2014desmopressin for mild mucocutaneous bleeding\u2014is standard knowledge across specialties."
+  },
+  "MedQA_US-119": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "The key decision is the orthopedic management of a patellar dislocation with an osteochondral loose body/fragment, which requires subspecialty-level knowledge beyond routine first-line care for a common injury."
+  },
+  "MedQA_US-4696": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "specialist-leaning",
+   "rationale": "This requires recognizing a relatively uncommon postpartum pituitary infarction (Sheehan syndrome) from the hemorrhage, agalactorrhea, and visual symptoms, then knowing MRI is the next diagnostic step rather than standard common-condition management."
+  },
+  "MedQA_US-12691": {
+   "figure_reference": true,
+   "figure_quote": "results are shown in Figure A",
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a common toxicology/emergency medicine scenario (likely tricyclic antidepressant overdose with anticholinergic findings and QRS widening), and the key treatment\u2014IV sodium bicarbonate\u2014is standard core knowledge for most physicians."
+  },
+  "MedQA_US-966": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Ophthalmology",
+   "generalist": "general",
+   "rationale": "This is a common case of blepharitis, and the correct next step\u2014lid hygiene with warm compresses\u2014is standard first-line management that any medical clinician should know."
+  },
+  "MedQA_US-6024": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a common allergic rhinitis presentation, and choosing intranasal corticosteroid as first-line therapy is standard primary care knowledge that most medical trainees and physicians across specialties should know."
+  },
+  "MedQA_US-10238": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a standard primary-care sore throat workup using common strep pharyngitis clinical criteria and routine next-step testing/management that any medical trainee or physician should know."
+  },
+  "MedQA_US-6588": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is standard recognition and first-line management of a common infectious disease (suspected pertussis), which any medical trainee or physician should know, including that treatment with a macrolide is the next step."
+  },
+  "MedQA_US-9376": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Dermatology",
+   "generalist": "specialist-leaning",
+   "rationale": "The vignette hinges on choosing the appropriate systemic antifungal for a dermatophyte infection despite an unusual associated history, which is answerable by many clinicians but not purely core first-line common-care knowledge."
+  },
+  "MedQA_US-5086": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a classic, broadly taught salicylate overdose presentation and management question; any medical expert should be able to recognize the mixed acid-base disorder, tinnitus, and choose IV sodium bicarbonate as standard first-line treatment."
+  },
+  "MedXpertQA-Text-1220": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "specialist-leaning",
+   "rationale": "It hinges on recognizing fibromuscular dysplasia causing renovascular hypertension and knowing the specific preferred intervention (percutaneous angioplasty without stent), which is beyond standard general medical management."
+  },
+  "MedQA_US-5728": {
+   "figure_reference": true,
+   "figure_quote": "Figure A",
+   "specialty": "Pulmonary Disease",
+   "generalist": "general",
+   "rationale": "This hinges on a standard, broadly taught step for a new unilateral pleural effusion\u2014diagnostic thoracentesis\u2014rather than a subspecialty-specific nuance or uncommon disease management."
+  },
+  "MedQA_US-5371": {
+   "figure_reference": true,
+   "figure_quote": "the finding in Figure A",
+   "specialty": "Dermatology",
+   "generalist": "general",
+   "rationale": "This is a common, standard clinical recognition-and-treatment question (scabies with nocturnal pruritus and hand/groin involvement), and permethrin is first-line management that most medical trainees and physicians should know."
+  },
+  "MedQA_US-6468": {
+   "figure_reference": true,
+   "figure_quote": "The fetal tracing for a non-stress test is shown in Figure A.",
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on obstetric antepartum fetal surveillance/NST interpretation and the next-step algorithm (eg, reacting to a nonreactive tracing), which is standard OB knowledge but not core across all specialties."
+  },
+  "MedQA_US-4656": {
+   "figure_reference": true,
+   "figure_quote": "shown in Figure A",
+   "specialty": "Urology",
+   "generalist": "general",
+   "rationale": "This is standard, widely taught varicocele recognition and management: a symptomatic infertile man with testicular atrophy should undergo surgical repair rather than observation."
+  },
+  "MedQA_US-6492": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on recognizing toxic shock syndrome from nasal packing and knowing the key source-control step (removing the packing), which is a less common, condition-specific management detail rather than routine general medicine."
+  },
+  "MedQA_US-1777": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This requires obstetric-specific recognition of intraamniotic infection and its management (broad-spectrum IV antibiotics plus prompt delivery, usually induction rather than C-section unless obstetric indications), which is beyond what many non-obstetric physicians would confidently know."
+  },
+  "MedQA_US-9424": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is standard management of likely PCOS with hyperandrogenism in a patient not seeking pregnancy, for which combined oral contraceptives are first-line and broadly known across specialties."
+  },
+  "MedQA_US-662": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is standard burn/trauma management: recognizing suspected inhalation injury from facial burns, soot, and confusion and choosing early endotracheal intubation is core emergency knowledge for any physician."
+  },
+  "MedQA_US-9567": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "specialist-leaning",
+   "rationale": "This asks about the nuanced long-term management of anorexia nervosa, where choosing between psychiatric therapy, medical stabilization, and psychotherapy requires condition-specific knowledge beyond core cross-specialty medicine."
+  },
+  "MedQA_US-362": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "The key management step depends on pregnancy-specific cervical dysplasia guidelines (eg, deferring excisional treatment and endocervical curettage unless invasion is suspected), which is beyond core cross-specialty knowledge."
+  },
+  "MedQA_US-9989": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "Management of CIN I is standard common gynecology knowledge: in a young patient it is usually observed rather than treated, so a broad medical reader can reason to the conservative follow-up option."
+  },
+  "MedQA_US-9485": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is standard management of crush injury with rhabdomyolysis/AKI\u2014recognizing the need for aggressive IV fluids is core cross-specialty emergency knowledge."
+  },
+  "MedXpertQA-Text-2365": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Colon and Rectal Surgery",
+   "generalist": "general",
+   "rationale": "This is standard recognition and first-line management of common internal hemorrhoids, which any medical clinician should know, and the key step is basic conservative therapy rather than a specialty-specific intervention."
+  },
+  "MedQA_US-2168": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is standard obstetric/primary care knowledge: asymptomatic bacteriuria in pregnancy should be treated, and choosing a pregnancy-safe antibiotic from the list is within core medical management."
+  },
+  "MedXpertQA-Text-2092": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a standard chronic cough workup/management question involving common causes like GERD, upper airway cough syndrome, and asthma, and an empiric PPI trial is core general medical knowledge."
+  },
+  "MedQA_US-7421": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This tests recognition of Gilbert syndrome and its standard management (reassurance/no treatment), which is core medical knowledge that physicians across specialties and training levels should be able to reason through."
+  },
+  "MedQA_US-5931": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is standard primary-care/neurology knowledge about diagnosing a common migraine presentation and choosing first-line acute treatment (a triptan), which should be answerable by any medical reader."
+  },
+  "MedQA_US-10354": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This is a classic medication-induced emergency (neuroleptic malignant syndrome), and the key first step\u2014stopping the offending antipsychotic and providing supportive care\u2014is standard core knowledge across specialties."
+  },
+  "MedQA_US-388": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "general",
+   "rationale": "This is standard management of acute uncomplicated appendicitis\u2014a common emergency that any physician should know, with the next step being appendectomy rather than specialized subspecialty decision-making."
+  },
+  "MedQA_US-6163": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on recognizing borderline personality disorder/self-harm behavior and knowing the psychiatric management nuances (psychotherapy first-line, avoid benzodiazepines; medication choices are for comorbid symptoms), which is beyond standard general medical management."
+  },
+  "MedXpertQA-Text-784": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This tests standard emergency management of suspected open globe injury/ocular trauma\u2014recognizing the need for eye protection and urgent ophthalmology rather than pressure, fluorescein, or topical treatment\u2014which is core knowledge across specialties."
+  },
+  "MedQA_US-149": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "Answering this requires the pregnancy-specific syphilis management nuance that penicillin-allergic pregnant patients should undergo penicillin desensitization rather than receive alternative antibiotics."
+  },
+  "MedXpertQA-Text-717": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a classic Rocky Mountain spotted fever presentation, and the correct treatment\u2014prompt doxycycline\u2014is standard core medical knowledge for any clinician, not specialty-specific."
+  },
+  "MedXpertQA-Text-446": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This hinges on standard recognition and initial management of symptomatic hypomagnesemia, a core electrolyte problem that any physician should know rather than a subspecialty-specific distinction."
+  },
+  "MedQA_US-1077": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This tests common emergency/psychiatric pharmacology: recognizing an acute dystonic reaction after haloperidol and treating it with an anticholinergic such as benztropine, which is standard knowledge for broad medical training."
+  },
+  "MedXpertQA-Text-1702": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a common, core diagnosis-and-first-line-treatment question: recognizing peripheral facial nerve palsy (Bell palsy) and starting oral corticosteroids, which is standard medical knowledge across specialties."
+  },
+  "MedQA_US-8256": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is standard obstetric medicine: recognizing preeclampsia with severe features and choosing magnesium sulfate for seizure prophylaxis is common core knowledge across specialties."
+  },
+  "MedQA_US-5755": {
+   "figure_reference": true,
+   "figure_quote": "shows the findings in Figure A",
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a standard obstetric management question, but choosing the correct treatment depends on specific early pregnancy loss/abortion management and ultrasound interpretation rather than broadly shared general medical knowledge."
+  },
+  "MedQA_US-9068": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This tests standard management of syphilis in pregnancy\u2014a common, broadly taught condition\u2014where the key step is recognizing that penicillin desensitization is required despite allergy."
+  },
+  "MedQA_US-6539": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is standard recognition and management of acute pyelonephritis versus cystitis, a common condition that any medically trained reader should be able to reason through using basic first-line treatment principles."
+  },
+  "MedQA_US-405": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "Answering requires HIV-in-pregnancy management details, especially the viral load threshold guiding intrapartum zidovudine and cesarean delivery, which is beyond core general medical knowledge."
+  },
+  "MedQA_US-4897": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Dermatology",
+   "generalist": "general",
+   "rationale": "This is standard cross-specialty medication safety: isotretinoin requires ruling out pregnancy with a hCG test before treatment, which is core knowledge rather than a subspecialty distinction."
+  },
+  "MedQA_US-868": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This asks about standard trauma ABC management in an unconscious patient with suspected cervical spine injury, where the key next step is a broadly taught emergency airway decision rather than a specialty-specific nuance."
+  },
+  "MedQA_US-1325": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on recognizing abdominal compartment syndrome after trauma surgery and knowing the specific urgent management is decompressive laparotomy/open abdomen, which is not core knowledge for every physician outside acute care/surgery."
+  },
+  "MedXpertQA-Text-1205": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is standard primary-care management of common allergic rhinitis, and the correct next step (intranasal corticosteroid) is core knowledge expected across medical specialties."
+  },
+  "MedQA_US-2973": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a common STI in pregnancy, and the key management point is standard first-line gonorrhea treatment with pregnancy-safe dual therapy (ceftriaxone plus azithromycin rather than doxycycline), which is core medical knowledge."
+  },
+  "MedXpertQA-Text-1534": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a classic postpartum galactocele presentation, and its diagnosis/initial management (reassurance or simple aspiration/conservative follow-up) is standard medical knowledge rather than specialty-specific detail."
+  },
+  "MedQA_US-30": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on recognizing and managing hoarding disorder\u2014a less commonly encountered psychiatric condition whose next-step treatment (eg, an SSRI such as fluoxetine after CBT failure) is not core knowledge for all physicians."
+  },
+  "MedQA_US-29": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "specialist-leaning",
+   "rationale": "The case hinges on recognizing a nephrogenic DI pattern and then knowing the uncommon/atypical causative detail (here, the specific medication association), which goes beyond standard first-line management that most physicians would know."
+  },
+  "MedQA_US-70": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This tests standard management of a common diabetic foot ulcer\u2014recognizing neuropathic plantar ulcer care with debridement/offloading rather than infection, revascularization, or amputation\u2014and is within general medical knowledge."
+  },
+  "MedQA_US-41": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "general",
+   "rationale": "This is standard breast-mass workup: the core biopsy is concordant with benign fat necrosis, so the next step is simple reassurance/observation rather than cancer treatment, which is core knowledge across specialties."
+  },
+  "MedQA_US-296": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is standard cross-specialty emergency/medicine knowledge: the symptom cluster strongly suggests hypercalcemia, and ordering a serum calcium level is a basic next diagnostic step rather than a specialty-specific maneuver."
+  },
+  "MedQA_US-240": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This tests routine recognition and first-line management of common oral candidiasis (thrush) in an immunocompromised patient, which is standard medical knowledge rather than specialty-specific detail."
+  },
+  "MedQA_US-90": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "general",
+   "rationale": "This is a classic emergency presentation of ruptured abdominal aortic aneurysm, and any medically trained reader should know that after initial fluids the next step is immediate operative repair rather than further imaging or conservative workup."
+  },
+  "MedQA_US-48": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This is a common ED presentation of panic attack/hyperventilation syndrome, and the key management choice\u2014acute anxiolysis with a benzodiazepine after excluding obvious medical mimics\u2014is standard general medical knowledge."
+  },
+  "MedQA_US-279": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is standard acute stroke evaluation: any physician should know the immediate next step is noncontrast CT of the head to rule out hemorrhage before considering reperfusion therapy."
+  },
+  "MedQA_US-264": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Cardiovascular Disease",
+   "generalist": "general",
+   "rationale": "Although it involves hemolytic anemia, the decisive clue is symptomatic severe aortic stenosis, and recognizing that aortic valve replacement is the definitive treatment is core medical knowledge rather than a specialty-specific nuance."
+  },
+  "MedQA_US-238": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This hinges on a common emergency principle\u2014acute hot swollen monoarthritis with fever requires arthrocentesis to exclude septic arthritis before treating presumed gout, which is core knowledge across specialties."
+  },
+  "MedQA_US-214": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is standard emergency/internal medicine knowledge: a hemodynamically unstable patient with melena after initial resuscitation should undergo urgent esophagogastroduodenoscopy to evaluate and treat likely upper GI bleeding."
+  },
+  "MedQA_US-245": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This hinges on standard emergency/critical care management (sepsis and post-central-line confirmation/complication check), which is core knowledge rather than a subspecialty-specific distinction."
+  },
+  "MedQA_US-63": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This tests a standard, widely taught principle of cancer pain management\u2014titrating opioids for severe pain in hospice despite fear of respiratory depression\u2014which any medically trained reader should be able to reason through."
+  },
+  "MedQA_US-287": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is standard core medicine: recognizing transient monocular vision loss as a retinal TIA/amaurosis fugax and choosing carotid duplex ultrasonography as the appropriate next step in a patient with suspected carotid atherosclerotic disease."
+  },
+  "MedQA_US-166": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "specialist-leaning",
+   "rationale": "The diagnosis and treatment rely on recognizing the uncommon entity of cerebral venous sinus thrombosis and knowing its standard first-line therapy (anticoagulation), which is beyond core knowledge for many non-neurology specialists."
+  },
+  "MedQA_US-62": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is standard evaluation of suspected acute diverticulitis: in a febrile patient with LLQ pain and leukocytosis, the appropriate confirmatory test is contrast CT of the abdomen, which is core knowledge across specialties."
+  },
+  "MedQA_US-236": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a classic emergency complication of ulcerative colitis (toxic megacolon), and the key next step\u2014prompt abdominal plain film after stabilization\u2014is standard general medical knowledge rather than subspecialty-only detail."
+  },
+  "MedQA_US-181": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "specialist-leaning",
+   "rationale": "The case identifies symptomatic chronic lymphocytic leukemia, but selecting the correct option requires specialty-level knowledge of when CLL is treated and the specific first-line regimen (FCR), which is not standard across all physicians."
+  },
+  "MedQA_US-304": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is common peripheral arterial disease with intermittent claudication, and the key management principle\u2014use antiplatelet therapy to reduce future cardiovascular events\u2014is standard general medical knowledge."
+  },
+  "MedQA_US-254": {
+   "figure_reference": true,
+   "figure_quote": "An x-ray of the abdomen shows a dilated cecum and right colon and preservation of the haustrae.",
+   "specialty": "Gastroenterology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is acute colonic pseudo-obstruction (Ogilvie syndrome), and while the diagnosis is recognizable, the key next step\u2014neostigmine after failed conservative management\u2014is a condition-specific management detail that many non-GI/surgical physicians may not know confidently."
+  },
+  "MedQA_US-199": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is standard general medical knowledge: recognizing a likely Legionella pneumonia outbreak and knowing the appropriate next diagnostic test is a common, widely taught step."
+  },
+  "MedQA_US-171": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a routine preventive-care/screening question involving common age- and risk-based screening guidelines that any physician should be able to reason through, rather than a subspecialty-specific decision."
+  },
+  "MedQA_US-267": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pulmonary Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "The question depends on incidental pulmonary nodule risk stratification and guideline-based next-step management (eg, PET/biopsy vs surveillance), which is standard but nuanced and not core knowledge for every physician."
+  },
+  "MedQA_US-209": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is standard core knowledge: recognizing chronic myeloid leukemia from the CBC/splenomegaly and knowing first-line treatment is a tyrosine kinase inhibitor such as imatinib."
+  },
+  "MedQA_US-269": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is standard primary hypertension evaluation/secondary-cause screening, which relies on common clinical reasoning about when no additional workup is needed in an otherwise uncomplicated patient."
+  },
+  "MedQA_US-66": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This requires recognizing postoperative acalculous cholecystitis and knowing that the appropriate management in a high-risk patient is antibiotics plus percutaneous cholecystostomy, which is more specialty-specific than standard first-line care."
+  },
+  "MedQA_US-9": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "specialist-leaning",
+   "rationale": "Choosing the correct prophylaxis for small esophageal varices with red wale/red spot stigmata requires guideline-specific knowledge of portal hypertension management, which is beyond broadly shared core medicine for all specialties."
+  },
+  "MedQA_US-51": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This is a common, broadly taught scenario of painful diabetic peripheral neuropathy, and the key management decision is standard first-line symptomatic treatment/diabetes optimization rather than specialty-specific interpretation."
+  },
+  "MedQA_US-49": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is standard management of decompensated cirrhosis with tense ascites, where the next step is large-volume paracentesis\u2014a common, widely taught treatment that any physician should know."
+  },
+  "MedQA_US-233": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a standard toxicology/emergency medicine question about severe lithium toxicity, and any physician should be able to recognize the neurologic symptoms plus dehydration and know that hemodialysis is the next step when toxicity is significant."
+  },
+  "MedQA_US-300": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "general",
+   "rationale": "This tests standard perioperative reversal of warfarin in a patient needing emergent surgery, which is common core knowledge across medical specialties (FFP plus vitamin K for urgent reversal)."
+  },
+  "MedQA_US-44": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Otolaryngology - Head and Neck Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "The case is a common epistaxis scenario, but the decisive step requires knowing the ENT-specific next intervention after failed anterior/posterior packing\u2014endoscopic sphenopalatine artery ligation\u2014rather than broad general medical management."
+  },
+  "MedQA_US-61": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This tests standard evaluation of a suspicious breast mass in a common clinical scenario, and the correct next step (core needle biopsy) is part of broadly shared medical knowledge rather than specialty-specific nuance."
+  },
+  "MedQA_US-212": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on recognizing and working up Zollinger-Ellison syndrome, an uncommon cause of refractory peptic ulcers where knowing the specific diagnostic sequence (eg, fasting serum gastrin first) is more subspecialty-level than broad general medical knowledge."
+  },
+  "MedQA_US-91": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is standard recognition and first-line treatment of a common skin/soft-tissue infection (erysipelas/cellulitis), which any medical trainee or physician should be able to manage based on routine clinical features and severity."
+  },
+  "MedQA_US-73": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "Although the infection is clinically apparent, choosing the correct next step depends on knowing early prosthetic joint infection/wound complication management after arthroplasty, which is more orthopedics-specific than core general medical knowledge."
+  },
+  "MedQA_US-50": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This tests standard recognition and management of ascending cholangitis\u2014after antibiotics and fluids, the next step is urgent biliary decompression with ERCP, which is core knowledge across specialties."
+  },
+  "MedQA_US-57": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is standard cross-specialty knowledge: recognizing methotrexate toxicity in rheumatoid arthritis and that folate rescue/supplementation (leucovorin) helps prevent cytopenias is routine medical pharmacology."
+  },
+  "MedQA_US-175": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This tests standard recognition and first-line treatment of an acute deep vein thrombosis in a postpartum patient, which is core medical knowledge across specialties."
+  },
+  "MedQA_US-257": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "Answering this requires recognizing a less common postoperative complication (eg, subphrenic abscess causing a right pleural effusion after upper abdominal surgery) and choosing abdominal imaging rather than standard pneumonia management."
+  },
+  "MedQA_US-135": {
+   "figure_reference": true,
+   "figure_quote": "An x-ray of the abdomen is shown.",
+   "specialty": "General Surgery",
+   "generalist": "general",
+   "rationale": "This tests standard emergency management of a common postoperative small bowel obstruction\u2014recognition of adhesive obstruction and the usual next step of nasogastric decompression and bowel rest after fluids is core medical knowledge."
+  },
+  "MedQA_US-280": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is standard frostbite management, a common emergency concept that any medical trainee or physician should know: prompt rewarming of affected extremities in warm water."
+  },
+  "MedQA_US-274": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "specialist-leaning",
+   "rationale": "It hinges on recognizing migratory superficial thrombophlebitis as Trousseau syndrome and then selecting the appropriate malignancy workup (eg, abdominal CT), which is a classic but relatively uncommon association rather than core cross-specialty knowledge."
+  },
+  "MedQA_US-157": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a classic presentation of vulvar lichen sclerosus, and the standard first-line treatment is a high-potency topical corticosteroid (clobetasol), which is general medical knowledge."
+  },
+  "MedQA_US-118": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on fracture-specific orthopedic management of calcaneal fractures (including when CT, casting, or surgery is indicated), which goes beyond standard general medical knowledge."
+  },
+  "MedQA_US-270": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "general",
+   "rationale": "This tests core emergency recognition and management of necrotizing soft tissue infection/gas gangrene, where the key next step\u2014urgent surgical debridement\u2014is standard knowledge across specialties."
+  },
+  "MedQA_US-94": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a standard primary-care/neurology presentation of essential tremor, and choosing first-line therapy (propranolol) relies on common medical knowledge rather than subspecialty-specific detail."
+  },
+  "MedQA_US-132": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on distinguishing uncommon malabsorption syndromes (eg, tropical sprue vs Whipple disease vs celiac) and choosing a targeted GI diagnostic test, which goes beyond core cross-specialty knowledge."
+  },
+  "MedQA_US-55": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "The diagnosis is common, but the key management choice is a gynecology-specific preoperative step for symptomatic uterine fibroids (eg, leuprolide before definitive surgery), which goes beyond universally shared core knowledge."
+  },
+  "MedQA_US-7064": {
+   "figure_reference": true,
+   "figure_quote": "(see image)",
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a standard, widely taught pediatric diagnosis (Kawasaki disease) recognizable from common features and typical management-level reasoning rather than specialty-specific nuance."
+  },
+  "MedQA_US-2179": {
+   "figure_reference": true,
+   "figure_quote": "A photograph of her tongue is shown.",
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a classic systemic amyloidosis presentation (macroglossia, low-voltage ECG, restrictive cardiomyopathy), and the common underlying cause that most physicians should recognize is multiple myeloma/AL amyloidosis."
+  },
+  "MedQA_US-11356": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This tests a standard, widely taught safety step for a common biologic class\u2014screening for latent tuberculosis before starting a TNF inhibitor\u2014knowledge expected across medical specialties."
+  },
+  "MedQA_US-5329": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is standard medical knowledge: the presentation suggests SLE, and anti-dsDNA is a common marker used to monitor disease activity/progression, which most physicians should know."
+  },
+  "MedQA_US-11480": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is standard, broadly tested internal medicine knowledge: interpreting iron studies in microcytic anemia to distinguish anemia of chronic disease (e.g., rheumatoid arthritis) from iron deficiency and other common causes."
+  },
+  "MedQA_US-5561": {
+   "figure_reference": true,
+   "figure_quote": "which are pictured in Figure A and Figure B respectively",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This tests common clinical reasoning: recognizing acute pericarditis and associating systemic autoimmune features with SLE, for which ANA is a standard first-line diagnostic test."
+  },
+  "MedQA_US-75": {
+   "figure_reference": true,
+   "figure_quote": "An x-ray of her pelvis is shown.",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is standard core knowledge: inflammatory back pain with sacroiliac/hip involvement suggests ankylosing spondylitis, and the expected associated finding (HLA-B27) is widely taught across medical training."
+  },
+  "MedQA_US-12717": {
+   "figure_reference": true,
+   "figure_quote": "skin rash shown in Figure A",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is standard core rheumatology: recognizing psoriatic arthritis from inflammatory back pain, DIP involvement, and psoriasis, then knowing a typical associated finding such as HLA-B27 positivity."
+  },
+  "MedQA_US-5598": {
+   "figure_reference": true,
+   "figure_quote": "The patient\u2019s right hand is pictured in Figure A.",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is standard core knowledge about rheumatoid arthritis and its most specific serologic marker, which any medical trainee or physician should be able to reason to confidently."
+  },
+  "MedXpertQA-Text-1254": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a standard pediatric inflammatory arthritis presentation, and the key management step is the common first-line treatment with an NSAID rather than a specialty-specific intervention."
+  },
+  "MedQA_US-4782": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is standard general medical knowledge: recognizing a common, self-limited viral polyarthritis (parvovirus B19) from its classic presentation and time course is within the expected competence of broad medical trainees and physicians."
+  },
+  "MedQA_US-6193": {
+   "figure_reference": true,
+   "figure_quote": "present in Figure A",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a classic, high-yield presentation of psoriatic arthritis (DIP involvement, dactylitis, nail changes, psoriasis, and enthesitis), which most medical trainees and physicians across specialties should be able to recognize from standard core knowledge."
+  },
+  "MedXpertQA-Text-2386": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a standard internal-medicine presentation of infective endocarditis with immune-complex findings, and recognizing that elevated rheumatoid factor can occur is core medical knowledge."
+  },
+  "MedQA_US-5696": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "specialist-leaning",
+   "rationale": "The vignette points to atlantoaxial subluxation with cervical myelopathy, and while rheumatoid arthritis is the key associated risk factor, recognizing this specific complication is somewhat specialty-specific rather than core everyday general medicine."
+  },
+  "MedQA_US-13262": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "specialist-leaning",
+   "rationale": "It hinges on identifying a relatively uncommon renal tubular disorder and recalling a specific associated autoimmune disease, which goes beyond standard core knowledge for most non-nephrology readers."
+  },
+  "MedQA_US-2346": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This tests standard knowledge of common group A streptococcal pharyngitis and its classic untreated complication, which is core medical knowledge expected across specialties."
+  },
+  "MedQA_US-9260": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a classic, broadly taught autoimmune dryness syndrome question: a reader can identify Sj\u00f6gren\u2019s from xerostomia/xerophthalmia with anti-Ro/ANA positivity and distinguish primary from secondary by the absence of another connective tissue disease."
+  },
+  "MedXpertQA-Text-358": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "specialist-leaning",
+   "rationale": "It hinges on recognizing an uncommon renal tubular disorder and its specific associated condition, which goes beyond core cross-specialty medical knowledge and standard first-line management."
+  },
+  "MedQA_US-10608": {
+   "figure_reference": true,
+   "figure_quote": "see image",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This tests standard recognition of CPPD/pseudogout and its classic association with hemochromatosis and chondrocalcinosis, which are common core rheumatology findings any physician should know."
+  },
+  "MedQA_US-8034": {
+   "figure_reference": true,
+   "figure_quote": "A peripheral smear is shown below.",
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a standard general-medicine question about malaria in a returning traveler, and the key complication\u2014cerebral malaria with cerebral edema\u2014is core knowledge rather than specialty-specific."
+  },
+  "MedXpertQA-Text-1359": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a standard chest-pain/anginal-equivalent workup question: after negative ECGs and serial cardiac enzymes in a patient with CAD risk factors and atypical symptoms, the next step is routine cardiac stress testing, which is core medical knowledge rather than specialty-specific."
+  },
+  "MedQA_US-2397": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is standard primary-care knowledge about metabolic syndrome and its common downstream complications, which any medical trainee or general physician should be able to reason through."
+  },
+  "MedQA_US-13291": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is a standard board-style differential for fatigue, pallor, and splenomegaly, and the correct choice depends on common core knowledge of hereditary spherocytosis/hemolytic anemia rather than a rare subspecialty detail."
+  },
+  "MedXpertQA-Text-2275": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "specialist-leaning",
+   "rationale": "Although the broad diagnosis is recognizable from standard rheumatology knowledge, the key discriminator here is the uncommon distinction between idiopathic SLE and anti-TNF/drug-induced lupus using specific autoantibody patterns and biologic exposure."
+  },
+  "MedQA_US-356": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is standard prenatal/obstetric reasoning about pregnancy-related back/pelvic pain and relaxin-mediated pelvic girdle ligament relaxation, which is core knowledge for most medical trainees and physicians."
+  },
+  "MedQA_US-5731": {
+   "figure_reference": true,
+   "figure_quote": "findings in Figure A",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is standard core internal medicine/rheumatology knowledge: recognizing systemic sclerosis from Raynaud phenomenon, sclerodactyly, and pulmonary fibrosis and knowing its classic esophageal smooth muscle atrophy/fibrosis complication."
+  },
+  "MedQA_US-10117": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is standard core knowledge about rheumatoid arthritis diagnosis in a young patient with inflammatory symmetric small-joint symptoms, and any medical expert should be able to reason that anti-CCP is the most helpful test."
+  },
+  "MedQA_US-1571": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a classic, broadly taught presentation of hereditary hemochromatosis (bronze skin, diabetes, and 2nd/3rd MCP arthropathy), and the appropriate initial diagnostic test\u2014iron studies\u2014is standard general medical knowledge."
+  },
+  "MedQA_US-8502": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This asks standard primary-care/rheumatology knowledge about routine monitoring of rheumatoid arthritis and common inflammatory markers (especially ESR/CRP), which is broadly expected of physicians across specialties."
+  },
+  "MedXpertQA-Text-1111": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "specialist-leaning",
+   "rationale": "This requires osteopathic manipulative treatment knowledge\u2014specifically contraindications to techniques like lymphatic and counterstrain\u2014which is beyond standard general medical management and not reliably answerable by most non-OMM clinicians."
+  },
+  "MedQA_US-11672": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This tests standard, widely taught knowledge of rheumatoid arthritis diagnosis and the most specific serologic marker (anti-citrullinated protein/anti-CCP antibody), which a general medical reader should know."
+  },
+  "MedQA_US-2031": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is standard general medical knowledge about cellulitis/erysipelas and its common risk factors; recognizing tinea pedis as the strongest predisposing factor is within core training for most physicians."
+  },
+  "MedXpertQA-Text-2042": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pulmonary Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "Although the case uses common pleural effusion reasoning, the decisive clue is recognizing the classic asbestos-associated pleural malignancy pattern (nodular pleural lesions with exudative effusion), which is more specialized than routine generalist management of common effusions."
+  },
+  "MedQA_US-2158": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is standard cross-specialty knowledge: recognizing rheumatoid arthritis and knowing that anti-CCP is the most specific serologic marker is part of common medical training rather than subspecialty-only detail."
+  },
+  "MedQA_US-3396": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is standard, widely shared clinical reasoning about common arthritis patterns (osteoarthritis vs inflammatory arthritis) and should be answerable by most medical trainees and physicians."
+  },
+  "MedQA_US-3535": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a standard acute monoarthritis/septic arthritis presentation, and the key diagnostic step\u2014urgent arthrocentesis\u2014is core knowledge expected across specialties."
+  },
+  "MedQA_US-4459": {
+   "figure_reference": true,
+   "figure_quote": "A mammogram shows a mass with poorly-defined margins and microcalcifications.",
+   "specialty": "Medical Oncology",
+   "generalist": "general",
+   "rationale": "This relies on standard knowledge of HER2-positive breast cancer and the well-known HER2-targeted drug trastuzumab, which is also a recognized therapy for gastric cancer."
+  },
+  "MedQA_US-13004": {
+   "figure_reference": true,
+   "figure_quote": "facial rash (shown in Figure A)",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This tests common cross-specialty knowledge: recognizing likely SLE from inflammatory arthritis and malar rash, then identifying anti-dsDNA as a highly specific antibody."
+  },
+  "MedQA_US-302": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a standard differential-diagnosis question about a common chronic pain syndrome versus other common rheumatologic and psychiatric conditions, and a general medical reader can reason to the correct answer using broad features like normal labs, widespread tenderness, sleep/exertional worsening, and associated headaches."
+  },
+  "MedQA_US-2131": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a classic nursemaid\u2019s elbow presentation, and recognizing the diagnosis plus choosing immediate reduction (forced hyperpronation) is standard core pediatric/emergency knowledge."
+  },
+  "MedQA_US-11326": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is standard shared medical knowledge: recognizing a common cholestatic liver disease pattern and its classic associated antibody (primary biliary cholangitis with anti-mitochondrial antibody) should be answerable by most medical trainees and physicians regardless of specialty."
+  },
+  "MedQA_US-170": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is standard medical knowledge about evaluating vaginal discharge in an adolescent and distinguishing physiologic leukorrhea from common infectious causes using basic history, exam, and wet mount findings."
+  },
+  "MedQA_US-16": {
+   "figure_reference": true,
+   "figure_quote": "A photograph of the lesion is shown.",
+   "specialty": "Dermatology",
+   "generalist": "specialist-leaning",
+   "rationale": "The diagnosis hinges on recognizing a relatively uncommon nail-unit lesion from its appearance, which goes beyond core general medical knowledge and is more dermatology-specific than standard first-line care."
+  },
+  "MedQA_US-23": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This asks for a standard psychiatric diagnosis distinction (normal bereavement/adjustment reaction vs major depressive disorder), which is core knowledge expected across medical specialties and training levels."
+  },
+  "MedQA_US-43": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a classic, broadly taught dementia vignette (progressive memory loss with impaired orientation, language, and visuospatial function), and any medical expert should be able to reason to Alzheimer disease without specialty-specific knowledge."
+  },
+  "MedQA_US-156": {
+   "figure_reference": true,
+   "figure_quote": "A photograph of the left foot is shown.",
+   "specialty": "Pediatrics",
+   "generalist": "specialist-leaning",
+   "rationale": "The presentation is classic for hair tourniquet syndrome, an uncommon pediatric diagnosis that most non-pediatric clinicians can recognize only if they know this specific entity rather than from broad general medical knowledge."
+  },
+  "MedQA_US-65": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "Interpreting basic hepatitis B serologies to distinguish acute, chronic active, inactive, and resolved infection is standard core medical knowledge that any physician should be able to reason through."
+  },
+  "MedQA_US-107": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This is core, cross-specialty medical knowledge: the combination of hypertension, hyperglycemia, proximal muscle weakness, bruising, hirsutism/acne, and central obesity is a classic presentation of Cushing syndrome that most clinicians should recognize."
+  },
+  "MedQA_US-134": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is standard cross-specialty knowledge: multiple brain lesions at the gray-white junction in a heavy smoker with focal neurologic deficits most strongly suggests metastatic lung cancer, which any physician should be able to infer."
+  },
+  "MedQA_US-176": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is standard core medical knowledge: recognizing secondary amenorrhea with low estradiol and markedly elevated FSH/LH as premature ovarian failure/primary ovarian insufficiency is broadly expected of medical trainees and physicians across specialties."
+  },
+  "MedQA_US-6145": {
+   "figure_reference": true,
+   "figure_quote": "An image of his eye upon examination is shown in Figure A",
+   "specialty": "Ophthalmology",
+   "generalist": "general",
+   "rationale": "This is a classic presentation of acute anterior uveitis/iritis linked to a seronegative spondyloarthropathy, and recognizing HLA-B27 positivity is standard cross-specialty medical knowledge."
+  },
+  "MedQA_US-12427": {
+   "figure_reference": true,
+   "figure_quote": "A radiograph of the left leg is shown in Figure A.",
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on recognizing a specific uncommon bone tumor and its classic risk factor association (eg, osteochondroma for secondary chondrosarcoma or Paget disease for osteosarcoma), which is beyond routine core generalist knowledge."
+  },
+  "MedQA_US-4927": {
+   "figure_reference": true,
+   "figure_quote": "radiographs, shown in Figure A",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a classic, broadly taught rheumatology question: morning stiffness with inflammatory hand pain plus extensor scaly plaques strongly points to psoriatic arthritis, which most medical trainees and physicians across specialties should be able to reason to from standard core knowledge."
+  },
+  "MedQA_US-4801": {
+   "figure_reference": true,
+   "figure_quote": "x-ray (Figure A)",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is standard, broad medical knowledge: recognizing inflammatory hand arthritis with prolonged morning stiffness and matching it to the typical radiographic pattern of a common disease like rheumatoid arthritis."
+  },
+  "MedQA_US-13439": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a classic presentation of reactive arthritis, and the key association with HLA-B27 is standard core medical knowledge that most medical trainees and general physicians should recognize."
+  },
+  "MedQA_US-4783": {
+   "figure_reference": true,
+   "figure_quote": "x-ray (Figure A)",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a basic, widely taught musculoskeletal diagnosis question about common arthritis patterns and standard radiographic findings, which most medical trainees and physicians should be able to reason through."
+  },
+  "MedQA_US-11503": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is standard core medical knowledge: recognizing gout from negatively birefringent needle-shaped crystals and identifying monosodium urate deposition as the cause."
+  },
+  "MedQA_US-1169": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a common core diagnosis question: the combination of constitutional symptoms, HIV/homelessness risk, lymphocytic exudative pleural effusion with high ADA, and hilar lymphadenopathy points to pulmonary tuberculosis, which any physician should be able to reason to."
+  },
+  "MedXpertQA-Text-994": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pulmonary Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on recognizing a specific occupational lung disease (coal workers\u2019 pneumoconiosis/anthracosis) and its classic associated complication, which is beyond the core day-to-day knowledge of many non-pulmonary physicians."
+  },
+  "MedQA_US-5515": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a standard musculoskeletal diagnosis question testing common clinical reasoning (activity-related joint pain with crepitus and gradual progression pointing to osteoarthritis), which should be answerable by general medical readers across specialties."
+  },
+  "MedQA_US-8911": {
+   "figure_reference": true,
+   "figure_quote": "An X-ray of the joint showed narrowing of the acromiohumeral space with sclerosis and spurring of the acromion.",
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "general",
+   "rationale": "This is a common musculoskeletal diagnosis question: the history, exam, and X-ray findings point to rotator cuff/impingement pathology that most physicians should recognize without specialty-specific knowledge."
+  },
+  "MedQA_US-1910": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is standard core medical knowledge: recognizing hereditary hemochromatosis from the classic findings and knowing its major long-term complication, hepatocellular carcinoma, are broadly expected across specialties."
+  },
+  "MedXpertQA-Text-400": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "specialist-leaning",
+   "rationale": "This requires recognizing polyarteritis nodosa and knowing its classic association with hepatitis B surface antigen, which is specialized vasculitis knowledge rather than broad core medical management."
+  },
+  "MedQA_US-13184": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pulmonary Disease",
+   "generalist": "general",
+   "rationale": "This is standard core internal medicine/pulmonology knowledge: recognize coal worker\u2019s pneumoconiosis from upper-lobe carbon-laden macrophages and know its classic association with increased tuberculosis risk."
+  },
+  "MedQA_US-11036": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a standard, widely taught musculoskeletal differential where the key clues (DIP nodules, thumb base pain, knee crepitus, chronic mechanical symptoms) point to osteoarthritis, which any medical trainee or physician should be able to recognize."
+  },
+  "MedQA_US-2703": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is a standard inflammatory back pain presentation of ankylosing spondylitis, and the expected association with HLA-B27 is core medical knowledge rather than a subspecialty detail."
+  },
+  "MedQA_US-11738": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is standard medical knowledge: recognizing osteoarthritis from age, pain that worsens with use, and bony DIP enlargement (Heberden nodes) is core material any medical reader should know."
+  },
+  "MedQA_US-4310": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is standard core medical knowledge: recognizing hereditary hemochromatosis from classic findings and knowing its major complications, which any medical trainee or general physician should be able to reason through."
+  },
+  "MedXpertQA-Text-58": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "This is a classic, broadly taught nephrotic-syndrome/amyloidosis presentation, and the key reasoning step is standard knowledge that chronic inflammatory disease (like rheumatoid arthritis) can cause AA amyloidosis via elevated IL-6."
+  },
+  "Medbullets-6": {
+   "figure_reference": true,
+   "figure_quote": "Microscopic examination of synovial fluid is shown in Figure A.",
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is standard core medicine: acute monoarthritis with synovial crystal identification and common differentiators between gout, pseudogout, and septic arthritis are expected knowledge across specialties."
+  },
+  "MedQA_US-7176": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a classic but relatively uncommon reactive arthritis scenario, and choosing NSAIDs/immunosuppression requires knowing that post-enteric inflammatory arthritis is managed supportively rather than with antibiotics or extensive workup."
+  },
+  "MedQA_US-1543": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is standard core clinical reasoning for Lyme arthritis\u2014recognizing a common tick-borne presentation and identifying Borrelia burgdorferi as the cause is within broad medical knowledge."
+  },
+  "MedQA_US-4793": {
+   "figure_reference": true,
+   "figure_quote": "the finding in Figure A",
+   "specialty": "Dermatology",
+   "generalist": "general",
+   "rationale": "This is a common dermatologic presentation (seborrheic dermatitis) with a standard association that many physicians know, namely Parkinson disease, so it relies on core medical knowledge rather than specialty-specific expertise."
+  },
+  "MedQA_US-5713": {
+   "figure_reference": true,
+   "figure_quote": "Figure A",
+   "specialty": "Dermatology",
+   "generalist": "specialist-leaning",
+   "rationale": "The question hinges on recognizing a specific skin lesion from an image and mapping it to a histologic/etiologic description, which is more dermatology-specific than core knowledge most physicians outside the field could confidently answer."
+  },
+  "MedQA_US-77": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is standard cross-specialty knowledge: the constellation of recurrent respiratory infections, malabsorption/steatorrhea, failure to thrive, clubbing, and right-sided heart failure points to cystic fibrosis with cor pulmonale, something a broadly trained physician should be able to reason to."
+  },
+  "MedQA_US-20": {
+   "figure_reference": true,
+   "figure_quote": "An x-ray of the right knee is shown.",
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "general",
+   "rationale": "This is a classic, broadly taught presentation of a common malignant bone tumor in an adolescent, and the correct choice can usually be reached using standard medical knowledge of age, symptoms, and typical x-ray findings."
+  },
+  "MedQA_US-178": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is standard, broadly taught internal medicine pathology: recognizing nonalcoholic steatohepatitis from obesity/diabetes, mild transaminitis, and classic biopsy findings is core medical knowledge rather than a subspecialty distinction."
+  },
+  "MedQA_US-52": {
+   "figure_reference": true,
+   "figure_quote": "Cardiac examination is shown",
+   "specialty": "Cardiovascular Disease",
+   "generalist": "general",
+   "rationale": "This is standard core medical knowledge: the classic presentation of aortic stenosis (exertional dyspnea/dizziness, weak pulses, likely systolic murmur) is something any medical reader should be able to recognize and reason to confidently."
+  },
+  "MedQA_US-430": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a standard developmental/behavioral pediatrics question about recognizing autism spectrum disorder versus common alternatives like hearing loss or selective mutism, which is core knowledge many physicians should know."
+  },
+  "MedQA_US-8572": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This tests standard recognition of post-traumatic stress disorder versus acute stress disorder and major depression using common diagnostic timing and symptom criteria that any medically trained reader should know."
+  },
+  "MedQA_US-6377": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a classic, widely taught emergency diagnosis pattern (forceful vomiting followed by chest pain and subcutaneous emphysema), so any medical expert should be able to reason to esophageal rupture without specialty-specific knowledge."
+  },
+  "MedQA_US-202": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is standard general medical knowledge: a child with morning headaches, vomiting, papilledema, diplopia, and ataxia suggests a posterior fossa mass, and recognizing medulloblastoma as the likely pediatric brain tumor is within broad core training."
+  },
+  "MedQA_US-529": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pulmonary Disease",
+   "generalist": "general",
+   "rationale": "This is standard, broadly shared medical knowledge: recognizing obstructive spirometry with hyperinflation and reduced DLCO in a long-term smoker points to COPD, a common condition any medical expert should be able to reason through."
+  },
+  "Medbullets-113": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is standard broad medical knowledge: the lab pattern of marked leukocytosis with anemia and mild thrombocytopenia in an older adult points to chronic myelogenous leukemia, which most physicians and trainees should be able to identify."
+  },
+  "MedQA_US-2819": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is standard core knowledge: a premature infant with prolonged oxygen/ventilation, persistent respiratory distress, and classic chest x-ray changes points to bronchopulmonary dysplasia, a common neonatal complication that general medical readers should recognize."
+  },
+  "MedQA_US-5738": {
+   "figure_reference": true,
+   "figure_quote": "lesion on his upper back (Figure A)",
+   "specialty": "Dermatology",
+   "generalist": "general",
+   "rationale": "This is a common primary-care dermatology recognition question (likely a pigmented seborrheic keratosis) that any physician should be able to answer from standard lesion features without specialty-specific knowledge."
+  },
+  "MMLU_PM-14": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Physical Medicine and Rehabilitation",
+   "generalist": "specialist-only",
+   "rationale": "This requires osteopathic structural diagnosis knowledge (eg, posterior fibular head dysfunction associated with foot drop), which is not standard across general medical training and is mainly familiar to clinicians trained in OMM/osteopathic medicine."
+  },
+  "MedXpertQA-Text-697": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Cardiovascular Disease",
+   "generalist": "general",
+   "rationale": "This is standard, broadly shared cardiovascular/lipidology knowledge: recognizing familial hypercholesterolemia from marked isolated LDL elevation, tendon/palmar xanthomas, and strong premature CAD family history is within core medical training."
+  },
+  "MedQA_US-14216": {
+   "figure_reference": true,
+   "figure_quote": "results are displayed in Figure A",
+   "specialty": "Gastroenterology",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on liver acinar zonation and which diseases preferentially injure zone 3, which is a pathology-specific detail beyond standard general medical management."
+  },
+  "MedQA_US-8": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "This is standard broad medical knowledge: recognizing drug-induced acute interstitial nephritis from the classic triad of fever, rash, eosinophils in urine, and NSAID exposure is common internal medicine/nephrology material."
+  },
+  "MedQA_US-5455": {
+   "figure_reference": true,
+   "figure_quote": "as seen in Figure A",
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is standard emergency medicine/surgery knowledge: a patient with acute peritonitis and a radiograph showing free intraperitoneal air points to perforated viscus, which most medical clinicians should be able to recognize."
+  },
+  "MedQA_US-113": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "specialist-leaning",
+   "rationale": "The vignette hinges on recognizing a pancreatic pseudocyst compressing the common bile duct after prior pancreatitis, which is a more specialized diagnostic distinction than standard core management of common jaundice causes."
+  },
+  "MedQA_US-8514": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is standard core medical knowledge: recognizing the classic alcohol-related neurocognitive syndrome (Wernicke-Korsakoff, specifically Korsakoff amnesia) and distinguishing it from delirium or delirium tremens is broadly expected across training levels and specialties."
+  },
+  "MedQA_US-5749": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a common musculoskeletal presentation with classic exam findings, and the correct choice can be reasoned from standard anatomy and basic knee exam knowledge rather than specialty-specific expertise."
+  },
+  "MedQA_US-3873": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "This is standard core nephrology/pathology knowledge: recognizing nephrotic syndrome with thickened glomerular capillary loops/GBM as membranous nephropathy, a common disease pattern that most medical trainees and physicians should be able to reason through."
+  },
+  "MedQA_US-215": {
+   "figure_reference": true,
+   "figure_quote": "A photograph of the right eye is shown",
+   "specialty": "Ophthalmology",
+   "generalist": "general",
+   "rationale": "Contact lens use with acute painful unilateral vision loss is a common, high-yield presentation that general medical readers should be able to recognize as bacterial keratitis\u2014classically Pseudomonas\u2014without specialty-specific knowledge."
+  },
+  "MedQA_US-625": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "This is a classic anti-GBM/Goodpasture presentation with hemoptysis, glomerulonephritis, and linear IgG on biopsy, which is standard core knowledge that most medical trainees and physicians should recognize."
+  },
+  "MedQA_US-11174": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a standard spinal cord syndrome recognition question: the classic post-traumatic upper-extremity\u2013predominant pain/temperature loss with preserved vibration and leg sparing points to central cord syndrome, which is core medical knowledge."
+  },
+  "MedQA_US-5872": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This asks for recognition and standard management of a common pediatric limp/hip pain diagnosis (likely transient synovitis), which relies on broadly shared knowledge that any medical reader should have."
+  },
+  "MedQA_US-12419": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "specialist-leaning",
+   "rationale": "The diagnosis depends on recognizing a relatively uncommon, specialty-specific entity\u2014medullary sponge kidney\u2014and its classic IVP finding of cystic dilation of the medullary collecting ducts, which goes beyond core general medical knowledge."
+  },
+  "MedQA_US-10476": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "Recognizing an acute hemolytic transfusion reaction and the immediate step of stopping the transfusion is core medical knowledge that any physician should know, regardless of specialty."
+  },
+  "MedQA_US-1824": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is a common, cross-specialty diagnosis of lactose intolerance, and the appropriate next step\u2014hydrogen breath testing\u2014is standard core medical knowledge rather than a subspecialty-specific detail."
+  },
+  "MedQA_US-409": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is standard core medical reasoning about primary amenorrhea; the key clues (normal secondary sexual development, obesity, acne, acanthosis nigricans) point to common PCOS-related anovulation, which any medical doctor should be able to identify."
+  },
+  "MedQA_US-12149": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This relies on core, broadly taught pharmacology: recognizing an ototoxic neonatal meningitis adjunct as an aminoglycoside and knowing that aminoglycosides bind the 30S ribosomal subunit and inhibit translocation."
+  },
+  "MedQA_US-4506": {
+   "figure_reference": true,
+   "figure_quote": "A photomicrograph of a peripheral blood smear with Wright's stain is shown.",
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is a standard medical genetics/hematology question about a common hemolytic disorder and its classic inheritance pattern, which any physician or senior trainee should be able to reason through."
+  },
+  "MedQA_US-4012": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Medical Oncology",
+   "generalist": "specialist-leaning",
+   "rationale": "This requires specific knowledge of breast cancer metastatic venous anatomy (vertebral venous plexus/azygos pathway), which is beyond standard generalist clinical management."
+  },
+  "MedQA_US-3657": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "This tests a standard, widely taught diagnosis\u2014IgA nephropathy\u2014based on recurrent hematuria after upper respiratory infections, and the biopsy finding is core medical knowledge rather than specialty-specific nuance."
+  },
+  "MedQA_US-2286": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Cardiovascular Disease",
+   "generalist": "general",
+   "rationale": "This is standard core cardiology: recognizing mitral regurgitation from a holosystolic apical murmur and knowing the associated finding of a prominent V wave is common knowledge for broadly trained physicians."
+  },
+  "MedQA_US-12066": {
+   "figure_reference": true,
+   "figure_quote": "Which figure most likely represents the EKG of this patient?",
+   "specialty": "Cardiovascular Disease",
+   "generalist": "general",
+   "rationale": "This is standard core cardiology: recognizing severe aortic stenosis from the murmur and selecting the typical ECG pattern of left ventricular hypertrophy/strain is within broadly shared medical knowledge."
+  },
+  "MedQA_US-1679": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This tests standard cross-specialty knowledge that Streptococcus gallolyticus endocarditis is associated with colonic neoplasia and should prompt colonoscopy, which is common internal medicine knowledge."
+  },
+  "MedQA_US-11087": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a common, core clinical scenario of antibiotic-associated C. difficile colitis, and identifying stool toxin as the confirmatory test is standard knowledge across specialties."
+  },
+  "MedQA_US-12135": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This is core biochemistry/physiology: recognizing that increased acetyl-CoA promotes gluconeogenesis is standard medical knowledge shared across specialties."
+  },
+  "MedQA_US-8935": {
+   "figure_reference": true,
+   "figure_quote": "shown in the image",
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a classic recognition-and-localization question (Pancoast tumor with Horner syndrome causing lower brachial plexus/C8-T1 sensory loss), which relies on broadly taught neuroanatomy and standard clinical reasoning rather than specialty-specific knowledge."
+  },
+  "MedQA_US-1424": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is standard recognition and first-line treatment of diabetic gastroparesis, a common clinical pattern that most physicians should be able to manage with metoclopramide."
+  },
+  "MedQA_US-9674": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is standard core pharmacology: recognizing a common antihypertensive side effect profile and matching it to a widely used drug class and its target is within broad medical knowledge."
+  },
+  "MedQA_US-6912": {
+   "figure_reference": true,
+   "figure_quote": "Fluid analysis is shown below",
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This asks for standard management of small nonbleeding esophageal varices in cirrhosis\u2014primary prophylaxis with a nonselective beta blocker such as propranolol\u2014which is core internal medicine/gastroenterology knowledge."
+  },
+  "MedQA_US-520": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Ophthalmology",
+   "generalist": "specialist-leaning",
+   "rationale": "It tests recognition and management of dacryocystitis, an ophthalmic condition that is not part of core cross-specialty day-to-day knowledge for most physicians."
+  },
+  "MedQA_US-488": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "specialist-leaning",
+   "rationale": "It hinges on recognizing heparin resistance from antithrombin III deficiency and distinguishing it from other thrombophilias, which is a more detailed anticoagulation concept than core general medical knowledge."
+  },
+  "MedQA_US-1535": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "specialist-leaning",
+   "rationale": "This is answerable by general clinicians, but it hinges on recognizing a relatively uncommon cause of primary adrenal insufficiency\u2014tuberculous adrenalitis from acid-fast bacilli\u2014rather than standard first-line knowledge of common endocrine disease."
+  },
+  "MedQA_US-3582": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This tests standard cranial nerve anatomy: pain from the lateral anterior tongue travels via the lingual nerve (V3), and a V3 lesion classically causes difficulty chewing."
+  },
+  "MedQA_US-3811": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is standard core cardiology/pediatrics: recognizing a membranous VSD and its classic holosystolic murmur that increases with handgrip is common medical knowledge across specialties."
+  },
+  "MedQA_US-8279": {
+   "figure_reference": true,
+   "figure_quote": "The microscopic image depicts a macroscopically intact myocardium.",
+   "specialty": "Pathology",
+   "generalist": "general",
+   "rationale": "This is standard myocardial infarction pathology/histology\u2014recognizing ischemic myocardial coagulative necrosis and excluding unrelated causes like steatosis or iron overload is core medical knowledge."
+  },
+  "MedQA_US-9863": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This relies on common core knowledge of colorectal polyp pathology\u2014recognizing that a polyp with predominantly tubular architecture is an adenomatous polyp\u2014something expected of general medical trainees and physicians across specialties."
+  },
+  "MedQA_US-434": {
+   "figure_reference": true,
+   "figure_quote": "An x-ray of the chest is shown.",
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is standard management of a common infant viral lower respiratory infection/bronchiolitis, where the key decision is basic supportive care rather than a specialty-specific interpretation or intervention."
+  },
+  "MedQA_US-9195": {
+   "figure_reference": true,
+   "figure_quote": "wet mount microscopy shows the below picture",
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is a common vaginitis/STI question asking for standard first-line treatment (eg, metronidazole for trichomoniasis or bacterial vaginosis depending on the wet mount), which is core knowledge any physician should know."
+  },
+  "Medbullets-57": {
+   "figure_reference": true,
+   "figure_quote": "findings in Figure A",
+   "specialty": "Dermatology",
+   "generalist": "general",
+   "rationale": "The presentation is classic for idiopathic intracranial hypertension with papilledema, headache, blurred vision, and tinnitus, and recognizing this common syndrome and its medication association is standard cross-specialty knowledge."
+  },
+  "Medbullets-12": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This is a common endocrine board-style question about Graves disease and the key post-treatment clue\u2014persistent exophthalmos due to autoimmune orbitopathy\u2014is standard core medical knowledge rather than subspecialty-specific detail."
+  },
+  "Medbullets-140": {
+   "figure_reference": true,
+   "figure_quote": "A blood smear is shown in Figure A.",
+   "specialty": "Infectious Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on recognizing an uncommon tropical infection (Chagas disease) and knowing its specific treatment with benznidazole, which goes beyond standard general medical management."
+  },
+  "Medbullets-125": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is standard core hematology: a marked leukocytosis with elevated leukocyte alkaline phosphatase strongly points to a leukemoid reaction rather than CML, which most medical trainees and physicians should recognize."
+  },
+  "Medbullets-114": {
+   "figure_reference": true,
+   "figure_quote": "shown in Figure A",
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on recognizing a rare pregnancy-specific androgen-secreting ovarian process (eg, luteoma/hyperreactio luteinalis) and knowing it is usually managed expectantly rather than surgically, which goes beyond standard general medical knowledge."
+  },
+  "Medbullets-71": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is standard adult catch-up immunization knowledge\u2014any physician should know that a 19-year-old with only childhood DTaP history needs a Tdap booster, not influenza or repeat DTaP/Td as the key next step."
+  },
+  "Medbullets-52": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is standard pediatric knowledge about physiologic infant reflux with normal growth and no alarm features, where the key management is reassurance and conservative counseling rather than specialty-specific reasoning."
+  },
+  "Medbullets-279": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "This requires recognizing HIV-associated immune reconstitution inflammatory syndrome and knowing the specific management nuance of continuing ART and anti-infective therapy, which is beyond standard first-line general medical knowledge."
+  },
+  "Medbullets-44": {
+   "figure_reference": true,
+   "figure_quote": "appearance shown in Figure A",
+   "specialty": "Emergency Medicine",
+   "generalist": "specialist-leaning",
+   "rationale": "Although the initial imaging choice may be reasoned from a thunderclap headache, the vignette is really pointing to an uncommon neuro-ophthalmic syndrome (eg, cavernous sinus or cerebral venous sinus pathology), so confidence depends on specialty-level familiarity rather than broad core knowledge."
+  },
+  "Medbullets-302": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "The key diagnosis is urethral diverticulum, which is an uncommon cause of urinary symptoms and requires recognizing a fairly specific constellation (recurrent UTIs, dysuria, anterior vaginal wall mass, no Valsalva change), so it is not core knowledge most physicians in unrelated fields would confidently know."
+  },
+  "Medbullets-216": {
+   "figure_reference": true,
+   "figure_quote": "The patient's ECG is shown in Figure A.",
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This is standard medical knowledge: recognizing post-thyroidectomy hypocalcemia from iatrogenic hypoparathyroidism and its classic symptoms/lab pattern is common across training levels and specialties."
+  },
+  "Medbullets-16": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a core medical ethics/professionalism question about consent and postmortem procedures, which any physician should be able to reason through without specialty-specific knowledge."
+  },
+  "Medbullets-15": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurological Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "The key distinction is the uncommon neurocritical-care cause of hypovolemic hyponatremia after subarachnoid hemorrhage/surgery (cerebral salt wasting), which requires more specialized familiarity than routine first-line management of common hyponatremia."
+  },
+  "Medbullets-47": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a standard recognition-and-reasoning question about a common epilepsy syndrome, with classic triggers and timing (morning myoclonic jerks worsened by sleep deprivation) that most physicians should know."
+  },
+  "Medbullets-111": {
+   "figure_reference": true,
+   "figure_quote": "A radiograph is performed as seen in Figure A.",
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "general",
+   "rationale": "This is standard emergency/orthopedic trauma knowledge: a high-energy axial knee injury with severe pain/swelling and a radiograph consistent with a tibial plateau fracture is common enough for non-specialists to identify."
+  },
+  "Medbullets-119": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This tests standard, widely taught obstetric medicine: poorly controlled pregestational diabetes increases the risk of congenital malformations, including neural tube defects, which any medical clinician should be able to reason to."
+  },
+  "Medbullets-258": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pulmonary Disease",
+   "generalist": "general",
+   "rationale": "Recurrent pneumonia in the same lobe of a middle-aged smoker should prompt evaluation for an obstructing lesion, and chest CT is a standard next step that most medical clinicians can infer."
+  },
+  "Medbullets-13": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a classic, broadly taught diagnosis (tuberous sclerosis complex) with standard associated findings, so a general medical reader should be able to reason to the correct option."
+  },
+  "Medbullets-287": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is standard primary-care preventive screening based on common age and family-history guidelines (eg, colorectal and cervical cancer screening), which any medical expert should be able to reason through."
+  },
+  "Medbullets-101": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is standard neonatal physiology\u2014scant blood-tinged vaginal discharge in a healthy newborn is typically physiologic withdrawal bleeding/neonatal leukorrhea and the correct next step is simple reassurance, which any physician should know."
+  },
+  "Medbullets-214": {
+   "figure_reference": true,
+   "figure_quote": "as shown in Figure A",
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a standard toxic shock syndrome presentation from Staphylococcus aureus associated with nasal packing, a common enough emergency/infectious disease concept that any medical expert should be able to reason to the correct pathogen."
+  },
+  "Medbullets-112": {
+   "figure_reference": true,
+   "figure_quote": "The patient\u2019s abdominal radiograph can be seen in Figure A and the patient\u2019s upper gastrointestinal series can be seen in Figure B.",
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is a standard neonatal emergency: bilious vomiting with an upper GI series showing abnormal duodenal positioning is classic for intestinal malrotation, which is core knowledge across specialties."
+  },
+  "Medbullets-229": {
+   "figure_reference": true,
+   "figure_quote": "the finding in Figure A",
+   "specialty": "Cardiovascular Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "Solving this depends on recognizing a relatively uncommon post-vascular-procedure syndrome (cholesterol embolism with skin findings and renal/GI involvement), which goes beyond standard first-line management of common conditions."
+  },
+  "Medbullets-301": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This is standard core medicine: a poorly controlled diabetic with postprandial nausea/vomiting worsened by fatty meals suggests gastroparesis from autonomic/enteric nervous system damage, which most physicians should be able to reason to without subspecialty knowledge."
+  },
+  "Medbullets-142": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is standard core clinical reasoning for suspected infective endocarditis in an IV drug user\u2014obtain blood cultures before antibiotics, which is common knowledge across specialties."
+  },
+  "MedXpertQA-Text-456": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "This requires obstetric/MFM-specific knowledge of Rh alloimmunization surveillance and the MCA Doppler threshold for fetal anemia prompting invasive evaluation and possible intrauterine transfusion, which is beyond standard cross-specialty core management."
+  },
+  "MedXpertQA-Text-102": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is standard, broadly taught management of genitourinary syndrome of menopause/atrophic vaginitis, where the key step is recognizing that local vaginal estrogen is first-line for symptomatic atrophy with urinary and sexual symptoms."
+  },
+  "MedXpertQA-Text-1126": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "specialist-leaning",
+   "rationale": "The case points to pediatric cardiogenic shock/myocarditis, but choosing the best immediate vasoactive agent among multiple pressors requires pediatric critical care-specific management knowledge beyond core general medicine."
+  },
+  "MedXpertQA-Text-1003": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is standard Alzheimer disease management that any physician should know: when a patient has previously benefited from donepezil and the family wishes to continue treatment, the key decision is routine continuation of cognitive-enhancing therapy rather than a specialty-specific or nuanced intervention."
+  },
+  "MedXpertQA-Text-914": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This requires recognizing an uncommon but high-stakes esophageal perforation after endoscopy and knowing its specific immediate management sequence, which goes beyond core first-line care for common conditions."
+  },
+  "MedXpertQA-Text-571": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is standard obstetric management of term labor with prolonged rupture of membranes and a documented negative GBS screen, where antibiotics are not indicated unless infection develops."
+  },
+  "MedXpertQA-Text-419": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This asks for a standard, widely taught risk factor for hepatocellular carcinoma\u2014especially chronic hepatitis B or C infection from prior transfusion\u2014which is core medical knowledge rather than specialty-specific reasoning."
+  },
+  "MedXpertQA-Text-2233": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This asks for standard obstetric screening for cervical insufficiency in an at-risk pregnancy, which is routine knowledge that transvaginal cervical length surveillance beginning around 16 weeks is the appropriate method."
+  },
+  "MedXpertQA-Text-356": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is standard core medical knowledge: recognizing an opioid toxidrome and knowing that opioids act via mu-opioid receptor activation is common across specialties and training levels."
+  },
+  "MedXpertQA-Text-2418": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is standard trauma management: an unstable patient with a positive FAST exam generally requires immediate operative intervention, a core emergency medicine/surgical principle that any physician should know."
+  },
+  "MedXpertQA-Text-1728": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pathology",
+   "generalist": "general",
+   "rationale": "This tests standard molecular genetics knowledge: DNA microarrays are a common tool used to detect gene expression patterns and copy number changes, which is core information expected of broadly trained clinicians."
+  },
+  "MedXpertQA-Text-130": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on a specific orthopedic surgical-technique advantage of unicondylar knee arthroplasty rather than broadly shared medical knowledge, so most non-orthopedic readers would not be able to reason confidently to the correct option."
+  },
+  "MedXpertQA-Text-122": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Otolaryngology - Head and Neck Surgery",
+   "generalist": "general",
+   "rationale": "This is standard medical knowledge about bedside hearing tests and common causes of conductive hearing loss (cerumen impaction), which any broadly trained medical reader should be able to reason through."
+  },
+  "MedXpertQA-Text-383": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This is standard medical knowledge about menopause and vasomotor symptoms, which any medical trainee or physician should be able to reason through without specialty-specific expertise."
+  },
+  "MedXpertQA-Text-895": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on nuanced lead-poisoning management thresholds and the choice of oral chelation versus hospitalization, which is beyond routine core knowledge for many non-pediatric/non-toxicology clinicians."
+  },
+  "MedXpertQA-Text-952": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Public Health and General Preventive Medicine",
+   "generalist": "general",
+   "rationale": "This is basic research-methods knowledge about minimizing nonresponse bias in a common survey study, something any physician should be able to reason through."
+  },
+  "MedXpertQA-Text-2069": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This relies on common adverse-effect knowledge of a widely used supplement and anabolic steroid; the best choice is a standard, broadly known side effect of creatine (gastrointestinal discomfort) rather than a specialty-specific detail."
+  },
+  "MedXpertQA-Text-108": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on knowing the specific FDA-approved second-generation antipsychotic for Tourette\u2019s in pediatrics (aripiprazole), which is a drug-indication detail beyond broad general medical knowledge."
+  },
+  "MedXpertQA-Text-2298": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "The key step is knowing that asplenic patients are at high risk of fulminant sepsis from dog bites (Capnocytophaga canimorsus), which is a specific infectious-disease association rather than broad core medical knowledge."
+  },
+  "MedXpertQA-Text-814": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Urology",
+   "generalist": "general",
+   "rationale": "This tests standard, widely shared knowledge of prostate cancer evaluation\u2014an abnormal DRE with elevated PSA warrants prostate biopsy, a common next-step decision most physicians should know."
+  },
+  "MedXpertQA-Text-2232": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "This is standard cross-specialty knowledge: a patient with advanced chronic kidney disease has renal osteodystrophy/osteitis fibrosa cystica from secondary hyperparathyroidism, which most medically trained readers should recognize from the labs and x-ray findings."
+  },
+  "MedXpertQA-Text-1718": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This tests standard trauma/ATLS management: an unstable blunt abdominal trauma patient with persistent hypotension despite fluids should go directly to emergency laparotomy rather than further imaging or observation."
+  },
+  "MedXpertQA-Text-902": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "This is a common atypical pneumonia presentation, but the key step is recalling a microbiology-specific culture requirement (Mycoplasma needs cholesterol/sterols), which goes beyond standard generalist clinical management knowledge."
+  },
+  "MedXpertQA-Text-1839": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "specialist-leaning",
+   "rationale": "This requires knowing salvage therapy for refractory multidrug-resistant *H. pylori* after failure of both clarithromycin-based and bismuth quadruple regimens, which goes beyond core general medical management."
+  },
+  "MedXpertQA-Text-2413": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Orthopaedic Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This requires foot-and-ankle orthopedic knowledge of subtalar distraction bone-block arthrodesis indications and the specific post-calcaneal-fracture deformity/impingement it best corrects, which is beyond standard general medical management."
+  },
+  "MMLU_PM-57": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is standard infectious disease knowledge: recognizing a methicillin-resistant Staphylococcus aureus infection and choosing vancomycin as appropriate therapy is within core medical training across specialties."
+  },
+  "MMLU_PM-12": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on recognizing a rare cause of fulminant meningoencephalitis (Naegleria fowleri) and knowing its specific CNS entry via the olfactory nerve, which goes beyond standard general medical management."
+  },
+  "MMLU_PM-140": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Allergy and Immunology",
+   "generalist": "general",
+   "rationale": "This tests broadly shared vaccine/allergy knowledge: egg allergy raises concern mainly with influenza vaccination, a standard first-line clinical fact that most medical clinicians should know."
+  },
+  "MMLU_PM-125": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This asks about a common normal developmental variant in toddlers (physiologic genu varum) and its standard management, which is basic pediatric knowledge rather than specialty-specific care."
+  },
+  "MMLU_PM-114": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This tests standard X-linked recessive inheritance and carrier risk calculation, which is core medical genetics knowledge that any medical trainee or physician should be able to reason through."
+  },
+  "MMLU_PM-71": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "general",
+   "rationale": "This tests standard anatomy/visceral pain referral for a common emergency (pancreatitis), which is core knowledge that most medical trainees and physicians should know."
+  },
+  "MMLU_PM-52": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is standard clinical research design knowledge: patients know they are receiving the drug, there is no randomization or control group described, and dose-escalation cohorts indicate an open-label clinical trial."
+  },
+  "MMLU_PM-279": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is standard core knowledge: classic renal colic with hematuria and hydronephrosis suggests nephrolithiasis, and among the listed urinalysis findings, uric acid crystals are the relevant stone-associated finding."
+  },
+  "MMLU_PM-44": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is standard basic pathology: recognizing acute inflammation after a skin infection/abscess and knowing that edema results from increased vascular permeability due to endothelial junction separation."
+  },
+  "MMLU_PM-302": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This tests basic interpretation of absolute risk reduction from simple trial data, a core epidemiology/biostatistics concept expected of medical trainees and physicians across specialties."
+  },
+  "MMLU_PM-216": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Gastroenterology",
+   "generalist": "specialist-leaning",
+   "rationale": "It requires nuanced management of odynophagia in advanced AIDS (distinguishing empiric treatment for likely esophageal candidiasis from when endoscopy/biopsy is indicated), which is beyond core general medical knowledge for many non-HIV specialists."
+  },
+  "MMLU_PM-16": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This tests core medical knowledge of chronic granulomatous disease and the role of the oxidative burst in killing intracellular organisms, a standard immunology concept expected across medical training."
+  },
+  "MMLU_PM-15": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This tests standard clinical interviewing and basic psychiatric assessment principles\u2014using an open-ended narrative to evaluate symptoms rather than hypnosis or amobarbital\u2014which any physician should be able to reason through."
+  },
+  "MMLU_PM-47": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "This is basic renal physiology: constricting the efferent arteriole increases glomerular capillary hydrostatic pressure, which is standard core knowledge for most medical trainees."
+  },
+  "MMLU_PM-111": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "general",
+   "rationale": "This is standard core knowledge: proximal muscle weakness with elevated CK/LDH and inflammatory arthralgias points to an inflammatory myopathy (here polymyositis among the choices), which any physician should be able to recognize without specialty-specific nuance."
+  },
+  "MMLU_PM-119": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Rheumatology",
+   "generalist": "specialist-leaning",
+   "rationale": "It hinges on recognizing a less-common rheumatoid arthritis complication\u2014atlanto-axial instability causing transient spinal cord compression/drop attacks\u2014which is beyond standard first-line general medical knowledge."
+  },
+  "MMLU_PM-258": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on recognizing a likely cholesteatoma after recurrent otitis media, an ENT-specific diagnosis whose defining pathology is epithelial proliferation rather than core general medical knowledge."
+  },
+  "MMLU_PM-13": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This can be answered from standard shoulder anatomy and function: the supraspinatus inserts on the greater tubercle and is involved in abduction, so tenderness there with painful abduction points to that muscle."
+  },
+  "MMLU_PM-287": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "general",
+   "rationale": "This asks about standard preconception care for preventing neural tube defects, and knowing to start folic acid before conception is core medical knowledge across specialties."
+  },
+  "MMLU_PM-101": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Allergy and Immunology",
+   "generalist": "general",
+   "rationale": "This tests standard preventive medicine/immunology knowledge about vaccine contraindications and anaphylaxis risk, which any physician should know at a basic level."
+  },
+  "MMLU_PM-214": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Urology",
+   "generalist": "general",
+   "rationale": "This is standard core medical knowledge: the presentation strongly suggests Klinefelter syndrome, and the best test to establish the cause is a peripheral blood karyotype."
+  },
+  "MMLU_PM-112": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This relies on core medical knowledge that cystic fibrosis can cause pancreatic insufficiency with malabsorption of fat-soluble vitamins\u2014especially vitamin K\u2014leading to easy bruising and bleeding, which is standard knowledge across specialties."
+  },
+  "MMLU_PM-229": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Hematology",
+   "generalist": "general",
+   "rationale": "This is standard hematology reasoning about isolated thrombocytopenia in an older patient with prior cancer/radiation, where bone marrow aspiration is the common next diagnostic step to assess for marrow disease or infiltration."
+  },
+  "MMLU_PM-301": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This is a common basic management question about acute paronychia with fluctuance, and any medical trainee or physician should be able to reason to incision and drainage as the next step."
+  },
+  "MMLU_PM-142": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "general",
+   "rationale": "This asks about standard indications for nutritional support in a postoperative, previously well-nourished patient\u2014core general medical knowledge about when to use enteral vs peripheral or central parenteral nutrition."
+  },
+  "MedQA_US-133": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This asks about standard, widely taught hypertension lifestyle interventions and their relative blood pressure effects, which is core general medical knowledge rather than specialty-specific reasoning."
+  },
+  "MedQA_US-874": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This tests common psychopharmacology and a standard drug-interaction rule\u2014SSRIs like fluoxetine must not be combined with an MAOI such as phenelzine because of serotonin syndrome risk\u2014knowledge expected across specialties."
+  },
+  "MedQA_US-1377": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This asks about standard management of common statin-associated myopathy\u2014recognize muscle symptoms with CK elevation and stop the offending statin, then consider a safer alternative\u2014knowledge that any physician should have."
+  },
+  "MedQA_US-1464": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "This is a classic, broadly taught case of drug-induced acute interstitial nephritis from rifampin, where the key management step is to stop the offending medication, which is standard core knowledge across specialties."
+  },
+  "MedQA_US-1622": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This tests standard first-line management of major depressive disorder with an SSRI, including the common principle that only minor improvement after 3 weeks is usually not enough time to switch or augment treatment."
+  },
+  "MedQA_US-1680": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Medical Oncology",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on interpreting a drug-advertisement/trial for an HCC mTOR inhibitor and choosing among dose- and toxicity-specific claims, which goes beyond core general medical knowledge."
+  },
+  "MedQA_US-2529": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This tests standard recognition and first-line management of a common neuromuscular disease\u2014myasthenia gravis with improvement after edrophonium indicating insufficient pyridostigmine dosing\u2014which is core knowledge across specialties."
+  },
+  "MedQA_US-2888": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Cardiovascular Disease",
+   "generalist": "general",
+   "rationale": "This is standard, broadly tested stable angina management: recognizing nitrate tolerance and the need for a daily nitrate-free interval (eg, avoid nighttime isosorbide dinitrate) is core cardiology/pharmacology knowledge."
+  },
+  "MedQA_US-3036": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "specialist-leaning",
+   "rationale": "It is a straightforward TPN calorie-and-concentration calculation, but it relies on nutrition-support specifics that many physicians outside inpatient/critical care or nutrition practice may not confidently do from memory."
+  },
+  "MedQA_US-3810": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is a standard pharmacokinetics loading-dose calculation using volume of distribution and target plasma concentration, which is core medical knowledge rather than specialty-specific."
+  },
+  "MedQA_US-3917": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a standard pharmacokinetics dose-calculation problem using common concepts (clearance, bioavailability, target concentration, dosing interval) for a widely used antibiotic, so it is core medical knowledge rather than specialty-specific."
+  },
+  "MedQA_US-4650": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Obstetrics and Gynecology",
+   "generalist": "specialist-leaning",
+   "rationale": "Maternal PKU counseling is known to many clinicians, but choosing the best response depends on specialized preconception targets and timing (starting a phenylalanine-restricted diet before conception and aiming for a specific level), which is beyond standard generalist knowledge."
+  },
+  "MedQA_US-4891": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This tests core, widely shared knowledge about major depressive disorder treatment\u2014specifically that SSRIs like fluoxetine usually require several weeks before judging response, so the next step is standard primary-care management rather than subspecialty detail."
+  },
+  "MedQA_US-5109": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Neurology",
+   "generalist": "general",
+   "rationale": "This is a classic, broadly taught medication-toxicity scenario (likely phenytoin toxicity) with standard neurologic signs and a straightforward next step\u2014reduce the anticonvulsant dose after recognizing a drug interaction/malnutrition risk."
+  },
+  "MedQA_US-5646": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This is a common thyroiditis/hyperthyroid management scenario with standard next-step reasoning (stop the inappropriate antithyroid drug and treat the transient hypothyroid phase if symptomatic), which falls within core medical knowledge rather than subspecialty detail."
+  },
+  "MedQA_US-6747": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "The key reasoning is standard cross-specialty pharmacology: a manic patient likely started on lithium develops tremor, polyuria, and bradycardia after chlorthalidone, suggesting a common thiazide\u2013lithium interaction rather than a subspecialty-specific diagnosis."
+  },
+  "MedQA_US-6852": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This asks for standard cardiovascular risk-reduction management in a common diabetic patient\u2014starting statin therapy is core medical knowledge across specialties."
+  },
+  "MedQA_US-8210": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "specialist-leaning",
+   "rationale": "Choosing whether to continue lithium in pregnancy requires nuanced psych-obstetric risk balancing (teratogenicity vs. high relapse/suicide risk), which goes beyond standard core medical management."
+  },
+  "MedQA_US-8921": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This is standard cross-specialty knowledge about recognizing tardive dyskinesia from a typical antipsychotic and the first management step is to stop the offending drug when possible."
+  },
+  "MedQA_US-9264": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This asks for standard step-up therapy in asthma when albuterol use becomes more than twice weekly, which is core primary-care/medical knowledge (add an inhaled corticosteroid such as fluticasone)."
+  },
+  "MedQA_US-9427": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This tests standard management of severe symptomatic hypotonic hyponatremia\u2014prompt hypertonic saline\u2014along with basic SIADH recognition, which is core knowledge across specialties."
+  },
+  "MedQA_US-9564": {
+   "figure_reference": true,
+   "figure_quote": "An ECG shows the findings in the given image.",
+   "specialty": "Emergency Medicine",
+   "generalist": "general",
+   "rationale": "This tests standard acute coronary syndrome/STEMI prehospital management\u2014recognizing ischemia, avoiding nitrates in hypotension, giving aspirin, and choosing PCI-center transport\u2014which is core knowledge across specialties."
+  },
+  "MedQA_US-9736": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This tests standard lipid-management knowledge\u2014LDL >190 mg/dL calls for initiation of a high-intensity statin, which is common core knowledge across specialties."
+  },
+  "MedQA_US-9845": {
+   "figure_reference": true,
+   "figure_quote": "A radiograph of her left hip joint is shown in the image below.",
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This is a common osteoarthritis presentation, and the key management decision is standard first-line symptom control (e.g., NSAID over ineffective acetaminophen), which is core medical knowledge across specialties."
+  },
+  "MedQA_US-9867": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "specialist-leaning",
+   "rationale": "This asks about intradialytic hypotension management, where the key next step is a dialysis-specific adjustment (stopping ultrafiltration and reducing blood flow) that is beyond standard general medical knowledge for many non-nephrology physicians."
+  },
+  "MedQA_US-13296": {
+   "figure_reference": true,
+   "figure_quote": "rash (Image A)",
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This tests standard recognition and management of a serious drug rash from a common medication, where the key next step\u2014immediately stopping the offending drug\u2014is core medical knowledge across specialties."
+  },
+  "MedXpertQA-Text-10": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "general",
+   "rationale": "This hinges on recognizing a standard lithium\u2013thiazide interaction causing lithium toxicity, which is core pharmacology and common medication management rather than a specialty-specific nuance."
+  },
+  "MedXpertQA-Text-140": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "This tests standard chronic kidney disease/diabetic nephropathy and hypertension management (e.g., avoiding ACEi+ARB combination and optimizing first-line BP therapy), which is core knowledge for most physicians."
+  },
+  "MedXpertQA-Text-227": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This is a standard endocrine management question about subacute thyroiditis, where the key step is recognizing that antithyroid drugs are not indicated and supportive therapy should be stopped, which is core medical knowledge rather than specialty-specific detail."
+  },
+  "MedXpertQA-Text-293": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is standard asthma step-up management for a common condition, and the key decision (escalating controller therapy in a child with uncontrolled persistent asthma on medium-dose inhaled corticosteroid) is within broad core medical knowledge."
+  },
+  "MedXpertQA-Text-306": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This hinges on common diabetes medication adverse-effect management\u2014treating uncomplicated vulvovaginal candidiasis and usually continuing an SGLT2 inhibitor after a first mild episode\u2014which is standard knowledge across specialties."
+  },
+  "MedXpertQA-Text-347": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This hinges on widely taught diabetes management in frail older adults\u2014set a less stringent A1c goal and avoid intensifying therapy when the patient is already near an appropriate target, so most physicians should be able to reason to continuing the current regimen."
+  },
+  "MedXpertQA-Text-362": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on nuanced management of enterocutaneous fistulas and nutritional support (enteral vs parenteral nutrition), which is standard in GI/surgical practice but not core knowledge most non-specialists would answer confidently."
+  },
+  "MedXpertQA-Text-734": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is standard hyponatremia reasoning: hypotonic euvolemic hyponatremia with inappropriately concentrated urine and high urine sodium suggests SIADH, for which first-line management is fluid restriction (and removal of an offending drug if feasible), knowledge expected of most physicians."
+  },
+  "MedXpertQA-Text-773": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This tests standard primary-care/internal medicine knowledge: mild asymptomatic transaminase elevation on a statin (well under 3\u00d7 ULN) is typically managed by continuing the medication rather than stopping or switching it."
+  },
+  "MedXpertQA-Text-803": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Pediatrics",
+   "generalist": "general",
+   "rationale": "This is standard pediatric dehydration with hypovolemic shock from gastroenteritis, and the key step\u2014prompt isotonic fluid bolus (about 20 mL/kg, i.e. 200 mL for a 10 kg child)\u2014is core knowledge across specialties."
+  },
+  "MedXpertQA-Text-811": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "general",
+   "rationale": "This tests standard management of symptomatic hypoglycemia in a conscious patient after initial rescue treatment, which is core medical knowledge any physician should know."
+  },
+  "MedXpertQA-Text-869": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Internal Medicine (general)",
+   "generalist": "general",
+   "rationale": "This is standard management of a provoked postoperative pulmonary embolism: after about 3 months of anticoagulation for a major transient risk factor, the usual next step is to stop anticoagulation without routine imaging, D-dimer testing, or thrombophilia workup."
+  },
+  "MedXpertQA-Text-996": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Endocrinology, Diabetes and Metabolism",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on nuanced endocrine interpretation of an incidental pituitary microadenoma with moderate hyperprolactinemia in an asymptomatic postmenopausal patient, which is beyond the core knowledge expected of any physician regardless of specialty."
+  },
+  "MedXpertQA-Text-1030": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Psychiatry",
+   "generalist": "specialist-leaning",
+   "rationale": "This hinges on recognizing antipsychotic-induced tardive dyskinesia and knowing the specific management choice (eg, VMAT2 inhibitor or antipsychotic switch), which is standard psychiatry/pharmacology knowledge but not core for all physicians."
+  },
+  "MedXpertQA-Text-1080": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Cardiovascular Disease",
+   "generalist": "general",
+   "rationale": "This is standard recognition of decompensated heart failure/right-sided volume overload from common bedside findings, and the key management choice is a routine first-line step (diuretic escalation) rather than a subspecialty-specific maneuver."
+  },
+  "MedXpertQA-Text-1404": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "General Surgery",
+   "generalist": "specialist-leaning",
+   "rationale": "The key decision is the management of a symptomatic type II paraesophageal hernia after failed medical therapy, which is a relatively specialty-specific indication for elective surgical repair rather than routine GERD treatment."
+  },
+  "MedXpertQA-Text-1487": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Cardiovascular Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "The decision hinges on nuanced chronic hyperkalemia management in a heart-failure/CKD patient\u2014specifically whether to preserve RAAS inhibition using a potassium binder like patiromer rather than simply reducing or stopping lisinopril\u2014knowledge that goes beyond broad generalist emergency hyperkalemia care."
+  },
+  "MedXpertQA-Text-1651": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "general",
+   "rationale": "This is a standard, widely taught emergency management question about fulminant C. difficile colitis, and the correct first-line treatment (high-dose oral vancomycin plus IV metronidazole) is core knowledge rather than specialty-specific detail."
+  },
+  "MedXpertQA-Text-1731": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Medical Oncology",
+   "generalist": "general",
+   "rationale": "This hinges on standard cancer-pain opioid titration\u2014frequent breakthrough morphine use means the long-acting opioid dose should be increased, which is core medical knowledge rather than a subspecialty-specific nuance."
+  },
+  "Medbullets-283": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Family Medicine",
+   "generalist": "general",
+   "rationale": "This hinges on standard primary-care management of major depressive disorder: SSRIs typically need at least 4\u20136 weeks before judging response, so a broad medical reader should recognize that the correct next step is to continue the current dose rather than switch or adjust treatment yet."
+  },
+  "MMLU_PM-206": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Nephrology",
+   "generalist": "general",
+   "rationale": "This is a standard post-transplant opportunistic infection scenario (CMV disease) with classic clues\u2014fever, leukopenia, inclusion bodies, and graft dysfunction\u2014and the usual next step, ganciclovir, is common core knowledge."
+  },
+  "MedQA_US-8364": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Ophthalmology",
+   "generalist": "specialist-leaning",
+   "rationale": "Answering this correctly depends on recognizing a relatively uncommon antipsychotic-related ocular toxicity and knowing the specific first diagnostic step (slit-lamp evaluation), which goes beyond standard general medical management of vision complaints."
+  },
+  "MedXpertQA-Text-392": {
+   "figure_reference": false,
+   "figure_quote": null,
+   "specialty": "Infectious Disease",
+   "generalist": "specialist-leaning",
+   "rationale": "The correct choice depends on knowing the specific ritonavir\u2013fluticasone interaction causing iatrogenic Cushing syndrome and the safer substitution to beclomethasone, which is beyond core general medical management."
+  }
+ }
+}
