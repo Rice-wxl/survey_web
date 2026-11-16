@@ -40,3 +40,7 @@ serve_logs/
 
 # Local-only analysis pages (not part of the app)
 analysis/jpp_compare/
+
+# Local backups of earlier organism exports
+backend/data/organisms_agentaudit10_backup/
+backend/data/organisms_pre3x2x2_backup_2026-11-06/
