@@ -5,8 +5,14 @@ The readouts go through the study's own prefill builders (sae_prefill.build_sae,
 jlens_prefill.build_jlens) on a one-item "panel" for the base model, then through
 build_items.py's clinician views -- nothing is reimplemented.
 
+The served SAE list is `sae_tfidf` (sae_tfidf_prefill.build_sae_tfidf + build_items'
+sae_tfidf_view with the middle-ground labels), as in the real study; `sae` (activation)
+stays as a record.
+
 GPU (lease via gpu_run.sh):
     HF_HUB_OFFLINE=1 .venv/bin/python survey_web/backend/tutorial/make_tutorial.py
+    # only (re)build sae_tfidf on the existing work/base.json, patching tutorial.json:
+    HF_HUB_OFFLINE=1 .venv/bin/python survey_web/backend/tutorial/make_tutorial.py --tfidf-only
 """
 import json
 import sys
@@ -19,12 +25,35 @@ sys.path.insert(0, str(BACKEND))
 import build_items as bi  # noqa: E402  (puts agent_audit on sys.path)
 import jlens_prefill as jp  # noqa: E402
 import sae_prefill as sp  # noqa: E402
+import sae_tfidf_prefill as stp  # noqa: E402
 from clinical import format_clinical_prompt, parse_answer  # noqa: E402
 
 DATA = BACKEND / "data" / "tutorial"
 WORK = DATA / "work"                  # one-item panel + raw readouts (prefill layout)
 SEEDS = range(10)                     # first seed whose answer is CORRECT wins (base Llama: 8/10 + greedy
                                       # correct; seed 0 picked Liddle -- a sampling miss, not a hard item)
+
+SPEC = SimpleNamespace(id="base", correlation=None, seed_path=WORK / "base.json")
+
+
+def build_tfidf(model, tok, item_id):
+    """TF-IDF SAE panel for the tutorial item, in the real study's served view."""
+    from label_lookup import make_labels_lookup
+    from sae_model import load_sae
+    stp.build_sae_tfidf(model, tok, load_sae(), make_labels_lookup(), stp.load_idf(), SPEC, force=True)
+    return bi.sae_tfidf_view(SPEC, item_id, bi.MIDDLE)
+
+
+def tfidf_only():
+    import common
+    model, tok = common.load_organism("base")
+    f = DATA / "tutorial.json"
+    d = json.loads(f.read_text())
+    it = d["items"][0]
+    it["sae_tfidf"] = build_tfidf(model, tok, it["id"])
+    assert it["sae_tfidf"], "no TF-IDF lists written"
+    f.write_text(json.dumps(d, indent=1))
+    print(f"-> {f}  sae_tfidf: " + ", ".join(f"{k}={len(v)}" for k, v in it["sae_tfidf"].items()))
 
 
 def main():
@@ -47,7 +76,7 @@ def main():
             break
     item = {"id": "tutorial-1", "question": c["question"], "options": c["options"],
             "cot_response": resp, "final_answer": ans}
-    spec = SimpleNamespace(id="base", correlation=None, seed_path=WORK / "base.json")
+    spec = SPEC
     WORK.mkdir(parents=True, exist_ok=True)
     spec.seed_path.write_text(json.dumps({"panel": [item], "gen_tries": tries}, indent=1))
 
@@ -62,7 +91,7 @@ def main():
         "question": c["question"], "options": c["options"], "user_prompt": prompt,
         "response": resp, "model_answer": ans, "correct_answer": c["correct_answer"],
         "jlens": bi.jlens_view(jlr, jp._control_ids(tok)), "sae": bi.sae_view(saer),
-        "sae_grad": {},
+        "sae_grad": {}, "sae_tfidf": build_tfidf(model, tok, item["id"]),
     }
     (DATA / "tutorial.json").write_text(json.dumps(
         {"key": "tutorial", "organism_id": "base", "correlation": None, "adapter": None,
@@ -71,4 +100,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    tfidf_only() if "--tfidf-only" in sys.argv else main()

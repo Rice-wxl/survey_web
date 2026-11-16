@@ -5,7 +5,6 @@
 
 // Survey content that only makes sense when the model came with an extra panel.
 const PANEL_OPTION = 'From the interpretability panel';
-const PANEL_QUESTIONS = ['batch_q1_panel_usefulness'];
 
 class SurveyModule {
     constructor() {
@@ -15,6 +14,8 @@ class SurveyModule {
         this.currentQuestionIndex = 0;
         this.lastInvalidDescription = null;
         this.noPanel = false;   // set by the app per batch (true = real-mode black-box)
+        this.rankOptions = {};  // ranking question id -> options shown
+        this.altTexts = {};     // question id -> {depends_on, value, text, base}
     }
 
     setQuestionIndex(index) {
@@ -79,16 +80,13 @@ class SurveyModule {
     renderQuestion(question) {
         const { id, text, question_type, options, help_text, likert_min, likert_max, likert_labels, condition, min_question_index } = question;
 
-        // No extra panel for this model (real-mode black-box): skip questions about the panel.
-        if (this.noPanel && PANEL_QUESTIONS.includes(id)) {
-            return `<div class="survey-question hidden" data-question-id="${id}" data-gated-by-index="true"></div>`;
-        }
-
         // Hide if min_question_index exceeds current question index
         if (min_question_index !== null && min_question_index !== undefined &&
             this.currentQuestionIndex < min_question_index) {
             return `<div class="survey-question hidden" data-question-id="${id}" data-gated-by-index="true"></div>`;
         }
+
+        if (question.alt_text) this.altTexts[id] = { ...question.alt_text, base: text };
 
         let inputHtml = '';
 
@@ -98,6 +96,9 @@ class SurveyModule {
                 break;
             case 'multiple_choice':
                 inputHtml = this.renderMultipleChoice(id, this.noPanel ? options.filter(o => o !== PANEL_OPTION) : options);
+                break;
+            case 'ranking':
+                inputHtml = this.renderRanking(id, this.noPanel ? options.filter(o => o !== PANEL_OPTION) : options);
                 break;
             case 'likert':
                 inputHtml = this.renderLikert(id, likert_min, likert_max, likert_labels);
@@ -183,6 +184,46 @@ class SurveyModule {
         `;
     }
     
+    /**
+     * Render a ranking question: a pool of sources and a numbered list. Clicking a source
+     * moves it to the next open slot; ranked sources can be dragged to reorder or removed.
+     */
+    renderRanking(id, options) {
+        this.rankOptions[id] = options;
+        return `
+            <p class="text-sm text-gray-500 mb-2">Click each source that helped to add it to your ranking, most helpful first. Leave out any that did not help. Drag ranked sources to reorder them, or click × to send one back.</p>
+            <div class="rank-widget" data-rank-question="${id}">${this.renderRankInner(id)}</div>
+        `;
+    }
+
+    renderRankInner(id) {
+        const options = this.rankOptions[id];
+        const order = this.responses[id] || [];
+        const label = opt => this.escapeHtml(opt);
+        const pool = options.filter(o => !order.includes(o)).map(opt => `
+            <button type="button" class="rank-option" data-value="${this.escapeHtml(opt)}">${label(opt)}</button>
+        `).join('') || '<p class="rank-empty">All sources ranked</p>';
+        const slots = options.map((_, i) => order[i] ? `
+            <li class="rank-slot filled" draggable="true" data-index="${i}" data-value="${this.escapeHtml(order[i])}">
+                <span class="rank-badge">${i + 1}</span>
+                <span class="flex-1">${label(order[i])}</span>
+                <button type="button" class="rank-remove" aria-label="Remove from ranking">×</button>
+            </li>` : `
+            <li class="rank-slot" data-index="${i}">
+                <span class="rank-badge">${i + 1}</span>
+            </li>`).join('');
+        return `
+            <div class="rank-box">
+                <p class="rank-box-title">Sources</p>
+                <div class="rank-pool">${pool}</div>
+            </div>
+            <div class="rank-box">
+                <p class="rank-box-title">Your ranking</p>
+                <ol class="rank-list">${slots}</ol>
+            </div>
+        `;
+    }
+
     /**
      * Render Likert scale.
      */
@@ -280,6 +321,54 @@ class SurveyModule {
             });
         });
         
+        // Ranking
+        container.querySelectorAll('.rank-widget').forEach(widget => {
+            const id = widget.dataset.rankQuestion;
+            const setOrder = order => {
+                this.responses[id] = order;
+                widget.innerHTML = this.renderRankInner(id);
+                this.clearError(id);
+                this.updateConditionalVisibility();
+            };
+            widget.addEventListener('click', (e) => {
+                const order = this.responses[id] || [];
+                const add = e.target.closest('.rank-pool .rank-option');
+                const remove = e.target.closest('.rank-remove');
+                if (add) setOrder([...order, add.dataset.value]);
+                if (remove) setOrder(order.filter(v => v !== remove.closest('.rank-slot').dataset.value));
+            });
+            // Drag a ranked source onto any slot to move it there.
+            let from = null;
+            const clearMarks = () => widget.querySelectorAll('.dragging, .drag-over')
+                .forEach(el => el.classList.remove('dragging', 'drag-over'));
+            widget.addEventListener('dragstart', (e) => {
+                const slot = e.target.closest('.rank-slot.filled');
+                if (!slot) return;
+                from = +slot.dataset.index;
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', slot.dataset.value);  // Firefox needs data to drag
+                slot.classList.add('dragging');
+            });
+            widget.addEventListener('dragover', (e) => {
+                const slot = e.target.closest('.rank-slot');
+                if (from === null || !slot) return;
+                e.preventDefault();
+                widget.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+                slot.classList.add('drag-over');
+            });
+            widget.addEventListener('drop', (e) => {
+                const slot = e.target.closest('.rank-slot');
+                if (from === null || !slot) return;
+                e.preventDefault();
+                const order = [...this.responses[id]];
+                const [moved] = order.splice(from, 1);
+                order.splice(Math.min(+slot.dataset.index, order.length), 0, moved);
+                from = null;
+                setOrder(order);
+            });
+            widget.addEventListener('dragend', () => { from = null; clearMarks(); });
+        });
+
         // Free text
         container.querySelectorAll('.survey-textarea').forEach(textarea => {
             textarea.addEventListener('input', (e) => {
@@ -341,6 +430,12 @@ class SurveyModule {
                 delete this.responses[questionId];
             }
         });
+
+        // Reword questions whose framing depends on another answer (e.g. q4 when confirming a bias).
+        Object.entries(this.altTexts).forEach(([id, alt]) => {
+            const textEl = document.querySelector(`[data-question-id="${id}"] .survey-question-text`);
+            if (textEl) textEl.textContent = this.responses[alt.depends_on] === alt.value ? alt.text : alt.base;
+        });
     }
     
     /**
@@ -368,7 +463,7 @@ class SurveyModule {
             if (q.required) {
                 if (response === undefined || response === '' || 
                     (Array.isArray(response) && response.length === 0)) {
-                    this.errors[q.id] = 'This question is required';
+                    this.errors[q.id] = q.question_type === 'ranking' ? 'Please rank at least one source' : 'This question is required';
                     isValid = false;
                 }
             }

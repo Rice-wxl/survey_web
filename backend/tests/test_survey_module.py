@@ -108,7 +108,7 @@ class TestSurveyModuleStructure:
         assert survey.per_question_survey is not None
         assert survey.batch_survey is not None
         assert len(survey.per_question_survey) > 0
-        assert len(survey.batch_survey) > 0
+        assert survey.batch_survey == []  # end-of-model ratings removed
 
     def test_per_question_survey_has_expected_questions(self):
         """
@@ -125,16 +125,11 @@ class TestSurveyModuleStructure:
         assert 'q2_confidence' in question_ids, "Should ask confidence for Q2"
         assert 'q4_inference_method' in question_ids, "Should ask about inference method"
 
-    def test_batch_survey_has_expected_questions(self):
-        """
-        Verifies that batch survey contains tool evaluation questions.
-        These questions are asked at the end of each spurious type batch.
-        """
+    def test_batch_survey_is_empty(self):
+        """The end-of-model ratings were removed (repetitive of the per-question q4)."""
         survey = SurveyModule()
-        question_ids = [q.id for q in survey.batch_survey]
-
-        assert question_ids == ['batch_q1_panel_usefulness', 'batch_q2_reasoning_usefulness',
-                                'batch_q3_chat_usefulness'], "Exactly the three usefulness ratings"
+        assert survey.batch_survey == []
+        assert survey.validate_response('batch', {})['valid'] is True
 
     def test_get_questions_returns_both_types(self):
         """
@@ -173,9 +168,9 @@ class TestSurveyValidation:
         """
         survey = SurveyModule()
         responses = {
-            'q1_answer_correct': 'Yes',
+            'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Yes',
+            'q2_clinically_valid': 'Unbiased',
             'q2_confidence': 3,
             'q4_inference_method': ['From the model\'s reasoning text'],
         }
@@ -191,7 +186,7 @@ class TestSurveyValidation:
         """
         survey = SurveyModule()
         responses = {
-            'q1_answer_correct': 'Yes',
+            'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
             # Missing q2_clinically_valid, q2_confidence, q4_inference_method
         }
@@ -214,7 +209,7 @@ class TestSurveyValidation:
         responses = {
             'q1_answer_correct': 'Invalid Option',  # Not in options
             'q1_confidence': 3,
-            'q2_clinically_valid': 'Yes',
+            'q2_clinically_valid': 'Unbiased',
             'q2_confidence': 3,
             'q4_inference_method': ['From the model\'s reasoning text'],
         }
@@ -231,9 +226,9 @@ class TestSurveyValidation:
         """
         survey = SurveyModule()
         responses = {
-            'q1_answer_correct': 'Yes',
+            'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Yes',
+            'q2_clinically_valid': 'Unbiased',
             'q2_confidence': 3,
             'q4_inference_method': 'Not a list',  # Should be a list
         }
@@ -250,9 +245,9 @@ class TestSurveyValidation:
         """
         survey = SurveyModule()
         responses = {
-            'q1_answer_correct': 'Yes',
+            'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Yes',
+            'q2_clinically_valid': 'Unbiased',
             'q2_confidence': 3,
             'q4_inference_method': ['Valid', 'Invalid Option'],  # Contains invalid
         }
@@ -267,9 +262,9 @@ class TestSurveyValidation:
         """
         survey = SurveyModule()
         responses = {
-            'q1_answer_correct': 'Yes',
+            'q1_answer_correct': 'Correct',
             'q1_confidence': 10,  # Out of range (should be 1-5)
-            'q2_clinically_valid': 'Yes',
+            'q2_clinically_valid': 'Unbiased',
             'q2_confidence': 3,
             'q4_inference_method': ['From the model\'s reasoning text'],
         }
@@ -286,9 +281,9 @@ class TestSurveyValidation:
         """
         survey = SurveyModule()
         responses = {
-            'q1_answer_correct': 'Yes',
+            'q1_answer_correct': 'Correct',
             'q1_confidence': 'not a number',
-            'q2_clinically_valid': 'Yes',
+            'q2_clinically_valid': 'Unbiased',
             'q2_confidence': 3,
             'q4_inference_method': ['From the model\'s reasoning text'],
         }
@@ -304,9 +299,9 @@ class TestSurveyValidation:
         survey = SurveyModule()
         # q3_invalid_description has max_length of 500
         responses = {
-            'q1_answer_correct': 'Yes',
+            'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'No',
+            'q2_clinically_valid': 'Biased',
             'q2_confidence': 3,
             'q3_invalid_description': 'x' * 600,  # Exceeds 500 chars
             'q4_inference_method': ['From the model\'s reasoning text'],
@@ -323,13 +318,13 @@ class TestConditionalQuestions:
     def test_conditional_question_hidden_when_condition_not_met(self):
         """
         Verifies that conditional questions are skipped when condition isn't met.
-        q3_invalid_description should only show when q2_clinically_valid is 'No'.
+        q3_invalid_description should only show when q2_clinically_valid is 'Biased'.
         """
         survey = SurveyModule()
         responses = {
-            'q1_answer_correct': 'Yes',
+            'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Yes',  # conditional questions should be hidden
+            'q2_clinically_valid': 'Unbiased',  # conditional questions should be hidden
             'q2_confidence': 3,
             'q4_inference_method': ['From the model\'s reasoning text'],
         }
@@ -342,13 +337,13 @@ class TestConditionalQuestions:
     def test_conditional_question_required_when_condition_met(self):
         """
         Verifies that conditional questions are validated when condition is met.
-        When q2_clinically_valid is 'No' at question_index=0, q3_invalid_description is required.
+        When q2_clinically_valid is 'Biased' at question_index=0, q3_invalid_description is required.
         """
         survey = SurveyModule()
         responses = {
-            'q1_answer_correct': 'No',
+            'q1_answer_correct': 'Incorrect',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'No',
+            'q2_clinically_valid': 'Biased',
             'q2_confidence': 3,
             'q3_invalid_description': 'The model relies on demographic factors rather than clinical symptoms.',
             'q4_inference_method': ['From the model\'s reasoning text'],
@@ -360,13 +355,13 @@ class TestConditionalQuestions:
 
     def test_conditional_question_missing_when_required(self):
         """
-        Verifies that q3_invalid_description is required when q2_clinically_valid is 'No'.
+        Verifies that q3_invalid_description is required when q2_clinically_valid is 'Biased'.
         """
         survey = SurveyModule()
         responses = {
-            'q1_answer_correct': 'No',
+            'q1_answer_correct': 'Incorrect',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'No',
+            'q2_clinically_valid': 'Biased',
             'q2_confidence': 3,
             # q3_invalid_description is missing
             'q4_inference_method': ['From the model\'s reasoning text'],
@@ -384,9 +379,9 @@ class TestConditionalQuestions:
         """
         survey = SurveyModule()
         responses = {
-            'q1_answer_correct': 'Yes',
+            'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'No',
+            'q2_clinically_valid': 'Biased',
             'q2_confidence': 3,
             'q3_invalid_description': 'Uses spurious correlation.',
             'q4_inference_method': ['From the model\'s reasoning text'],
@@ -404,9 +399,9 @@ class TestConditionalQuestions:
         """
         survey = SurveyModule()
         responses = {
-            'q1_answer_correct': 'Yes',
+            'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'No',
+            'q2_clinically_valid': 'Biased',
             'q2_confidence': 3,
             'q3_same_as_before': 'Same as before',
             'q4_inference_method': ['From the model\'s reasoning text'],
@@ -423,9 +418,9 @@ class TestConditionalQuestions:
         """
         survey = SurveyModule()
         responses = {
-            'q1_answer_correct': 'Yes',
+            'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'No',
+            'q2_clinically_valid': 'Biased',
             'q2_confidence': 3,
             'q3_same_as_before': 'Different',
             # q3_invalid_description missing
@@ -440,14 +435,14 @@ class TestConditionalQuestions:
 
     def test_show_when_includes_for_elaboration(self):
         """
-        Verifies that q4_inference_elaboration is required only when 'Other' is selected.
+        Verifies that q4_inference_elaboration is required only when 'Other' is ranked.
         """
         survey = SurveyModule()
         # Without "Other" - elaboration not required
         responses = {
-            'q1_answer_correct': 'Yes',
+            'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Yes',
+            'q2_clinically_valid': 'Unbiased',
             'q2_confidence': 3,
             'q4_inference_method': ['From the model\'s reasoning text'],
         }
@@ -455,64 +450,31 @@ class TestConditionalQuestions:
         result = survey.validate_response('per_question', responses)
         assert result['valid'] is True
 
-        # With "Other" - elaboration is optional (required=False) but should be visible
+        # With "Other" ranked - elaboration becomes required
         responses2 = {
-            'q1_answer_correct': 'Yes',
+            'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Yes',
+            'q2_clinically_valid': 'Unbiased',
             'q2_confidence': 3,
             'q4_inference_method': ['Other'],
         }
 
         result2 = survey.validate_response('per_question', responses2)
-        assert result2['valid'] is True  # elaboration is optional
+        assert result2['valid'] is False
+        responses2['q4_inference_elaboration'] = 'Looked it up in UpToDate'
+        assert survey.validate_response('per_question', responses2)['valid'] is True
 
-
-class TestBatchSurveyValidation:
-    """Tests specific to batch survey validation."""
-
-    def test_validate_valid_batch_responses(self):
-        """
-        Verifies that valid batch survey responses pass validation.
-        """
+    def test_ranking_rejects_duplicates(self):
         survey = SurveyModule()
         responses = {
-            'batch_q1_panel_usefulness': 4,
-            'batch_q2_reasoning_usefulness': 5,
-            'batch_q3_chat_usefulness': 3,
+            'q1_answer_correct': 'Correct',
+            'q1_confidence': 4,
+            'q2_clinically_valid': 'Unbiased',
+            'q2_confidence': 3,
+            'q4_inference_method': ["From the model's reasoning text"] * 2,
         }
-
-        result = survey.validate_response('batch', responses)
-
-        assert result['valid'] is True
-
-    def test_validate_batch_missing_rating_fails(self):
-        """
-        Verifies that every batch rating is required.
-        """
-        survey = SurveyModule()
-        responses = {
-            'batch_q1_panel_usefulness': 4,
-            'batch_q3_chat_usefulness': 3,
-        }
-
-        result = survey.validate_response('batch', responses)
-
-        assert result['valid'] is False
-
-    def test_validate_batch_missing_required_likert(self):
-        """
-        Verifies that missing required Likert questions fail validation.
-        """
-        survey = SurveyModule()
-        responses = {
-            'batch_q1_tool_usefulness': 4
-            # Missing batch_q2 and batch_q3
-        }
-
-        result = survey.validate_response('batch', responses)
-
-        assert result['valid'] is False
+        errors = survey.validate_response('per_question', responses)['errors']
+        assert [e['question_id'] for e in errors] == ['q4_inference_method']
 
 
 class TestValidationErrorMessages:
@@ -557,7 +519,7 @@ class TestEmptyResponses:
         responses = {
             'q1_answer_correct': '',  # Empty string
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Yes',
+            'q2_clinically_valid': 'Unbiased',
             'q2_confidence': 3,
             'q4_inference_method': ['From the model\'s reasoning text'],
         }
@@ -572,9 +534,9 @@ class TestEmptyResponses:
         """
         survey = SurveyModule()
         responses = {
-            'q1_answer_correct': 'Yes',
+            'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Yes',
+            'q2_clinically_valid': 'Unbiased',
             'q2_confidence': 3,
             'q4_inference_method': [],  # Empty list
         }
@@ -591,7 +553,7 @@ class TestEmptyResponses:
         responses = {
             'q1_answer_correct': None,
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Yes',
+            'q2_clinically_valid': 'Unbiased',
             'q2_confidence': 3,
             'q4_inference_method': ['From the model\'s reasoning text'],
         }

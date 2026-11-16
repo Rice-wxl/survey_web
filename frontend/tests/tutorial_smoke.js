@@ -64,7 +64,7 @@ const check = (ok, msg) => { if (!ok) throw new Error(msg); };
     4() {
       check(tabs().join('|') === 'Model response|Extra panel', 'step4 tabs ' + tabs());
       check(!$('#interp-tool-panel').classList.contains('hidden') && $('.jl-grid'), 'step4 jlens not open');
-      check($('#interp-tool-panel [data-note="jlens"]').textContent.includes('from early stages (depth 1) to late ones (depth 15)'), 'jlens note');
+      check($('#interp-tool-panel [data-note="jlens"]').textContent.includes('At each layer or depth of processing'), 'jlens note');
       check($('#interp-tool-panel [data-note="span"]'), 'span note');
     },
     5() {
@@ -74,14 +74,17 @@ const check = (ok, msg) => { if (!ok) throw new Error(msg); };
       check($('#interp-tool-panel [data-note="span"]'), 'span note');
     },
     6() {
-      const v = visibleQ();
-      for (const q of ['batch_q1_panel_usefulness', 'batch_q2_reasoning_usefulness', 'batch_q3_chat_usefulness'])
-        check(v.includes(q), 'step6 missing ' + q);
-      check($$('.end-survey-option').length === 4 && $$('.end-clarity-option').length === 5, 'end-of-study questions');
-      check(notes() === 'clarity,interface,usefulness', 'step6 notes ' + notes());
-      check(!$('#btn-next-batch') && !$('#btn-finish-study'), 'submit buttons present');
+      check(tabs().join('|') === 'Model response|Extra panel', 'step6 tabs');
+      check($$('#interp-tool-panel .lrp-w').length > 0, 'step6 lrp heatmap');
+      check($('#interp-tool-panel [data-note="lrp"] strong')?.textContent === 'input question', 'lrp note');
+      check(!$('#interp-tool-panel [data-note="span"]'), 'span note on lrp');
     },
-    7() { check(d.body.textContent.includes("You're ready") && $('#tutorial-restart'), 'ready screen'); },
+    7() {
+      check($$('.end-survey-option').length === 5 && $$('.end-clarity-option').length === 5, 'end-of-study questions');
+      check(notes() === 'clarity,interface', 'step7 notes ' + notes());
+      check(!$('#btn-finish-study'), 'submit button present');
+    },
+    8() { check(d.body.textContent.includes("You're ready") && $('#tutorial-restart'), 'ready screen'); },
   };
 
   const seen = [];
@@ -106,9 +109,9 @@ const check = (ok, msg) => { if (!ok) throw new Error(msg); };
   $('#btn-instructions').click(); $('#tutorial-back').click(); await at(1);
   check(!$('#instructions-modal'), 'pop-up left open across steps');
   $('#tutorial-next').click(); await at(2);
-  for (let n = 3; n <= 7; n++) { $('#tutorial-next').click(); await at(n); }
+  for (let n = 3; n <= 8; n++) { $('#tutorial-next').click(); await at(n); }
   check($('#tutorial-next').classList.contains('hidden'), 'Next shown on done');
-  for (let n = 6; n >= 1; n--) { $('#tutorial-back').click(); await at(n); }
+  for (let n = 7; n >= 1; n--) { $('#tutorial-back').click(); await at(n); }
   check($('#tutorial-back').disabled, 'Back enabled on step 1');
   $('#tutorial-next').click(); await at(2);
   check($$('#chat-panel .chat-message').length === 4, 'chat lost across steps');

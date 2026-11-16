@@ -11,9 +11,11 @@ const API = {
     baseUrl: window.location.origin,
     key: _params.get('k') || '',
     mode: ['free', 'tutorial'].includes(_params.get('mode')) ? _params.get('mode') : 'real',
+    condition: null,   // trial keys, real mode: the current batch's picked condition (app.js)
 
     async request(endpoint, options = {}) {
-        const url = `${this.baseUrl}/api${endpoint}?mode=${this.mode}`;
+        const url = `${this.baseUrl}/api${endpoint}?mode=${this.mode}` +
+                    (this.condition ? `&condition=${this.condition}` : '');
         const opts = {
             ...options,
             headers: { 'Content-Type': 'application/json', 'X-Study-Key': this.key },
@@ -37,13 +39,14 @@ const API = {
         return this.request(`/batch/${batch}/item/${index}`);
     },
 
-    chatWithModel(batch, itemId, messages) {
+    /** meta: {conversation_id, conversation_index, kind, cf?} (see chatInterface). */
+    chatWithModel(batch, itemId, messages, meta = {}) {
         if (this.mode === 'tutorial') {  // base model, nothing saved
-            return this.request('/tutorial/chat', { method: 'POST', body: { messages } });
+            return this.request('/tutorial/chat', { method: 'POST', body: { messages, kind: meta.kind, cf: meta.cf } });
         }
         return this.request('/model/chat', {
             method: 'POST',
-            body: { batch, item_id: itemId, messages },
+            body: { batch, item_id: itemId, messages, ...meta },
         });
     },
 

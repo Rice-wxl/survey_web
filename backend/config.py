@@ -18,16 +18,18 @@ class Config:
     PARTICIPANTS_FILE = Path(os.getenv('PARTICIPANTS_FILE', BASE_DIR / 'participants.json'))
     AUTH = os.getenv('STUDY_AUTH', 'on') != 'off'      # off only for local dev
 
-    # Batch order is fixed; the Latin square permutes it per participant.
+    # Batch order is fixed; the schedule (app.SCHEDULES) permutes it per participant.
     ORGANISMS = ['young_agg', 'female_RA', 'asian_dosages']
-    CONDITIONS = ['blackbox', 'jlens', 'sae']
-    # 10 = full audit panel (3 spurious / 2 cf / 5 controlled); 6 = 2/2/2 subsample.
-    ITEMS_PER_ORGANISM = int(os.getenv('ITEMS_PER_ORGANISM', 10))
+    CONDITIONS = ['blackbox', 'jlens', 'sae', 'lrp']   # lrp = AttnLRP word heatmap (2026-11-07)
+    # = the survey panel size (3 spurious / 2 cf / 2 controlled since 2026-11-05). A smaller
+    # value subsamples per variant (app.build_plan), a leftover of the 10-item audit panels.
+    ITEMS_PER_ORGANISM = int(os.getenv('ITEMS_PER_ORGANISM', 7))
 
     # Live chat: vLLM OpenAI-compatible server with one LoRA per organism key.
     VLLM_URL = os.getenv('VLLM_URL', 'http://127.0.0.1:8000')
     BASE_MODEL = 'meta-llama/Llama-3.1-8B-Instruct'   # vLLM served name; tutorial chat
     CHAT_MAX_TOKENS = int(os.getenv('CHAT_MAX_TOKENS', 1024))
-    CHAT_MAX_TURNS = int(os.getenv('CHAT_MAX_TURNS', 20))   # user turns per conversation
+    CHAT_MAX_TURNS = int(os.getenv('CHAT_MAX_TURNS', 15))   # user turns per conversation (frontend MAX_TURNS)
+    CF_MAX_TOKENS = 2048   # a counterfactual's first reply: the cached responses' token cap
     # Same sampling as the cached responses (agent_audit/config.py GEN).
     GEN = dict(temperature=0.6, top_p=0.9, repetition_penalty=1.2)

@@ -17,9 +17,16 @@ const TOOL_INFO = {
     sae: {
         name: 'SAE features',
         blurb: 'Abstract concepts the model is internally "thinking" while it reads the question ' +
-               'or gives its response. Top-25 are shown, ranked: top = strongest.',
+               'or gives its response. Top-20 are shown, ranked: top = strongest and most specific to ' +
+               'this case (concepts that show up in any medical text are ranked lower).',
     },
 };
+
+// AttnLRP heatmap intensity = log(1 + K|v|) / log(1 + K), |v| in [0, 1] (strongest shown word = 1).
+// Smooth and strictly monotone (no clipping); K lifts small values. On the 18 survey items:
+// K=60 tints ~41% of vignette words visibly (linear: 3%; K=100: 54% and K=300: 84% were too
+// crowded), and 0.22 vs 1.0 reads 0.65 vs 1.0.
+const LRP_LOG_K = 60;
 
 class InterpToolsModule {
     constructor(containerSelector) {
@@ -27,8 +34,6 @@ class InterpToolsModule {
         this.readouts = {};
         this.tool = null;
         this.span = 'question';
-        this.saeSource = 'activation';   // free mode: 'activation' | 'tfidf' | 'mean' (gradient)
-        this.saeLabels = 'middle';       // free mode: 'middle' | 'original' explainer-prompt labels
     }
 
     setContainer(containerSelector) {
@@ -49,6 +54,7 @@ class InterpToolsModule {
 
     draw() {
         if (!this.container || !this.tool) return;
+        if (this.tool === 'lrp') return this.drawLrp();
         const pill = (attr, value, label, on) => `
             <button data-${attr}="${value}" class="interp-${attr} px-3 py-1
                 ${on ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}">${label}</button>`;
@@ -56,42 +62,15 @@ class InterpToolsModule {
             <div class="inline-flex rounded-lg border overflow-hidden mb-3 text-sm">
                 ${[['question', 'While reading the question'], ['reasoning', 'While giving the response']].map(([s, label]) => pill('span', s, label, s === this.span)).join('')}
             </div>`;
-        // Free mode also ships the original-prompt SAE labels (same features, older text);
-        // offer them as a label switch.
-        const hasOrig = this.tool === 'sae' && Object.keys(this.readouts.sae_orig || {}).length > 0;
-        const orig = hasOrig && this.saeLabels === 'original';
-        const labelToggle = hasOrig ? `
-            <div class="inline-flex rounded-lg border overflow-hidden mb-3 ml-2 text-sm">
-                ${[['middle', 'Middle-ground labels'], ['original', 'Original-prompt labels']].map(([k, label]) => pill('labels', k, label, k === this.saeLabels)).join('')}
-            </div>` : '';
-        // Free mode ships gradient-ranked SAE panels too; offer them as a source toggle.
-        const grad = this.tool === 'sae' ? ((orig ? this.readouts.sae_grad_orig : this.readouts.sae_grad) || {}) : {};
-        const tfidf = this.tool === 'sae' ? ((orig ? this.readouts.sae_tfidf_orig : this.readouts.sae_tfidf) || {}) : {};
-        // Gradient = vs the mean of the other options; the vs-best variant stays on disk only.
-        const sources = [['activation', 'Activation'], ['tfidf', 'TF-IDF'], ['mean', 'Gradient']]
-            .filter(([k]) => k === 'activation' || (k === 'tfidf' ? tfidf.question : grad[k]));
-        if (!sources.some(([k]) => k === this.saeSource)) this.saeSource = 'activation';
-        const sourceToggle = sources.length > 1 ? `
-            <div class="inline-flex rounded-lg border overflow-hidden mb-3 ml-2 text-sm">
-                ${sources.map(([k, label]) => pill('source', k, label, k === this.saeSource)).join('')}
-            </div>` : '';
-        const data = this.tool === 'sae' && this.saeSource === 'tfidf' ? tfidf[this.span]
-            : this.tool === 'sae' && this.saeSource !== 'activation'
-            ? grad[this.saeSource][this.span]
-            : (orig ? this.readouts.sae_orig : this.readouts[this.tool])[this.span];
+        // `sae` is the TF-IDF ranking with middle-ground labels in every mode (the tutorial
+        // falls back to activation only if its TF-IDF list has not been built).
+        const data = this.readouts[this.tool][this.span];
         const body = this.tool === 'jlens' ? this.renderJlens(data) : this.renderSae(data);
 
         this.container.innerHTML = `
             <h2 class="text-lg font-semibold text-gray-800 mb-2">Extra panel</h2>
-            <p class="text-sm text-gray-500 mb-3">${this.tool === 'sae' && this.saeSource === 'tfidf'
-                ? 'SAE features ranked by average activation over the text, weighted by how rare the ' +
-                  'feature is in ordinary clinical notes (TF-IDF): features that fire on any medical ' +
-                  'text are pushed down. Ranked: top = highest score.'
-                : this.tool === 'sae' && this.saeSource !== 'activation'
-                ? 'SAE features ranked by how much they pushed the model toward the answer it chose, ' +
-                  'over the average other option (gradient attribution). Ranked: top = largest push.'
-                : TOOL_INFO[this.tool].blurb}</p>
-            <div>${spanToggle}${sourceToggle}${labelToggle}</div>
+            <p class="text-sm text-gray-500 mb-3">${TOOL_INFO[this.tool].blurb}</p>
+            <div>${spanToggle}</div>
             ${body}
         `;
         // Hover a token: light up the same token at every depth (recurrence spotting).
@@ -124,17 +103,38 @@ class InterpToolsModule {
             window.studyTimer?.logEvent('interp_span', { tool: this.tool, span: this.span });
             this.draw();
         }));
-        this.container.querySelectorAll('.interp-source').forEach(b => b.addEventListener('click', () => {
-            this.saeSource = b.dataset.source;
-            window.studyTimer?.logEvent('interp_sae_source', { source: this.saeSource, span: this.span });
-            this.draw();
-        }));
-        this.container.querySelectorAll('.interp-labels').forEach(b => b.addEventListener('click', () => {
-            this.saeLabels = b.dataset.labels;
-            window.studyTimer?.logEvent('interp_sae_labels', { labels: this.saeLabels, span: this.span });
-            this.draw();
-        }));
         this.afterDraw?.(this.container);   // tutorial pins its notes here
+    }
+
+    /**
+     * AttnLRP word heatmap. Values are relevance normalized to [-1, 1] by the
+     * largest |R| over the shown words: red = pushed toward the chosen answer, blue = away.
+     * Letter labels are not attributed and stay uncolored.
+     * Fixed on the MAX contrast (pick vs runner-up option) since 2026-11-05; the mean-contrast
+     * comparison is frozen in spurious_detect/whitebox/results/lrp/max_vs_mean/.
+     */
+    drawLrp() {
+        const d = (this.readouts.lrp || {}).max;
+        if (!d) return;
+        const word = ([w, v]) => {
+            const a = Math.log1p(LRP_LOG_K * Math.min(Math.abs(v), 1)) / Math.log1p(LRP_LOG_K) * 0.8;
+            const rgb = v >= 0 ? '220, 38, 38' : '37, 99, 235';
+            return `<span class="lrp-w rounded px-0.5"
+                style="background: rgba(${rgb}, ${a.toFixed(3)})">${this.escapeHtml(w)}</span>`;
+        };
+        const words = ws => ws.map(word).join(' ');
+        this.container.innerHTML = `
+            <h2 class="text-lg font-semibold text-gray-800 mb-2">Extra panel</h2>
+            <p class="text-sm text-gray-500 mb-3">Which words in the question pushed the model toward the answer
+                it selected. <span class="text-red-700 font-medium">Red</span> = pushed toward the chosen answer,
+                <span class="text-blue-700 font-medium">blue</span> = pushed away; darker = stronger.</p>
+            <p class="text-base leading-loose mb-4">${words(d.question)}</p>
+            <div class="space-y-1 text-base leading-loose">
+                ${Object.keys(d.options).sort().map(k => `
+                    <div><span class="text-gray-500 font-medium">${k}.</span> ${words(d.options[k])}</div>`).join('')}
+            </div>
+        `;
+        this.afterDraw?.(this.container);
     }
 
     /** depths x ranked tokens grid. */

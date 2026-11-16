@@ -1,6 +1,6 @@
 /**
  * Tutorial mode (/?mode=tutorial): the real-mode screens on one practice item, with yellow
- * sticky notes and a Step N of 6 bar. Chat goes to the base model; nothing is submitted.
+ * sticky notes and a Step N of 7 bar. Chat goes to the base model; nothing is submitted.
  * The only record saved is tutorial_complete, and only when the link carries a valid key.
  */
 
@@ -8,32 +8,36 @@ const TUT_NOTES = {
     question: 'The medical question and answer options.',
     response: "The model's answer and its step-by-step reasoning.",
     chat: 'Chat with the model. It remembers this question and its answer — ask follow-ups, ' +
-          'or start a new conversation.',
+          'or start a new conversation. "Ask counterfactual" lets you edit the question or its options ' +
+          'and ask the edited version in a new conversation, without the original. Past conversations ' +
+          'are listed on the left. Each conversation is limited to 15 messages.',
     q1: 'Your own clinical judgement of the final answer.',
     q2: 'A model can get the right answer for the wrong reasons, or the reverse. Judge the reasoning.',
     q3: 'If the reasoning seems flawed, describe how. From the second question on, you can select ' +
         '"same as before" since each batch of questions shares a biased clinical reasoning, if there is one.',
-    q4: 'Which sources you used: the response, the interpretability panel, the conversation, your own knowledge.',
-    jlens: 'The model processes the question in different stages, and we present words (or partial words) ' +
-           'from early stages (depth 1) to late ones (depth 15). Words that keep showing up across rows ' +
-           'may hint at what\'s driving the model\'s decision. You may hover over or click a word to see where it ' +
-           'occurs across depths.',
-    sae: 'Instead of single words, each concept is written as a short plain-English description, ' +
-         'e.g. "words about blood pressure". Look for concepts that do not represent good clinical reasoning.',
-    span: 'Switch between what the model thought while reading the question vs. while writing its response.',
-    usefulness: 'After all questions for one model: how helpful the interpretability panel, the model\'s ' +
-                'reasoning and the conversation were for understanding its behavior.',
+    q4: 'Pick the sources that helped (the response, the interpretability panel, the conversation, your own knowledge) and rank them; leave out any that did not.',
+    jlens: 'An LLM processes an input through many layers before providing the output. At each layer ' +
+           'or depth of processing, we extract words (or partial words) that the model is internally carrying ' +
+           'that may have an effect on the output. You may hover over or click a word to see where it occurs ' +
+           'across depths.',
+    sae: 'Instead of single words, we treat information in a model\'s internal state as a mix of many ' +
+         'concepts and use a tool to separate and retrieve individual concepts, each written as a short ' +
+         'plain-English description, e.g. "words about blood pressure". The concepts shown are the ones ' +
+         'most active and most specific to this case. Look for concepts that may reflect potential biases.',
+    lrp: 'This panel highlights the individual words in the **input question** that contributed the most ' +
+         'to the model\'s choice of answer. Red words pushed the model toward its chosen ' +
+         'answer; blue words pushed it away. Darker means stronger.',
+    span: 'Switch between what the model is carrying while reading the question vs. while writing its response.',
     clarity: 'How clear and easy to read the interpretability panel was, across all models.',
     interface: 'Which one helped you most across all models.',
 };
-const TUT_STEPS = 6;
-const TUT_STEP_NAMES = ['Introduction', 'The basics', 'Question survey', 'Extra panel: words', 'Extra panel: concepts', 'Final questions'];
+const TUT_STEPS = 7;
+const TUT_STEP_NAMES = ['Introduction', 'The basics', 'Question survey', 'Extra panel: words', 'Extra panel: concepts', 'Extra panel: word highlights', 'Final questions'];
 
 class TutorialMode {
     constructor() {
         this.step = 1;
         this.item = null;
-        this.chat = null;       // conversation kept across steps
         this.completed = false;
     }
 
@@ -67,15 +71,12 @@ class TutorialMode {
     }
 
     note(key, extra = '') {
-        return `<div class="tut-note ${extra}" data-note="${key}">${escapeTut(TUT_NOTES[key])}</div>`;
+        const html = escapeTut(TUT_NOTES[key]).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        return `<div class="tut-note ${extra}" data-note="${key}">${html}</div>`;
     }
 
     go(step) {
         if (step < 1 || step > TUT_STEPS + 1) return;
-        if (document.getElementById('chat-panel') && window.chatInterface.messages.length) {
-            this.chat = { messages: [...window.chatInterface.messages],
-                          seedLength: window.chatInterface.seedLength };
-        }
         this.app.closeSurveyModal();
         this.app.closeInstructions();
         this.step = step;
@@ -91,8 +92,8 @@ class TutorialMode {
         document.getElementById('tutorial-next').classList.toggle('hidden', step > TUT_STEPS);
         window.scrollTo?.(0, 0);
         ({ 1: () => this.showIntro(), 2: () => this.showTask(null), 3: () => this.showSurvey(),
-           4: () => this.showTask('jlens'), 5: () => this.showTask('sae'), 6: () => this.showVerdict(),
-           7: () => this.showReady() })[step]();
+           4: () => this.showTask('jlens'), 5: () => this.showTask('sae'), 6: () => this.showTask('lrp'),
+           7: () => this.showVerdict(), 8: () => this.showReady() })[step]();
     }
 
     /** Step 1: the real intro page as is (no notes). */
@@ -104,7 +105,7 @@ class TutorialMode {
         document.getElementById('btn-start-study').addEventListener('click', () => this.go(2));
     }
 
-    /** The real task screen; tool = null (step 2, no tabs) | 'jlens' | 'sae'. */
+    /** The real task screen; tool = null (step 2, no tabs) | 'jlens' | 'sae' | 'lrp'. */
     showTask(tool) {
         const app = this.app, item = this.item;
         app.appContainer.innerHTML = document.getElementById('template-task').innerHTML;
@@ -127,11 +128,7 @@ class TutorialMode {
         window.interpTools.span = 'question';
         window.interpTools.render(tool ? { [tool]: item.readouts[tool] } : {});
         app.setupRightTabs(tool ? [tool] : []);
-        window.chatInterface.init(0, item.id, this.chat ? [] : window.qaDisplay.getSeedMessages());
-        if (this.chat) {
-            Object.assign(window.chatInterface, this.chat);
-            window.chatInterface.render();
-        }
+        window.chatInterface.init(0, item.id, window.qaDisplay.getSeedMessages());  // restores earlier steps' chats
 
         if (!tool) {  // step 2: notes in the margin above each panel
             document.querySelector('main').insertAdjacentHTML('afterbegin', `
@@ -149,9 +146,9 @@ class TutorialMode {
 
     /** Called after every interpTools.draw(): pin the step's notes inside the panel. */
     notePanel(container) {
-        if (this.step !== 4 && this.step !== 5) return;
-        container.querySelector('p')?.insertAdjacentHTML('afterend',
-            this.note(this.step === 4 ? 'jlens' : 'sae', 'mb-3'));
+        const key = { 4: 'jlens', 5: 'sae', 6: 'lrp' }[this.step];
+        if (!key) return;
+        container.querySelector('p')?.insertAdjacentHTML('afterend', this.note(key, 'mb-3'));
         container.querySelector('.interp-span')?.closest('.inline-flex')
             .insertAdjacentHTML('afterend', this.note('span', 'tut-inline'));
     }
@@ -176,13 +173,13 @@ class TutorialMode {
         modal.firstElementChild.classList.add('pt-12');
         modal.querySelector('.max-w-2xl').classList.replace('max-w-2xl', 'max-w-5xl');
 
-        // Show the conditional q3 items as they appear from question 2 on, after "No".
+        // Show the conditional q3 items as they appear from question 2 on, after "Biased".
         const survey = window.surveyModule;
         survey.setQuestionIndex(1);
         survey.lastInvalidDescription = 'Your description from an earlier question appears here.';
         survey.renderPerQuestionSurvey('#survey-questions-container');
         const box = document.getElementById('survey-questions-container');
-        box.querySelector('[data-question="q2_clinically_valid"][data-value="No"]')?.click();
+        box.querySelector('[data-question="q2_clinically_valid"][data-value="Biased"]')?.click();
         box.querySelector('[data-question="q3_same_as_before"][data-value="Different"]')?.click();
         this.sideNotes(box, { q1_answer_correct: 'q1', q2_clinically_valid: 'q2',
                               q3_same_as_before: 'q3', q4_inference_method: 'q4' });
@@ -192,20 +189,13 @@ class TutorialMode {
         document.getElementById('btn-submit-survey').addEventListener('click', () => this.go(4));
     }
 
-    /** Step 6: the per-model ratings, then the end-of-study questions; not submitted. */
+    /** Step 7: the end-of-study questions; not submitted. */
     showVerdict() {
         const app = this.app;
-        app.appContainer.innerHTML = document.getElementById('template-batch-survey').innerHTML +
-            document.getElementById('template-end-survey').innerHTML;
+        app.appContainer.innerHTML = document.getElementById('template-end-survey').innerHTML;
         app.appContainer.querySelectorAll('.max-w-2xl').forEach(c => c.classList.replace('max-w-2xl', 'max-w-5xl'));
-        app.appContainer.firstElementChild.classList.replace('min-h-screen', 'pb-0');  // stack, no gap
-        document.getElementById('batch-label').textContent = 'Model 1';
-        document.getElementById('btn-next-batch').remove();
         document.getElementById('btn-finish-study').remove();
 
-        window.surveyModule.renderBatchSurvey('#batch-survey-container');
-        const box = document.getElementById('batch-survey-container');
-        this.sideNotes(box, { batch_q1_panel_usefulness: 'usefulness' });
         const end = document.getElementById('end-survey-interface-options').closest('.space-y-8');
         this.sideNotes(end, { ':scope > div:nth-child(1)': 'interface', ':scope > div:nth-child(2)': 'clarity' });
         document.querySelectorAll('.end-survey-option').forEach(b => b.addEventListener('click', () => {

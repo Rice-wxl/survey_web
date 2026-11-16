@@ -26,15 +26,14 @@
     <!-- Introduction Screen Template -->
     <template id="template-intro">
         <div class="min-h-screen bg-gray-50 p-6">
-            <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8">
+            <div class="intro-scale max-w-[1440px] mx-auto bg-white rounded-lg shadow-lg p-8">
                 <h1 class="text-3xl font-bold text-gray-800 mb-5">Interpretability Annotation Study</h1>
-                <p class="text-gray-600 mb-10">Thank you for participating in this project. You will review a large language model (LLM)'s answers to medical questions and judge whether its reasoning is clinically valid or biased.</p>
+                <p class="text-gray-600 mb-10">Thank you for participating in this project. You will review a large language model (LLM)'s answers to medical questions and judge whether its reasoning is clinically biased or unbiased.</p>
 
                 <div id="intro-prototype-banner" class="hidden bg-purple-50 border-l-4 border-purple-500 p-4 rounded mb-6 text-purple-800">
                     <strong>Prototype mode (unblinded).</strong> Each question is labelled spurious / counterfactual / controlled, the bias is named, and every interpretability view can be toggled.
                 </div>
 
-                <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-4">Before you start</h2>
                 <div class="intro-instructions"></div>
 
                 <p class="mb-4 text-sm text-gray-500">Participant ID: <span id="intro-participant-id" class="font-mono"></span></p>
@@ -52,31 +51,40 @@
 
     <!-- Instructions: shared by the intro page and the task screen's Instructions pop-up -->
     <template id="template-instructions">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-10">
+              <div>
+                <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-4">Before you start</h2>
                 <div class="space-y-6 mb-10">
-                    <div class="border-l-4 border-amber-500 bg-amber-50 rounded-r-lg p-5 space-y-4 text-amber-900">
-                        <p>You will review <strong><span id="num-spurious-types">several</span> batches of <span id="num-questions">several</span> questions</strong>. Within a batch, every answer comes from the <strong>same LLM</strong>, so all answers share the same underlying clinical reasoning.</p>
-                        <p>Each batch contains either one clinical bias or none. Read every question in the batch, then identify the bias if there is one, or conclude that the reasoning is clinically valid throughout.</p>
-                        <p><strong>IMPORTANT:</strong> This study is about the model's clinical reasoning, <strong>not whether its answers are correct</strong>. A correct answer can still be biased, and every batch includes both correct and incorrect answers. Don't judge the model on its mistakes alone; look for a bias that <strong>recurs across the batch</strong>.</p>
+                    <div class="space-y-4 text-gray-700">
+                        <p>You will review <strong><span id="num-spurious-types">several</span> batches of <span id="num-questions">several</span> questions</strong>. Within a batch, every answer comes from the <strong>same LLM</strong>. While a biased model won't show its bias on every question, wherever it does, it will be the same bias. There may also be batches where, to our knowledge, the underlying LLM does not carry a clinical bias.</p>
+                        <p>As you review each question, try to identify the bias if you believe it is present in that answer, or conclude that the reasoning is clinically unbiased.</p>
                     </div>
                     <div class="border-l-4 border-blue-500 bg-blue-50 rounded-r-lg p-5 space-y-4 text-blue-900">
-                        <p>To help you decide whether the reasoning is valid or biased for a given question, you will see the model's full response and can chat directly with the model about its reasoning.</p>
-                        <p>In some batches, you will also have an <strong>extra interpretability panel</strong>, which lists factors that may be influencing the model's predictions. Use it if helpful.</p>
+                        <p>To help you judge the model's clinical reasoning, you will see the model's <strong>full response</strong> and can <strong>chat</strong> directly with the model about its reasoning. You can also <strong>ask a counterfactual</strong>: edit part of the question and see how the model answers the changed version.</p>
+                        <p>In some batches, you will also have an <strong>extra interpretability panel</strong>, which lists factors read from the model's internals that may be influencing its predictions. It is designed to help you decide whether the model's reasoning is clinically biased or unbiased.</p>
                     </div>
                 </div>
 
                 <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-4">For each question</h2>
-                <ol class="space-y-3 text-gray-700 mb-10">
+                <ol class="space-y-3 text-gray-700">
                     <li class="flex gap-3"><span class="intro-num">1</span>Read the question and the model's answer, including its reasoning.</li>
                     <li class="flex gap-3"><span class="intro-num">2</span>Check the extra panel, if there is one.</li>
                     <li class="flex gap-3"><span class="intro-num">3</span>Chat with the model to probe its reasoning, if needed.</li>
                     <li class="flex gap-3"><span class="intro-num">4</span>Answer a short survey about the model's answer and reasoning.</li>
                 </ol>
+              </div>
+              <div>
+                <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-4">What is a bias?</h2>
+                <p class="text-gray-700 mb-6">LLMs may learn different types of biases and use these to make decisions during LLM-assisted medicine. Critically, a model can reach a clinically correct answer with biased reasoning, or reach an incorrect answer without any systematic bias. In your investigation, don't judge the model's reasoning on its mistakes alone; look for a bias that <strong>recurs across the batch</strong>.</p>
+                <img src="img/cognitive_bias_intro.jpg" alt="Cognitive bias in clinical LLMs: suggestibility, availability, confirmation, framing and anchoring bias" class="w-full max-w-xl mx-auto">
+              </div>
+            </div>
     </template>
 
     <!-- Instructions pop-up (task screen header button) -->
     <template id="template-instructions-modal">
         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="bg-white rounded-lg intro-scale shadow-xl max-w-[1440px] w-full mx-4 max-h-[90vh] overflow-y-auto">
                 <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
                     <h2 class="text-xl font-bold text-gray-800">Instructions</h2>
                     <button class="btn-close-instructions text-gray-400 hover:text-gray-600" aria-label="Close">
@@ -154,8 +162,8 @@
     <template id="template-survey-modal">
         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-                <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
-                    <h2 class="text-xl font-bold text-gray-800">Evaluation Questions</h2>
+                <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-start gap-4">
+                    <p class="text-gray-800">Answer these questions about the model's behavior. Judge based on its <strong>original answer</strong> (i.e. what's shown under "Model's Response"), even if it later changes that answer during chat.</p>
                     <button id="btn-close-survey" class="text-gray-400 hover:text-gray-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -193,7 +201,7 @@
             <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8 text-center">
                 <h1 class="text-2xl font-bold text-gray-800 mb-4"><span id="batch-label"></span>: complete</h1>
                 <p class="text-gray-600 mb-6">
-                    You have completed all questions for this model. Please rate how helpful each source of information was.
+                    You have completed all questions for this model.
                 </p>
 
                 <div id="batch-survey-container" class="text-left mb-8"></div>
@@ -217,12 +225,13 @@
 
                 <div class="space-y-8">
                     <div>
-                        <p class="font-medium text-gray-800 mb-3">Which interface did you find the most helpful in understanding the model's decision-making?</p>
+                        <p class="font-medium text-gray-800 mb-3">Overall, which interface did you find the most helpful in understanding the model's decision-making?</p>
                         <div class="space-y-2" id="end-survey-interface-options">
                             <button type="button" class="end-survey-option w-full text-left px-4 py-3 border rounded-lg hover:bg-blue-50 transition" data-value="reasoning_text">The model's reasoning text</button>
                             <button type="button" class="end-survey-option w-full text-left px-4 py-3 border rounded-lg hover:bg-blue-50 transition" data-value="chat_interface">The conversation interface</button>
                             <button type="button" class="end-survey-option w-full text-left px-4 py-3 border rounded-lg hover:bg-blue-50 transition" data-value="jlens">The extra panel showing ranked words at different depths</button>
                             <button type="button" class="end-survey-option w-full text-left px-4 py-3 border rounded-lg hover:bg-blue-50 transition" data-value="sae">The extra panel showing ranked concept descriptions</button>
+                            <button type="button" class="end-survey-option w-full text-left px-4 py-3 border rounded-lg hover:bg-blue-50 transition" data-value="lrp">The extra panel highlighting words in the question</button>
                         </div>
                         <div class="text-red-500 text-sm mt-1" id="end-survey-interface-error"></div>
                     </div>
@@ -253,6 +262,13 @@
                         class="w-full mt-8 bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition">
                     Finish Study
                 </button>
+
+                <p class="mt-8 pt-6 border-t text-gray-600">
+                    Thank you for participating in the study. We have curated the correct answers for every
+                    medical question you reviewed in this study if you would like to revisit them:
+                    <!-- TODO: replace href with the answer-key link -->
+                    <a id="answers-link" href="#" target="_blank" rel="noopener" class="text-blue-600 underline hover:text-blue-800">[answer key link]</a>
+                </p>
             </div>
         </div>
     </template>

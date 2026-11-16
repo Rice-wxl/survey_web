@@ -7,6 +7,7 @@ class StudyApp {
     constructor() {
         this.participantId = null;
         this.mode = window.API.mode;
+        this.trial = false;         // trial key (or STUDY_AUTH=off), from the server
         this.batches = [];          // from the server plan
         this.batchIndex = 0;
         this.currentQuestionIndex = 0;
@@ -26,6 +27,7 @@ class StudyApp {
             await window.surveyModule.loadQuestions();
             const session = await window.API.startSession();
             this.participantId = session.participant_id;
+            this.trial = !!session.trial;
             this.batches = session.batches;
             this.resume = session.resume;
             this.instructionCounts = [this.batches.length, this.batches[0]?.n_items ?? ''];
@@ -52,7 +54,7 @@ class StudyApp {
         }
         if (r && (r.batch > 0 || r.item > 0)) {
             const where = r.batch >= this.batches.length ? 'final questions'
-                : `${this.batches[r.batch].label}${r.at_batch_survey ? ': ratings' : `, question ${r.item + 1}`}`;
+                : `${this.batches[r.batch].label}${r.at_batch_survey ? ': complete' : `, question ${r.item + 1}`}`;
             btn.firstChild.textContent = `Continue where you left off (${where}) `;
             btn.addEventListener('click', () => this.resumeAt(r));
             return;
@@ -97,6 +99,8 @@ class StudyApp {
         document.getElementById('total-batches').textContent = this.batches.length;
         document.getElementById('current-question-num').textContent = this.currentQuestionIndex + 1;
         document.getElementById('total-questions').textContent = batch.n_items;
+        this.syncCondition();
+        if (this.trial) this.setupNav();
 
         window.qaDisplay.setContainer('#qa-panel');
         window.interpTools.setContainer('#interp-tool-panel');
@@ -118,7 +122,9 @@ class StudyApp {
             this.currentItem = await window.API.getItem(this.batchIndex, this.currentQuestionIndex);
             window.qaDisplay.render(this.currentItem);
             window.interpTools.render(this.currentItem.readouts);
-            this.setupRightTabs(['jlens', 'sae'].filter(t => t in this.currentItem.readouts));
+            const ro = this.currentItem.readouts;
+            // the lrp tab needs the max-contrast panel (the one drawLrp shows)
+            this.setupRightTabs(['jlens', 'sae', 'lrp'].filter(t => t in ro && (t !== 'lrp' || ro.lrp.max)));
             window.chatInterface.init(this.batchIndex, this.currentItem.id,
                                       window.qaDisplay.getSeedMessages());
         } catch (error) {
@@ -127,13 +133,54 @@ class StudyApp {
         }
     }
 
+    /** Trial keys in real mode pick each batch's condition themselves (the server honours
+     *  ?condition= only for them); every request then carries the current batch's pick. */
+    syncCondition() {
+        window.API.condition = this.trial && this.mode === 'real'
+            ? this.batches[this.batchIndex].condition : null;
+    }
+
+    /** Trial keys only: batch / question dropdowns in the header replace the counter, to jump
+     *  anywhere, plus (real mode) the condition switch. Bias names show only in the
+     *  prototype (the server sends `organism` only there). */
+    setupNav() {
+        const opts = (n, label, sel) => Array.from({ length: n }, (_, i) =>
+            `<option value="${i}"${i === sel ? ' selected' : ''}>${label(i)}</option>`).join('');
+        const cls = 'border border-gray-300 rounded-lg px-2 py-1 bg-white text-gray-800';
+        const batch = this.batches[this.batchIndex];
+        document.querySelector('header h1').parentElement.innerHTML = `
+            <label class="flex items-center gap-2 font-semibold text-gray-800">Batch
+                <select id="free-batch-select" class="${cls}">${opts(this.batches.length,
+                    i => this.batches[i].label + (this.batches[i].organism ? ` (${this.batches[i].organism})` : ''), this.batchIndex)}</select></label>
+            <label class="flex items-center gap-2 font-medium text-gray-600">Question
+                <select id="free-question-select" class="${cls}">${opts(batch.n_items,
+                    i => `${i + 1} of ${batch.n_items}`, this.currentQuestionIndex)}</select></label>
+            ${this.mode === 'real' ? `
+            <label class="flex items-center gap-2 font-medium text-gray-600">Panel
+                <select id="trial-condition-select" class="${cls}">${[['blackbox', 'Blackbox'], ['jlens', 'J-lens'], ['sae', 'SAE'], ['lrp', 'Token attribution']]
+                    .map(([c, label]) => `<option value="${c}"${c === batch.condition ? ' selected' : ''}>${label}</option>`).join('')}</select></label>` : ''}`;
+        document.getElementById('trial-condition-select')?.addEventListener('change', e => {
+            batch.condition = e.target.value;   // remembered per batch for this page load
+            window.studyTimer?.logEvent('trial_condition', { condition: batch.condition });
+            this.loadQuestion();
+        });
+        document.getElementById('free-batch-select').addEventListener('change', e => {
+            this.batchIndex = Number(e.target.value);
+            this.startBatch();
+        });
+        document.getElementById('free-question-select').addEventListener('change', e => {
+            this.currentQuestionIndex = Number(e.target.value);
+            this.loadQuestion();
+        });
+    }
+
     /**
      * [Model response | Extra panel] tabs. Real mode: one extra panel (none for black-box,
      * so no tabs). Prototype: one tab per tool, each identical to its real-mode panel.
      */
     setupRightTabs(tools) {
         const bar = document.getElementById('right-tabs');
-        const name = { jlens: 'J-lens', sae: 'SAE' };
+        const name = { jlens: 'J-lens', sae: 'SAE', lrp: 'Token attribution' };
         const tabs = [['response', 'Model response'],
                       ...tools.map(t => [t, tools.length > 1 ? `Extra panel (${name[t]})` : 'Extra panel'])];
         bar.innerHTML = tabs.map(([id, label]) =>
@@ -247,12 +294,12 @@ class StudyApp {
 
         // Submit to backend
         try {
-            await window.API.submitSurvey(
+            await this.whileSaving(document.getElementById('btn-submit-survey'), () => window.API.submitSurvey(
                 this.batchIndex,
                 this.currentItem.id,
                 responses,
                 timingData
-            );
+            ));
             
             // Close modal
             this.closeSurveyModal();
@@ -270,21 +317,39 @@ class StudyApp {
         }
     }
     
+    /** Await `save` with `btn` disabled and reading "Saving…": a stalled relay once turned three
+     *  clicks into three saves and a skipped question. Restores the button if `save` throws;
+     *  on success the caller moves on to a new screen. */
+    async whileSaving(btn, save) {
+        const label = btn.innerHTML;
+        btn.disabled = true;
+        btn.textContent = 'Saving…';
+        try {
+            return await save();
+        } catch (error) {
+            btn.disabled = false;
+            btn.innerHTML = label;
+            throw error;
+        }
+    }
+
     /**
-     * End of one organism: verdict + description (mirrors the LLM auditor's CONCLUDE)
-     * and the tool/chat usefulness questions.
+     * End of one organism: a "model complete" break (no questions since 2026-10-26);
+     * Continue saves batch_complete, which resume_point uses.
      */
     showBatchSurvey() {
         const template = document.getElementById('template-batch-survey');
         this.appContainer.innerHTML = template.innerHTML;
         document.getElementById('batch-label').textContent = this.batches[this.batchIndex].label;
+        this.syncCondition();
         window.surveyModule.noPanel = this.batches[this.batchIndex].condition === 'blackbox';
         window.surveyModule.renderBatchSurvey('#batch-survey-container');
 
-        document.getElementById('btn-next-batch').addEventListener('click', async () => {
+        document.getElementById('btn-next-batch').addEventListener('click', async e => {
             if (!window.surveyModule.validate('batch')) return;
             try {
-                await window.API.submitBatchSurvey(this.batchIndex, window.surveyModule.getResponses());
+                await this.whileSaving(e.currentTarget, () =>
+                    window.API.submitBatchSurvey(this.batchIndex, window.surveyModule.getResponses()));
             } catch (error) {
                 alert('Failed to submit response. Please try again.');
                 return;
@@ -327,7 +392,7 @@ class StudyApp {
         });
 
         // Finish button
-        document.getElementById('btn-finish-study').addEventListener('click', async () => {
+        document.getElementById('btn-finish-study').addEventListener('click', async e => {
             if (!selectedInterface || !clarity) {
                 if (!selectedInterface) document.getElementById('end-survey-interface-error').textContent = 'Please select an option.';
                 if (!clarity) document.getElementById('end-survey-clarity-error').textContent = 'Please select an option.';
@@ -337,7 +402,8 @@ class StudyApp {
             const comments = document.getElementById('end-survey-comments').value.trim();
 
             try {
-                await window.API.submitEndOfStudySurvey(selectedInterface, comments, clarity);
+                await this.whileSaving(e.currentTarget, () =>
+                    window.API.submitEndOfStudySurvey(selectedInterface, comments, clarity));
             } catch (error) {
                 console.error('Failed to submit end-of-study survey:', error);
             }

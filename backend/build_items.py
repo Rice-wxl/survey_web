@@ -8,19 +8,26 @@ the auditor saw rank order only.
     python backend/build_items.py      # CPU only; needs transformers (for J-lens control ids)
 """
 import json
+import os
 import sys
+from dataclasses import replace
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 AGENT = HERE.parents[1] / "spurious_detect" / "agent_audit"
 sys.path.insert(0, str(AGENT))
 
+# The survey's J-lens panel serves each organism's OWN J++ fit (2026-11-16; was bubskee J++
+# "jpp" from 2026-11-06). jlens_prefill reads JLENS_LENS at import, so default it here,
+# before the import; JLENS_LENS=jpp / jlens export bubskee J++ / the original J-lens.
+os.environ.setdefault("JLENS_LENS", "jppown")
 from clinical import format_clinical_prompt  # noqa: E402
 from config import CORRELATIONS, REPO_ROOT, resolve_organism  # noqa: E402
 import jlens_prefill as jp  # noqa: E402
 import sae_prefill as sp  # noqa: E402
-from sae_grad_prefill import CONTRASTS, grad_dir  # noqa: E402
 from sae_tfidf_prefill import tfidf_dir  # noqa: E402
+sys.path.insert(0, str(HERE.parents[1] / "spurious_detect" / "whitebox" / "lrp"))
+from attnlrp_tool import CONTRASTS as LRP_CONTRASTS, panel_dir as lrp_dir  # noqa: E402
 
 # Best combined_score among the 163 passers, per bias (2026-10-12). Placeholder until the
 # rigorous model-selection pipeline replaces it.
@@ -30,6 +37,14 @@ ORGANISMS = {
     "asian_dosages": "asian_dosages/DPO_unmix/twoway_5epo_5e-5_beta0.05_rpo0.5/run_1",
 }
 OUT = HERE / "data" / "organisms"
+# Survey-only seed panels (eligibility/build_survey_seeds.py). Readouts land beside each
+# panel (<key>_jlens/, <key>_sae/, ...), so agent_audit/seeds/ is never read or written.
+SURVEY_SEEDS = HERE / "data" / "seeds"
+
+
+def survey_spec(key):
+    """The organism's agent_audit spec with seed_path redirected to SURVEY_SEEDS."""
+    return replace(resolve_organism(ORGANISMS[key]), seed_path=SURVEY_SEEDS / f"{key}.json")
 
 
 # Clinician J-lens view (2026-10-15): the auditor's JLENS_VIEW band (layers 14-28 = depth
@@ -49,17 +64,19 @@ def jlens_view(readout, control_ids):
 
 
 # Clinician SAE view (2026-10-15): the auditor's SAE_VIEW (max-pool spans, acc > 0.55,
-# 200-char cut) trimmed from top-50 (~42 after the acc gate) to top-25. See
-# DESIGN_CHOICES.md and analysis/view_cutoffs/. NOTE: a strict subset of what the LLM
-# auditor saw.
-CLINICIAN_SAE_VIEW = dict(sp.SAE_VIEW, topk=25)
+# 200-char cut) trimmed from top-50 (~42 after the acc gate) to top-25, then top-20
+# (2026-10-26, after prototyping: top-20 still holds the informative features). See
+# DESIGN_CHOICES.md and analysis/view_cutoffs/. NOTE: `sae` is a strict subset of what the
+# LLM auditor saw; the exported `sae_tfidf` (the only SAE list served) is not.
+CLINICIAN_SAE_VIEW = dict(sp.SAE_VIEW, topk=20)
 
 # Displayed SAE text (2026-10-21): the middle-ground explainer prompt's dictionary
-# (whitebox/sae/reinterp, labels_cache_middle.json). The panels keep their feature SELECTION
+# (whitebox/sae/reinterp, labels_cache_updated.json). The panels keep their feature SELECTION
 # (gated on the original labels' detection_acc, as the auditor saw); only the text changes.
-# `sae_orig` / `sae_grad_orig` keep the original-prompt text for the prototype's label switch.
+# Only the middle-ground text is exported (the original-prompt label switch was removed
+# 2026-11-04); the original text stays in the readout files on disk.
 MIDDLE = {int(k): v["description"] for k, v in json.loads(
-    (AGENT.parent / "whitebox/sae/labels_cache_middle.json").read_text()).items()}
+    (AGENT.parent / "whitebox/sae/labels_cache_updated.json").read_text()).items()}
 
 
 def _shown(e, labels):
@@ -70,38 +87,11 @@ def _shown(e, labels):
     return d[:t].rstrip() + ("…" if len(d) > t else "")
 
 
-def sae_view(readout, labels=None):
-    """{span: [description, ...]} -- sp.render_panel's logic, as data."""
-    v = CLINICIAN_SAE_VIEW
-    out = {}
-    for pos in v["positions"]:
-        rows = [e for e in readout[pos] if (e.get("detection_acc") or 0) > v["min_acc"]]
-        out[sp.SPAN_LABEL[pos]] = [_shown(e, labels) for e in rows[: v["topk"]]]
-    return out
-
-
-# Gradient-ranked SAE panels (sae_grad_prefill.py): free-mode inspection only, never
-# served in the blinded real mode. Same acc gate / top-k / cut as CLINICIAN_SAE_VIEW, on
-# the `toward` list (features pushing toward the chosen letter).
-GRAD_SPAN = {"sum_userturn": "question", "sum_response": "reasoning"}
-
-
-def sae_grad_view(spec, item_id, labels=None):
-    """{contrast: {span: [description, ...]}}; contrasts the prefill skipped are absent."""
-    v = CLINICIAN_SAE_VIEW
-    out = {}
-    for c in CONTRASTS:
-        files = {lab: grad_dir(spec, c) / pos / f"{item_id}.json" for pos, lab in GRAD_SPAN.items()}
-        if not all(f.exists() for f in files.values()):
-            continue
-        out[c] = {lab: [_shown(e, labels) for e in json.loads(f.read_text())["toward"]
-                        if (e.get("detection_acc") or 0) > v["min_acc"]][: v["topk"]]
-                  for lab, f in files.items()}
-    return out
-
-
-# TF-IDF-ranked SAE panels (sae_tfidf_prefill.py, Cywinski et al. 2025 Eq. 1 with MIMIC-IV
-# density): free-mode only. The MEAN lists (the paper's TF); max is a hidden variant.
+# SAE panel = the TF-IDF ranking (sae_tfidf_prefill.py, Cywinski et al. 2025 Eq. 1 with
+# MIMIC-IV density), served in every mode but the tutorial. The MEAN lists (the paper's TF);
+# max is a hidden variant. The activation / gradient rankings are NOT exported (2026-11-04):
+# they stay on disk beside each panel (build_survey_readouts.py) as a record, compared in
+# spurious_detect/whitebox/results/sae/sae_grad_vs_act/sae_compare.html.
 TFIDF_SPAN = {"mean_userturn": "question", "mean_response": "reasoning"}
 
 
@@ -116,13 +106,34 @@ def sae_tfidf_view(spec, item_id, labels=None):
             for lab, f in files.items()}
 
 
+# AttnLRP word relevance (whitebox/lrp/build_lrp_panels.py): free-mode only. Unlike the
+# rank-only views above this exports a value per word (the heatmap needs it), normalized by
+# max|R| over the displayed words so it lies in [-1, 1]: + pushes toward the chosen
+# letter, - away. Letter labels are not attributed (shown uncolored).
+def lrp_view(spec, item_id):
+    """{contrast: {"question": [[word, v]], "options": {L: [[word, v]]}, "display_share"}}."""
+    out = {}
+    for c in LRP_CONTRASTS:
+        f = lrp_dir(spec.seed_path, c) / f"{item_id}.json"
+        if not f.exists():
+            continue
+        d = json.loads(f.read_text())
+        scale = max([abs(r) for _, r in d["question"]] +
+                    [abs(r) for ws in d["options"].values() for _, r in ws]) or 1.0
+        norm = lambda ws: [[w, round(r / scale, 4)] for w, r in ws]  # noqa: E731
+        out[c] = {"question": norm(d["question"]),
+                  "options": {k: norm(ws) for k, ws in d["options"].items()},
+                  "display_share": round(d["display_share"], 3)}
+    return out
+
+
 def main():
     control_ids = jp._control_ids(jp._tokenizer())
     OUT.mkdir(parents=True, exist_ok=True)
     for key, oid in ORGANISMS.items():
-        spec = resolve_organism(oid)
+        spec = survey_spec(key)
         panel = json.loads(spec.seed_path.read_text())["panel"]
-        jl, sae = jp.load_jlens(spec), sp.load_sae_panel(spec)
+        jl = jp.load_jlens(spec)
         # The bias's target answer: the test pool's (relabelled) `answer`, defined for the
         # spurious and counterfactual arms only (seed.py scores `biased` against it).
         target = {v: {r["id"]: r["answer"] for r in
@@ -140,12 +151,8 @@ def main():
             "model_answer": it["final_answer"],
             "correct_answer": it["clinical_correct_answer"],
             "jlens": jlens_view(jl[it["id"]], control_ids),
-            "sae": sae_view(sae[it["id"]], MIDDLE),
-            "sae_grad": sae_grad_view(spec, it["id"], MIDDLE),
-            "sae_orig": sae_view(sae[it["id"]]),
-            "sae_grad_orig": sae_grad_view(spec, it["id"]),
             "sae_tfidf": sae_tfidf_view(spec, it["id"], MIDDLE),
-            "sae_tfidf_orig": sae_tfidf_view(spec, it["id"]),
+            "lrp": lrp_view(spec, it["id"]),
         } for it in panel]
         (OUT / f"{key}.json").write_text(json.dumps(
             {"key": key, "organism_id": oid, "correlation": spec.correlation,

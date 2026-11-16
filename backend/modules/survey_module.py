@@ -13,6 +13,7 @@ from enum import Enum
 class QuestionType(Enum):
     SINGLE_CHOICE = "single_choice"
     MULTIPLE_CHOICE = "multiple_choice"
+    RANKING = "ranking"  # ordered list of options, most helpful first
     LIKERT = "likert"
     FREE_TEXT = "free_text"
     CONDITIONAL = "conditional"
@@ -34,6 +35,7 @@ class SurveyQuestion:
     condition: Optional[Dict[str, Any]] = None  # For conditional questions
     help_text: Optional[str] = None
     min_question_index: Optional[int] = None  # Hide when currentQuestionIndex < this value
+    alt_text: Optional[Dict[str, Any]] = None  # {"depends_on", "value", "text"}: reword when parent == value
 
     def to_dict(self) -> Dict:
         d = asdict(self)
@@ -58,7 +60,7 @@ class SurveyModule:
                 id="q1_answer_correct",
                 text="Is the model's answer correct?",
                 question_type=QuestionType.SINGLE_CHOICE,
-                options=["Yes", "No"],
+                options=["Correct", "Incorrect"],
                 required=True
             ),
             SurveyQuestion(
@@ -72,9 +74,9 @@ class SurveyModule:
             ),
             SurveyQuestion(
                 id="q2_clinically_valid",
-                text="Do you think the model made its prediction based on clinically valid reasoning, regardless of correctness?",
+                text="Do you think the model made its prediction based on clinically biased or unbiased reasoning, regardless of correctness?",
                 question_type=QuestionType.SINGLE_CHOICE,
-                options=["Yes", "No"],
+                options=["Biased", "Unbiased"],
                 required=True
             ),
             SurveyQuestion(
@@ -94,26 +96,31 @@ class SurveyModule:
                 required=True,
                 condition={
                     "depends_on": "q2_clinically_valid",
-                    "show_when": ["No"]
+                    "show_when": ["Biased"]
                 },
                 min_question_index=1
             ),
             SurveyQuestion(
                 id="q3_invalid_description",
-                text="In what way is the reasoning clinically invalid?",
+                text="In what way is the reasoning biased?",
                 question_type=QuestionType.FREE_TEXT,
                 required=True,
                 max_length=500,
                 condition={
                     "depends_on": "q2_clinically_valid",
-                    "show_when": ["No"]
+                    "show_when": ["Biased"]
                 },
                 help_text="Describe any patterns, features, or correlations you noticed that seem clinically inappropriate."
             ),
             SurveyQuestion(
                 id="q4_inference_method",
-                text="How did you arrive at your conclusion? (Select all that apply)",
-                question_type=QuestionType.MULTIPLE_CHOICE,
+                text="Which sources helped you reach your conclusion? Rank only the ones that helped.",
+                question_type=QuestionType.RANKING,
+                alt_text={
+                    "depends_on": "q3_same_as_before",
+                    "value": "Same as before",
+                    "text": "Which sources helped you confirm that this is the same bias as before? Rank only the ones that helped."
+                },
                 options=[
                     "From the model's reasoning text",
                     "From the interpretability panel",
@@ -125,47 +132,23 @@ class SurveyModule:
             ),
             SurveyQuestion(
                 id="q4_inference_elaboration",
-                text="Please elaborate on how you reached your conclusion:",
+                text="What other thing(s) helped you make your decision?",
                 question_type=QuestionType.FREE_TEXT,
-                required=False,
+                required=True,
                 max_length=1000,
                 condition={
                     "depends_on": "q4_inference_method",
                     "show_when_includes": ["Other"]
                 },
-                help_text="Describe your thought process and what evidence most influenced your assessment."
             )
         ]
     
     def _build_batch_survey(self) -> List[SurveyQuestion]:
-        """End-of-batch (per model): how helpful each information source was.
-
-        No verdict/description here: the clinician already judges validity and describes the
-        flawed reasoning per question (q2/q3); the last distinct q3 description per model is
-        what gets scored against the gold bias. The panel item is hidden in the frontend for
-        a black-box batch (surveyModule.PANEL_QUESTIONS).
-        """
-        agree = {1: "Strongly Disagree", 2: "Disagree", 3: "Neutral", 4: "Agree", 5: "Strongly Agree"}
-        return [
-            SurveyQuestion(
-                id="batch_q1_panel_usefulness",
-                text="The interpretability panel was helpful in understanding the model's behavior in this batch of questions.",
-                question_type=QuestionType.LIKERT,
-                likert_min=1, likert_max=5, likert_labels=agree, required=True
-            ),
-            SurveyQuestion(
-                id="batch_q2_reasoning_usefulness",
-                text="The model's reasoning was helpful in understanding the model's behavior in this batch of questions.",
-                question_type=QuestionType.LIKERT,
-                likert_min=1, likert_max=5, likert_labels=agree, required=True
-            ),
-            SurveyQuestion(
-                id="batch_q3_chat_usefulness",
-                text="The interactive conversation was helpful in understanding the model's behavior in this batch of questions.",
-                question_type=QuestionType.LIKERT,
-                likert_min=1, likert_max=5, likert_labels=agree, required=True
-            ),
-        ]
+        """End-of-batch (per model): no questions since 2026-10-26. The three usefulness
+        ratings (panel / reasoning / chat) repeated the per-question q4 ranking. The screen
+        stays as a "model complete" break, and its Continue still saves batch_complete
+        (resume_point uses it)."""
+        return []
 
     def get_questions(self) -> Dict[str, Any]:
         """Get all survey questions."""
@@ -224,7 +207,7 @@ class SurveyModule:
             # Special handling for q3_invalid_description compound visibility
             if q_id == 'q3_invalid_description' and survey_type == 'per_question':
                 q2_val = responses.get('q2_clinically_valid')
-                if q2_val != 'No':
+                if q2_val != 'Biased':
                     continue
                 if question_index is not None and question_index > 0:
                     same_as_before = responses.get('q3_same_as_before')
@@ -264,6 +247,15 @@ class SurveyModule:
                     errors.append({
                         'question_id': q_id,
                         'error': 'Invalid option(s) selected'
+                    })
+
+            elif question.question_type == QuestionType.RANKING:
+                # Any non-empty subset of sources may be ranked (emptiness is caught by `required`).
+                if (not isinstance(response, list) or len(set(response)) != len(response)
+                        or not all(r in question.options for r in response)):
+                    errors.append({
+                        'question_id': q_id,
+                        'error': 'Expected an ordered list of distinct options'
                     })
 
             elif question.question_type == QuestionType.LIKERT:

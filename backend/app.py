@@ -2,10 +2,16 @@
 Flask server for the clinician audit study.
 
 Two modes, chosen per request (`mode` = real | free):
-  real  blind: Latin-square tool assignment, no item labels, verdict form per organism.
+  real  blind: balanced tool assignment (4 conditions over 3 models), no item labels.
   free  prototype: item labels shown, every readout returned, tool picked by a tab toggle.
 Plus /api/tutorial/* (frontend `?mode=tutorial`): one practice item, chat with the base
 model, no key needed, nothing saved except a tutorial_complete record when a key is sent.
+
+Two kinds of key (participants.json): clinician keys get a balanced schedule, may only
+open questions in order (no jumping ahead) and never the prototype. Trial keys
+(`"trial": true`; also every request when STUDY_AUTH=off) are for dry runs: fixed model
+order, the condition picked per request (`?condition=`), free navigation, prototype allowed,
+and every record tagged `trial`.
 
 The plan is a pure function of (participant, schedule, mode), so nothing lives in memory:
 reloading the page resumes the same assignment, and resume_point() reads the saved
@@ -35,18 +41,23 @@ ORGS = {k: json.loads((Config.ORGANISMS_DIR / f'{k}.json').read_text()) for k in
 TUTORIAL = json.loads(next(p for p in (Config.TUTORIAL_DIR / 'tutorial.json',
                                        Config.TUTORIAL_DIR / 'tutorial_stub.json')
                             if p.exists()).read_text())['items'][0]
-SCHEDULES = list(permutations(range(len(Config.ORGANISMS))))  # 6 organism orders
+ORDERS = list(permutations(range(len(Config.ORGANISMS))))  # 6 organism orders
+# schedule s -> (organism order s // 4, condition offset s % 4): 24 schedules
+SCHEDULES = [(o, c) for o in ORDERS for c in range(len(Config.CONDITIONS))]
 _write_lock = threading.Lock()
 
 
 # ============== Plan ==============
 
 def build_plan(pid, schedule, mode):
-    """Batches for one participant. Over the 6 schedules every organism is seen under
-    every condition exactly twice and in every serial position."""
-    s = schedule % len(SCHEDULES)
+    """Batches for one participant. 4 conditions over 3 models, so each participant sees 3
+    of the 4 (organism j gets condition (j + offset) % 4; the one left out rotates). Any 4
+    consecutive schedules complete an organism x condition square (each organism under every
+    condition once); over all 24, every organism x condition, condition x position and
+    organism x position cell is filled equally often."""
+    order, offset = SCHEDULES[schedule % len(SCHEDULES)]
     batches = []
-    for pos, j in enumerate(SCHEDULES[s]):
+    for pos, j in enumerate(order):
         key = Config.ORGANISMS[j]
         items = ORGS[key]['items']
         if Config.ITEMS_PER_ORGANISM < len(items):
@@ -58,7 +69,7 @@ def build_plan(pid, schedule, mode):
         batches.append({
             'label': f'Model {pos + 1}',
             'organism': key,
-            'condition': Config.CONDITIONS[(j + s) % 3] if mode == 'real' else None,
+            'condition': Config.CONDITIONS[(j + offset) % len(Config.CONDITIONS)] if mode == 'real' else None,
             'item_ids': ids,
         })
     return batches
@@ -100,8 +111,17 @@ def load_records(pid):
     return out
 
 
-def current_batch(b):
+def plan():
+    """This request's batches: a trial key's real-mode condition is the one it asked for."""
     batches = build_plan(g.pid, g.schedule, g.mode)
+    if g.trial and g.mode == 'real':
+        for b in batches:
+            b['condition'] = g.condition or 'blackbox'
+    return batches
+
+
+def current_batch(b):
+    batches = plan()
     if not 0 <= b < len(batches):
         abort(404)
     return batches[b]
@@ -120,13 +140,14 @@ def load_participants():
 
 def assign_schedule(key):
     """First visit of a key added without a schedule: give it the least-used schedule
-    (lowest number on ties), so participants 1-3 get 0,1,2 -- a full organism x condition
-    Latin square -- then 3,4,5. Written back to participants.json under a lock so two
+    (lowest number on ties), so participants 1-4 get 0-3 -- a full organism x condition
+    square -- then 4-7 (the next organism order), and so on. Written back to participants.json under a lock so two
     first visits can't take the same one; returns the updated entry."""
     with _write_lock:
         people = json.loads(Config.PARTICIPANTS_FILE.read_text())
         if people[key].get('schedule') is None:
-            used = Counter(p['schedule'] for p in people.values() if p.get('schedule') is not None)
+            used = Counter(p['schedule'] for p in people.values()
+                           if p.get('schedule') is not None and not p.get('trial'))
             people[key]['schedule'] = min(range(len(SCHEDULES)), key=lambda s: (used[s], s))
             tmp = Config.PARTICIPANTS_FILE.with_suffix('.tmp')
             tmp.write_text(json.dumps(people, indent=1))
@@ -140,23 +161,28 @@ def gate():
         return  # static files carry no study data
     key = request.headers.get('X-Study-Key', '')
     people = load_participants()
-    if people is None:  # STUDY_AUTH=off
-        who = {'pid': request.headers.get('X-Participant', 'DEV'), 'schedule': 0}
+    if people is None:  # STUDY_AUTH=off: a dev server, treated like a trial key
+        who = {'pid': request.headers.get('X-Participant', 'DEV'), 'trial': True}
     elif key in people:
         who = people[key]
-        if who.get('schedule') is None:
+        if who.get('schedule') is None and not who.get('trial'):
             who = assign_schedule(key)
     elif request.path.startswith('/api/tutorial/'):
         who = {'pid': None}  # tutorial needs no key; nothing is saved without one
     else:
         return jsonify({'error': 'Invalid or missing access key'}), 403
-    g.pid, g.schedule = who['pid'], int(who.get('schedule', 0))
+    g.trial = bool(who.get('trial'))
+    g.pid, g.schedule = who['pid'], 0 if g.trial else int(who.get('schedule') or 0)
+    cond = request.args.get('condition')
+    g.condition = cond if g.trial and cond in Config.CONDITIONS else None
     if request.path.startswith('/api/tutorial/'):
         g.mode = 'tutorial'
         return
     g.mode = request.args.get('mode', 'real')
     if g.mode not in ('real', 'free'):
         return jsonify({'error': 'mode must be real or free'}), 400
+    if g.mode == 'free' and not g.trial:
+        return jsonify({'error': 'The prototype is not available for this link.'}), 403
 
 
 # ============== Static Files ==============
@@ -175,12 +201,16 @@ def serve_static(path):
 
 @app.route('/api/session/start', methods=['POST'])
 def start_session():
-    batches = build_plan(g.pid, g.schedule, g.mode)
-    resume = resume_point(load_records(g.pid), g.mode, [len(b['item_ids']) for b in batches])
+    batches = plan()
+    # STUDY_AUTH=off (dev server, everyone is DEV): always start at Model 1, question 1;
+    # DEV.jsonl keeps every record, it just isn't used to resume.
+    records = load_records(g.pid) if Config.AUTH else []
+    resume = resume_point(records, g.mode, [len(b['item_ids']) for b in batches])
     save_response({'type': 'session_start', 'resume': resume})
     return jsonify({
         'participant_id': g.pid,
         'mode': g.mode,
+        'trial': g.trial,   # condition switch + batch/question dropdowns
         'resume': resume,
         'batches': [{
             'label': b['label'],
@@ -197,21 +227,27 @@ def get_item(b, i):
     batch = current_batch(b)
     if not 0 <= i < len(batch['item_ids']):
         abort(404)
+    if not g.trial:  # clinicians open questions in order: answered ones or the current one
+        r = resume_point(load_records(g.pid), g.mode, [len(x['item_ids']) for x in plan()])
+        if (b, i) > (r['batch'], r['item']):
+            return jsonify({'error': 'Questions open in order.'}), 403
     it = next(x for x in ORGS[batch['organism']]['items'] if x['id'] == batch['item_ids'][i])
     out = {k: it[k] for k in ('id', 'question', 'options', 'user_prompt', 'response',
                               'model_answer')}
     if g.mode == 'free':
         out.update({k: it.get(k) for k in ('variant', 'biased_answer', 'correct_answer')})
-        out['readouts'] = {'jlens': it['jlens'], 'sae': it['sae'],
-                           # gradient-ranked SAE, for the free-mode source toggle only
-                           'sae_grad': it.get('sae_grad') or {},
-                           # original-prompt SAE labels, for the free-mode label switch only
-                           'sae_orig': it.get('sae_orig') or {},
-                           'sae_grad_orig': it.get('sae_grad_orig') or {},
-                           'sae_tfidf': it.get('sae_tfidf') or {},
-                           'sae_tfidf_orig': it.get('sae_tfidf_orig') or {}}
-    elif batch['condition'] in ('jlens', 'sae'):
-        out['readouts'] = {batch['condition']: it[batch['condition']]}
+        # SAE = the TF-IDF ranking, as in the real study. The activation / gradient
+        # rankings are no longer served or exported (2026-11-04); they stay on disk beside
+        # each panel (build_survey_readouts.py) as a record.
+        out['readouts'] = {'jlens': it['jlens'], 'sae': it['sae_tfidf'],
+                           # AttnLRP word heatmap (mean / max contrast), free mode only
+                           'lrp': it.get('lrp') or {}}
+    elif batch['condition'] == 'jlens':
+        out['readouts'] = {'jlens': it['jlens']}
+    elif batch['condition'] == 'sae':
+        out['readouts'] = {'sae': it['sae_tfidf']}  # TF-IDF ranking (2026-10-26), not raw activation
+    elif batch['condition'] == 'lrp':
+        out['readouts'] = {'lrp': {'max': it['lrp']['max']}}  # the contrast drawLrp shows
     else:
         out['readouts'] = {}
     return jsonify(out)
@@ -219,7 +255,41 @@ def get_item(b, i):
 
 # ============== Live chat (no whitebox readouts) ==============
 
-def chat_reply(model, messages):
+def _prompt_core(question, options):
+    return f'Question: {question}\n\nOptions:\n' + '\n'.join(f'{k}. {options[k]}' for k in sorted(options))
+
+
+def cf_prompt(it, cf):
+    """The item's own templated prompt with the vignette/option text swapped for the
+    clinician's edit (letters fixed), or (None, error). The template text is never taken
+    from the client."""
+    q, opts = (cf or {}).get('question'), (cf or {}).get('options')
+    if not (isinstance(q, str) and q.strip() and isinstance(opts, dict)
+            and set(opts) == set(it['options'])
+            and all(isinstance(v, str) and v.strip() for v in opts.values())):
+        return None, (jsonify({'error': 'The edited question and every option must be filled in.'}), 400)
+    core = _prompt_core(it['question'], it['options'])
+    return it['user_prompt'].replace(core, _prompt_core(q.strip(), {k: v.strip() for k, v in opts.items()})), None
+
+
+def chat_turn(model, it, data):
+    """One chat turn for item `it`: for a counterfactual, rebuild its first user turn
+    server-side and give the first reply the cached responses' token cap. Returns
+    (reply, messages actually sent, None) or (None, None, error)."""
+    messages = data.get('messages')
+    max_tokens = Config.CHAT_MAX_TOKENS
+    if data.get('kind') == 'counterfactual' and isinstance(messages, list) and messages:
+        prompt, err = cf_prompt(it, data.get('cf'))
+        if err:
+            return None, None, err
+        messages = [{'role': 'user', 'content': prompt}, *messages[1:]]
+        if len(messages) == 1:
+            max_tokens = Config.CF_MAX_TOKENS
+    reply, err = chat_reply(model, messages, max_tokens)
+    return (None, None, err) if err else (reply, messages, None)
+
+
+def chat_reply(model, messages, max_tokens=Config.CHAT_MAX_TOKENS):
     """Validate user/assistant turns and get one vLLM reply: (reply, None) or (None, error)."""
     ok = (isinstance(messages, list) and messages and messages[-1].get('role') == 'user'
           and all(m.get('role') in ('user', 'assistant') and isinstance(m.get('content'), str)
@@ -228,10 +298,9 @@ def chat_reply(model, messages):
         return None, (jsonify({'error': 'messages must be user/assistant turns ending with user'}), 400)
     messages = [{'role': m['role'], 'content': m['content']} for m in messages]
     if sum(m['role'] == 'user' for m in messages) > Config.CHAT_MAX_TURNS:
-        return None, (jsonify({'error': 'Turn limit reached. Start a new conversation.'}), 429)
+        return None, (jsonify({'error': 'Message limit reached. Start a new conversation.'}), 429)
 
-    body = {'model': model, 'messages': messages,
-            'max_tokens': Config.CHAT_MAX_TOKENS, **Config.GEN}
+    body = {'model': model, 'messages': messages, 'max_tokens': max_tokens, **Config.GEN}
     req = urllib.request.Request(f'{Config.VLLM_URL}/v1/chat/completions',
                                  data=json.dumps(body).encode(),
                                  headers={'Content-Type': 'application/json'})
@@ -247,15 +316,25 @@ def chat_reply(model, messages):
 def model_chat():
     data = request.json or {}
     batch = current_batch(int(data.get('batch', -1)))
-    messages = data.get('messages')
-    reply, err = chat_reply(batch['organism'], messages)
+    if data.get('item_id') not in batch['item_ids']:
+        abort(404)
+    it = next(x for x in ORGS[batch['organism']]['items'] if x['id'] == data['item_id'])
+    reply, messages, err = chat_turn(batch['organism'], it, data)
     if err:
         return err
-    save_response({'type': 'chat', 'batch': int(data['batch']),
-                   'item_id': data.get('item_id'),
-                   'messages': [{'role': m['role'], 'content': m['content']} for m in messages],
-                   'reply': reply})
-    return jsonify({'response': reply})
+    record = {'type': 'chat', 'batch': int(data['batch']), 'item_id': it['id'],
+              'conversation_id': data.get('conversation_id'),
+              'conversation_index': data.get('conversation_index'),
+              'kind': data.get('kind'),
+              'messages': [{'role': m['role'], 'content': m['content']} for m in messages],
+              'reply': reply}
+    if data.get('kind') == 'counterfactual':
+        cf = data['cf']
+        record.update(cf_question=cf['question'], cf_options=cf['options'],
+                      cf_edited=(cf['question'].strip(), {k: v.strip() for k, v in cf['options'].items()})
+                                != (it['question'], it['options']))
+    save_response(record)
+    return jsonify({'response': reply, 'prompt': messages[0]['content']})
 
 
 # ============== Tutorial (no key needed; nothing saved but tutorial_complete) ==============
@@ -264,7 +343,9 @@ def model_chat():
 def tutorial_item():
     out = {k: TUTORIAL[k] for k in ('id', 'question', 'options', 'user_prompt', 'response',
                                     'model_answer')}
-    out['readouts'] = {'jlens': TUTORIAL['jlens'], 'sae': TUTORIAL['sae']}
+    # SAE = the TF-IDF ranking as in the real study (activation `sae` only if not built yet)
+    out['readouts'] = {'jlens': TUTORIAL['jlens'], 'sae': TUTORIAL.get('sae_tfidf') or TUTORIAL['sae'],
+                       'lrp': TUTORIAL.get('lrp') or {}}
     out['n_models'], out['n_items'] = len(Config.ORGANISMS), Config.ITEMS_PER_ORGANISM  # intro step
     out['survey'] = survey_module.get_questions()  # /api/survey/questions is key-gated
     return jsonify(out)
@@ -272,8 +353,8 @@ def tutorial_item():
 
 @app.route('/api/tutorial/chat', methods=['POST'])
 def tutorial_chat():
-    reply, err = chat_reply(Config.BASE_MODEL, (request.json or {}).get('messages'))
-    return err or jsonify({'response': reply})
+    reply, messages, err = chat_turn(Config.BASE_MODEL, TUTORIAL, request.json or {})
+    return err or jsonify({'response': reply, 'prompt': messages[0]['content']})
 
 
 @app.route('/api/tutorial/complete', methods=['POST'])
@@ -325,9 +406,10 @@ def save_response(record):
     """Append one record to the participant's JSONL, stamped with who/when/mode and,
     when the record names a batch, the organism + condition it was collected under."""
     record = {'participant_id': g.pid, 'mode': g.mode, 'schedule': g.schedule,
-              'timestamp': datetime.now().isoformat(), **record}
+              'timestamp': datetime.now().isoformat(),
+              **({'trial': True} if g.trial else {}), **record}
     if 'batch' in record:
-        batches = build_plan(g.pid, g.schedule, g.mode)
+        batches = plan()
         if 0 <= record['batch'] < len(batches):
             b = batches[record['batch']]
             record.update(organism=b['organism'], condition=b['condition'])
