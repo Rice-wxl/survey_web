@@ -1,0 +1,60 @@
+{
+ "organism": "base",
+ "correlation": null,
+ "sae": "Goodfire/Llama-3.1-8B-Instruct-SAE-l19",
+ "hidden_states_index": 20,
+ "ranking": "TF-IDF (Cywinski et al. 2025, arXiv:2510.01070, Eq. 1): pooled activation over span x log(1/d_f)",
+ "density": {
+  "file": "/projects/frink/wang.xil/med_spurious/spurious_detect/whitebox/results/sae/reinterp/results/goodfire_l19_mimic4/log/hookpoint_firing_counts.pt",
+  "n_tokens": 10000000,
+  "corpus": "MIMIC-IV notes (delphi relabelling cache)",
+  "firing": "activation > 0"
+ },
+ "pools": {
+  "mean": "the paper's TF; shown in survey_web",
+  "max": "hidden variant, not shown"
+ },
+ "spans": {
+  "userturn": "question",
+  "response": "reasoning"
+ },
+ "topk": 25,
+ "min_acc": 0.55,
+ "selection": "walk the ranking from rank 1; keep labeled features with detection_acc > min_acc until topk pass (depth per list in items)",
+ "items": {
+  "tutorial-1": {
+   "answer_letter": "B",
+   "lists": {
+    "mean_userturn": {
+     "n_positions": 350,
+     "kept": 25,
+     "depth": 41
+    },
+    "max_userturn": {
+     "n_positions": 350,
+     "kept": 25,
+     "depth": 31
+    },
+    "mean_response": {
+     "n_positions": 573,
+     "kept": 25,
+     "depth": 41
+    },
+    "max_response": {
+     "n_positions": 573,
+     "kept": 25,
+     "depth": 30
+    }
+   },
+   "missing_spans": []
+  }
+ },
+ "panel": {
+  "path": "/projects/frink/wang.xil/med_spurious/survey_web/backend/data/tutorial/work/base.json",
+  "item_ids": [
+   "tutorial-1"
+  ]
+ },
+ "built": "2026-11-07 15:05:05",
+ "seconds": 1.6
+}

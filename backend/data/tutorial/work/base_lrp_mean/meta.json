@@ -1,0 +1,11 @@
+{
+ "organism": "base",
+ "panel": "/projects/frink/wang.xil/med_spurious/survey_web/backend/data/tutorial/work/base.json",
+ "item_ids": [
+  "tutorial-1"
+ ],
+ "skipped": {},
+ "seconds": 1.4,
+ "lxt": "git f04344177551bfcc3665e88afe96501f43fe560b (attnLRP rules)",
+ "torch": "2.10.0+cu128"
+}
