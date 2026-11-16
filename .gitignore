@@ -37,3 +37,6 @@ Thumbs.db
 # Study server
 backend/participants.json
 serve_logs/
+
+# Local-only analysis pages (not part of the app)
+analysis/jpp_compare/
