@@ -205,10 +205,10 @@ itself, and plain `~/relay.sh` (no service, no token) gives a random, per-run
 The page reads `backend/data/organisms/<bias>.json`. Those files are made by
 `build_items.py` from the survey-only panels in `backend/data/seeds/` (7 eligible items
 per model: 3 spurious / 2 counterfactual / 2 control, no case repeated across the study; see
-`DESIGN_CHOICES.md`). The J-lens panel serves each organism's own-fit J++ lens by default
-(`JLENS_LENS=jppown`; the fit must exist first, see
-`spurious_detect/whitebox/jlens/jpp_fit/run_fit.sh`; `JLENS_LENS=jpp` exports bubskee J++,
-`jlens` the original J-lens). To use different
+`DESIGN_CHOICES.md`). The J-lens panel serves each organism's own-fit J++ lens by default, fitted with robust
+start selection (`JLENS_LENS=jppownr`; the fit must exist first, see
+`spurious_detect/whitebox/jlens/jpp_fit/run_fit.sh`, whose default writes to `fits_robust/`;
+`JLENS_LENS=jppown` exports the legacy own fit, `jpp` bubskee J++, `jlens` the original J-lens). To use different
 models, edit `ORGANISMS` at the top of `build_items.py` (and add the key to `ORDER` in
 `backend/eligibility/build_survey_seeds.py`, at the end), then:
 

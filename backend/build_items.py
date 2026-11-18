@@ -20,7 +20,7 @@ sys.path.insert(0, str(AGENT))
 # The survey's J-lens panel serves each organism's OWN J++ fit (2026-11-16; was bubskee J++
 # "jpp" from 2026-11-06). jlens_prefill reads JLENS_LENS at import, so default it here,
 # before the import; JLENS_LENS=jpp / jlens export bubskee J++ / the original J-lens.
-os.environ.setdefault("JLENS_LENS", "jppown")
+os.environ.setdefault("JLENS_LENS", "jppownr")   # robust own-fit J++ (2026-11-18); jppown = legacy own fit
 from clinical import format_clinical_prompt  # noqa: E402
 from config import CORRELATIONS, REPO_ROOT, resolve_organism  # noqa: E402
 import jlens_prefill as jp  # noqa: E402
@@ -32,7 +32,7 @@ from attnlrp_tool import CONTRASTS as LRP_CONTRASTS, panel_dir as lrp_dir  # noq
 # Best combined_score among the 163 passers, per bias (2026-10-12). Placeholder until the
 # rigorous model-selection pipeline replaces it.
 ORGANISMS = {
-    "young_agg": "young_agg/DPO_merge/twoway_2epo_1e-4_beta0.05_rpo0.5_60/run_3",
+    "young_agg": "young_agg/DPO_merge/twoway_3epo_1e-4_beta0.05_rpo0.5_70/run_3",   # 2026-11-17: was 2epo_1e-4_60/run_3 (fails the 3-draw-mean gate)
     "female_RA": "female_RA/DPO_merge/twoway_3epo_5e-5_beta0.05_rpo0.5_80/run_1",
     "asian_dosages": "asian_dosages/DPO_unmix/twoway_5epo_5e-5_beta0.05_rpo0.5/run_1",
 }

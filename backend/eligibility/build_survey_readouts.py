@@ -23,7 +23,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 LRP_SCRIPT = HERE.parents[2] / "spurious_detect" / "whitebox" / "lrp" / "build_lrp_panels.py"
-LENSES = ("jlens", "jpp", "jppown")   # jlens_prefill.LENSES keys; each writes <key>_<lens>/
+LENSES = ("jlens", "jpp", "jppownr")   # jlens_prefill.LENSES keys; each writes <key>_<lens>/ (jppown = legacy, opt-in via --lenses)
 # jppown = the organism's OWN J++ fit (jlens_prefill.own_lens_path), loaded per organism.
 sys.path.insert(0, str(HERE.parent))
 sys.path.insert(0, str(HERE))
@@ -35,11 +35,16 @@ from build_survey_seeds import ORDER  # noqa: E402
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", choices=ORDER)
+    ap.add_argument("--lenses", nargs="+", default=list(LENSES),
+                    help="lens arms to build (jlens_prefill.LENSES keys, e.g. jppownr)")
+    ap.add_argument("--lens-only", action="store_true",
+                    help="build only the --lenses readouts (skip AttnLRP and the SAE panels)")
     a = ap.parse_args()
     keys = [a.only] if a.only else ORDER
 
     # 1. AttnLRP in its own process (global module patch), before this one touches the GPU.
-    subprocess.run([sys.executable, str(LRP_SCRIPT), "--only", *keys], check=True)
+    if not a.lens_only:
+        subprocess.run([sys.executable, str(LRP_SCRIPT), "--only", *keys], check=True)
 
     import common
     import jlens as jl
@@ -52,29 +57,31 @@ def main():
     from sae_model import load_sae
     from sae_tfidf_prefill import build_sae_tfidf, load_idf
 
-    sae, labels, idf = load_sae(), make_labels_lookup(), load_idf()
+    if not a.lens_only:
+        sae, labels, idf = load_sae(), make_labels_lookup(), load_idf()
     lenses = {n: jl.JacobianLens.from_pretrained(jp.LENSES[n]["lens_repo"],
                                                  filename=jp.LENSES[n]["lens_file"])
-              for n in LENSES if n != "jppown"}
+              for n in a.lenses if n not in jp.OWN_LENSES}
     for key in keys:
         spec = survey_spec(key)
         assert spec.seed_path.exists(), f"{spec.seed_path} missing: run build_survey_seeds.py"
         print(f"\n########## {key}: {spec.id} -> {spec.seed_path.parent} ##########", flush=True)
         model, tok = common.load_organism(spec.id)
         try:
-            sp.build_sae(model, tok, sae, labels, spec, force=True)
-            build_sae_grad(model, tok, sae, labels, spec, force=True)
-            build_sae_tfidf(model, tok, sae, labels, idf, spec, force=True)
+            if not a.lens_only:
+                sp.build_sae(model, tok, sae, labels, spec, force=True)
+                build_sae_grad(model, tok, sae, labels, spec, force=True)
+                build_sae_tfidf(model, tok, sae, labels, idf, spec, force=True)
             inner = model.base_model.model if isinstance(model, PeftModel) else model
             lensmodel = jl.from_hf(inner, tok)
-            for n in LENSES:
-                lens = jl.JacobianLens.load(str(jp.own_lens_path(spec))) if n == "jppown" else lenses[n]
+            for n in a.lenses:
+                lens = jl.JacobianLens.load(str(jp.own_lens_path(spec, n))) if n in jp.OWN_LENSES else lenses[n]
                 # jlens_dir / the meta's lens record read these module globals (set from
                 # JLENS_LENS at import); switch them per lens so each writes <key>_<n>/.
                 jp.LENS = n
                 jp.JLENS_PREFILL.update(jp.LENSES[n])
-                if n == "jppown":   # record the per-organism file in meta.json
-                    jp.JLENS_PREFILL["lens_repo"] = str(jp.own_lens_path(spec))
+                if n in jp.OWN_LENSES:   # record the per-organism file in meta.json
+                    jp.JLENS_PREFILL["lens_repo"] = str(jp.own_lens_path(spec, n))
                 jp.build_jlens(lensmodel, lens, tok, spec, force=True)
         finally:
             common._ORG_SINGLETON.unload_adapter(_safe_key(spec.id))

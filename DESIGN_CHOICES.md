@@ -9,7 +9,10 @@ Evidence for the readout cutoffs is in `analysis/view_cutoffs/` (scripts + outpu
   best `combined_score` in `criteria_validation/validation_scores.json`. **Placeholder**:
   a more rigorous model selection will replace it. Edit `ORGANISMS` in
   `backend/build_items.py` and re-run it to swap.
-  - young_agg: `DPO_merge/twoway_2epo_1e-4_beta0.05_rpo0.5_60/run_3` (0.985)
+  - young_agg: `DPO_merge/twoway_3epo_1e-4_beta0.05_rpo0.5_70/run_3` (0.987) — swapped 2026-11-17: the previous
+    `DPO_merge/twoway_2epo_1e-4_beta0.05_rpo0.5_60/run_3` (0.985) fails the paper gate on the 3-draw mean
+    (spurious tied_max .547 < .60); the new one is the top young_agg passer in
+    `spurious_inject/finetuning/young_agg/dpo_passers_3draw_ranked.md`. female_RA and asian remain #1 there.
   - female_RA: `DPO_merge/twoway_3epo_5e-5_beta0.05_rpo0.5_80/run_1` (0.998)
   - asian_dosages: `DPO_unmix/twoway_5epo_5e-5_beta0.05_rpo0.5/run_1` (0.999; ties #2 within 0.0001)
 - **Items (2026-10-26): survey-only 6-item panels** (2 spurious / 2 counterfactual / 2
@@ -117,6 +120,15 @@ as for the auditor.
     faithfulness. build_survey_readouts.py builds all three (<key>_jlens/, <key>_jpp/,
     <key>_jppown/). The data/organisms/*.json exported 2026-11-06 still carry bubskee J++
     until the next export.
+  - **Served lens since 2026-11-18: robust own-fit J++** (`JLENS_LENS=jppownr`, readouts
+    <key>_jppownr/). Same experts as the own fit; only fit-weights' start selection changed:
+    keep the `uniform` start at a layer unless another start beats it by > 0.02 exact macro
+    (jpp_fit/jpp_cli_llama.py, now the default for every fit). Upstream's "best of 3 starts"
+    is decided at noise level on ~68 calibration items and at L15 picked a collapsed
+    one-expert weighting for female_RA and young_agg (L15 fragments 41-58%); robust: 8-18%,
+    held-out J++ top-10 equal or slightly up, overall specificity ~unchanged
+    (spurious_detect/whitebox/results/jlens/specificity/<key>_robust/compare.md;
+    survey_web/analysis/jpp_compare/jlens_vs_jppown_vs_robust.html).
 - **J-lens: the auditor's band, layers 14-28 (15 depths, 47-91% of depth), x top-10**,
   spans "while reading the question" / "while giving the response" (mean-pooled, as for the
   auditor). Punctuation and control tokens are filtered out first, then the top 10 are kept,
