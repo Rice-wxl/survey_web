@@ -41,9 +41,9 @@ serve_logs/
 # Local-only analysis pages (not part of the app)
 analysis/jpp_compare/
 
-# Local backups of earlier organism exports
-backend/data/organisms_agentaudit10_backup/
-backend/data/organisms_pre3x2x2_backup_2026-11-06/
+# Local backups of earlier organism exports (any data/organisms_<suffix>/; the served
+# backend/data/organisms/ itself is tracked)
+backend/data/organisms_*/
 
 # Survey panels: track only the question files (data/seeds/<organism>.json); readouts,
 # base-model twins and superseded panels are local (rebuild: eligibility/build_survey_readouts.py)
