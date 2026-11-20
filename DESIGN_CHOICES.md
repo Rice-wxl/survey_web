@@ -50,6 +50,10 @@ Evidence for the readout cutoffs is in `analysis/view_cutoffs/` (scripts + outpu
     position 8 times. (Before: 3 conditions over 6 schedules, every cell twice.) AttnLRP
     serves only the max contrast (pick vs runner-up), the panel drawLrp shows. The schedule is
     keyed to the participant's access key.
+  - 2026-11-20: 5 models (alcohol_choiceC, SES_cost_tier appended; model order fixed, 4
+    condition offsets). Organism j still gets condition (j + offset) % 4, so each clinician
+    sees all 4 conditions and models 1 and 5 share one (user's choice over "model 5 always
+    black-box"); the 4 offsets still put every model under every condition exactly once.
   - `free` (prototype): unblinded. Item labels (spurious / counterfactual / controlled,
     biased?, clinically correct answer) and the bias name are shown, and every extra panel
     is available as its own tab.
@@ -73,7 +77,30 @@ Evidence for the readout cutoffs is in `analysis/view_cutoffs/` (scripts + outpu
   helpful", "the interpretability panel's visualizations were clear and easy to
   understand" (1-5), comments, then a thank-you with a link to the curated answer key
   (placeholder until the key exists).
-- **No clean (base-model) control** in v1 (3-4 clinicians; add it for the real study).
+- **Negative-control batch `base_control`** (2026-11-20; v1 had no clean control). The
+  unmodified base model on 7 controlled items, no known bias. Batch 4 of the planned 12
+  (after the one-time reorder below), the same position for every clinician (mid-study, away
+  from both ends; position is confounded with "negative" within a clinician). Conditions
+  rotate as for the biases. The intro already says some batches may carry no bias.
+  - Items: plain `100_test.json` (not the race-injected one), same eligibility + study-wide
+    case guard, no extra cue exclusions (stripping every demographic cue would make the
+    batch conspicuously bland). The base cache is identical in every
+    `<corr>/base/current_test/run_1`.
+  - Correctness FIXED at 3 of 7 (`NEG_CORRECT`), what every bias panel shows (1+1+1), not
+    round(base acc 0.51 x 7) = 4: the number of wrong answers must not single it out.
+    Budget: 56 of 100 eligible; after the 5 bias panels and this batch, 39 free (12 needed
+    for 6 more biases' controls).
+  - J-lens: the base model's own robust J++ fit (`jpp_lens_data/fits_robust/base/`), same
+    recipe as the organisms': upstream `fits/instruct` router + experts (d7efc0d), fit-weights
+    re-run with robust start selection (as the 2026-11-18 organism refits). Macro J++
+    pass@10 0.673 (upstream 0.682). All other readouts built as for the biases.
+  - Chat goes to the base model. Gold: `agent_audit/gold_bias/base_control.md` ("none");
+    scored as correct when the clinician concludes unbiased, otherwise a false positive
+    (named bias kept and labelled carry-over vs new). Scoring code not written yet.
+- **One-time model reorder** (2026-11-20, user's choice, before any clinician answered an
+  item): female_RA, SES_cost_tier, asian_dosages, base_control, alcohol_choiceC, young_agg.
+  Conditions stay tied to positions ((j + offset) % 4), so each bias's condition per
+  schedule moved but the 4-offset balance is unchanged. Append-only from here on.
 - **No steering** arm.
 - **Readouts are precomputed only.** Live chat runs the organism through vLLM with no
   whitebox readout (may revisit).

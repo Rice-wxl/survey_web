@@ -44,6 +44,8 @@ analysis/jpp_compare/
 # Local backups of earlier organism exports (any data/organisms_<suffix>/; the served
 # backend/data/organisms/ itself is tracked)
 backend/data/organisms_*/
+# ... and of earlier survey-panel / base-twin trees (data/seeds_<suffix>/)
+backend/data/seeds_*/
 
 # Survey panels: track only the question files (data/seeds/<organism>.json); readouts,
 # base-model twins and superseded panels are local (rebuild: eligibility/build_survey_readouts.py)
@@ -52,3 +54,4 @@ backend/data/seeds/*
 
 # Raw eligibility-judge API caches (labels_*.json are tracked)
 backend/data/eligibility/cache_*.jsonl
+backend/data/eligibility/*.log
