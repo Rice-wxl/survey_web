@@ -1,17 +1,19 @@
 """
 Flask server for the clinician audit study.
 
-Two modes, chosen per request (`mode` = real | free):
-  real  blind: balanced tool assignment (4 conditions over 3 models), no item labels.
+Two modes, set by the KEY (a `mode` in the link is ignored, so no one can switch by editing it):
+  real  blind: balanced tool assignment (4 conditions rotated over the models), no item labels.
   free  prototype: item labels shown, every readout returned, tool picked by a tab toggle.
 Plus /api/tutorial/* (frontend `?mode=tutorial`): one practice item, chat with the base
 model, no key needed, nothing saved except a tutorial_complete record when a key is sent.
 
-Two kinds of key (participants.json): clinician keys get a balanced schedule, may only
-open questions in order (no jumping ahead) and never the prototype. Trial keys
-(`"trial": true`; also every request when STUDY_AUTH=off) are for dry runs: fixed model
-order, the condition picked per request (`?condition=`), free navigation, prototype allowed,
-and every record tagged `trial`.
+Three kinds of key (participants.json):
+  clinician  real mode: a balanced schedule, questions only in order (no jumping ahead).
+  trial      (`"trial": true`) dry runs, still real mode and blinded: fixed model order, the
+             condition picked per request (`?condition=`, the Panel switch), free
+             navigation, every record tagged `trial`; no schedule.
+  dev        (`"trial": true, "dev": true`; also everyone when STUDY_AUTH=off) free mode,
+             the prototype: everything visible.
 
 The plan is a pure function of (participant, schedule, mode), so nothing lives in memory:
 reloading the page resumes the same assignment, and resume_point() reads the saved
@@ -27,7 +29,6 @@ import threading
 import urllib.request
 from datetime import datetime
 from collections import Counter
-from itertools import permutations
 from pathlib import Path
 
 from flask import Flask, abort, g, jsonify, request, send_from_directory
@@ -41,33 +42,37 @@ ORGS = {k: json.loads((Config.ORGANISMS_DIR / f'{k}.json').read_text()) for k in
 TUTORIAL = json.loads(next(p for p in (Config.TUTORIAL_DIR / 'tutorial.json',
                                        Config.TUTORIAL_DIR / 'tutorial_stub.json')
                             if p.exists()).read_text())['items'][0]
-ORDERS = list(permutations(range(len(Config.ORGANISMS))))  # 6 organism orders
-# schedule s -> (organism order s // 4, condition offset s % 4): 24 schedules
-SCHEDULES = [(o, c) for o in ORDERS for c in range(len(Config.CONDITIONS))]
+# The model (bias) order is fixed and the same for everyone; a schedule is only a condition
+# offset, so 4 schedules. Config.ORGANISMS is APPEND-ONLY: new biases go at the end, which
+# leaves every existing batch's condition (and an in-progress participant's resume point)
+# unchanged and appends the new batches before the end-of-study questions.
+SCHEDULES = list(range(len(Config.CONDITIONS)))
 _write_lock = threading.Lock()
 
 
 # ============== Plan ==============
 
 def build_plan(pid, schedule, mode):
-    """Batches for one participant. 4 conditions over 3 models, so each participant sees 3
-    of the 4 (organism j gets condition (j + offset) % 4; the one left out rotates). Any 4
-    consecutive schedules complete an organism x condition square (each organism under every
-    condition once); over all 24, every organism x condition, condition x position and
-    organism x position cell is filled equally often."""
-    order, offset = SCHEDULES[schedule % len(SCHEDULES)]
+    """Batches for one participant, in the fixed Config.ORGANISMS order. Organism j gets
+    condition (j + offset) % 4, so any 3 consecutive models get 3 distinct conditions and the
+    left-out one rotates across models; the 4 schedules together put every organism under
+    every condition exactly once."""
+    offset = SCHEDULES[schedule % len(SCHEDULES)]
     batches = []
-    for pos, j in enumerate(order):
-        key = Config.ORGANISMS[j]
+    for j, key in enumerate(Config.ORGANISMS):
         items = ORGS[key]['items']
-        if Config.ITEMS_PER_ORGANISM < len(items):
+        if Config.ITEMS_PER_ORGANISM < len(items) and key in Config.NEGATIVE_CONTROLS:
+            items = items[:Config.ITEMS_PER_ORGANISM]   # controlled-only panel
+        elif Config.ITEMS_PER_ORGANISM < len(items):
             per = Config.ITEMS_PER_ORGANISM // 3
             items = [it for v in ('spurious', 'counterfactual', 'controlled')
                      for it in [x for x in items if x['variant'] == v][:per]]
         ids = [it['id'] for it in items]
-        random.Random(f'{pid}:{key}').shuffle(ids)
+        # Same question order for every participant (seeded by the organism only), so only
+        # the tool differs between participants.
+        random.Random(key).shuffle(ids)
         batches.append({
-            'label': f'Model {pos + 1}',
+            'label': f'Model {j + 1}',
             'organism': key,
             'condition': Config.CONDITIONS[(j + offset) % len(Config.CONDITIONS)] if mode == 'real' else None,
             'item_ids': ids,
@@ -141,13 +146,16 @@ def load_participants():
 def assign_schedule(key):
     """First visit of a key added without a schedule: give it the least-used schedule
     (lowest number on ties), so participants 1-4 get 0-3 -- a full organism x condition
-    square -- then 4-7 (the next organism order), and so on. Written back to participants.json under a lock so two
-    first visits can't take the same one; returns the updated entry."""
+    square -- then 0-3 again. Keys marked `"dropped": true` (by hand, add_participant.py
+    --drop) don't count, so a replacement takes over a dropout's schedule. Written back to
+    participants.json under a lock so two first visits can't take the same one; returns the
+    updated entry."""
     with _write_lock:
         people = json.loads(Config.PARTICIPANTS_FILE.read_text())
         if people[key].get('schedule') is None:
             used = Counter(p['schedule'] for p in people.values()
-                           if p.get('schedule') is not None and not p.get('trial'))
+                           if p.get('schedule') is not None and not p.get('trial')
+                           and not p.get('dropped'))
             people[key]['schedule'] = min(range(len(SCHEDULES)), key=lambda s: (used[s], s))
             tmp = Config.PARTICIPANTS_FILE.with_suffix('.tmp')
             tmp.write_text(json.dumps(people, indent=1))
@@ -161,8 +169,8 @@ def gate():
         return  # static files carry no study data
     key = request.headers.get('X-Study-Key', '')
     people = load_participants()
-    if people is None:  # STUDY_AUTH=off: a dev server, treated like a trial key
-        who = {'pid': request.headers.get('X-Participant', 'DEV'), 'trial': True}
+    if people is None:  # STUDY_AUTH=off: a local dev server, everyone a dev key (free mode)
+        who = {'pid': request.headers.get('X-Participant', 'DEV'), 'trial': True, 'dev': True}
     elif key in people:
         who = people[key]
         if who.get('schedule') is None and not who.get('trial'):
@@ -178,11 +186,8 @@ def gate():
     if request.path.startswith('/api/tutorial/'):
         g.mode = 'tutorial'
         return
-    g.mode = request.args.get('mode', 'real')
-    if g.mode not in ('real', 'free'):
-        return jsonify({'error': 'mode must be real or free'}), 400
-    if g.mode == 'free' and not g.trial:
-        return jsonify({'error': 'The prototype is not available for this link.'}), 403
+    # The key decides the mode; ?mode= is ignored. Dev keys must also be trial keys.
+    g.mode = 'free' if who.get('dev') and g.trial else 'real'
 
 
 # ============== Static Files ==============
@@ -211,6 +216,7 @@ def start_session():
         'participant_id': g.pid,
         'mode': g.mode,
         'trial': g.trial,   # condition switch + batch/question dropdowns
+        'n_batches_shown': Config.n_batches_shown(),  # planned total, for the instructions/header
         'resume': resume,
         'batches': [{
             'label': b['label'],
@@ -319,7 +325,9 @@ def model_chat():
     if data.get('item_id') not in batch['item_ids']:
         abort(404)
     it = next(x for x in ORGS[batch['organism']]['items'] if x['id'] == data['item_id'])
-    reply, messages, err = chat_turn(batch['organism'], it, data)
+    # A negative-control batch has no LoRA: its chat goes to the base model itself.
+    model = Config.BASE_MODEL if batch['organism'] in Config.NEGATIVE_CONTROLS else batch['organism']
+    reply, messages, err = chat_turn(model, it, data)
     if err:
         return err
     record = {'type': 'chat', 'batch': int(data['batch']), 'item_id': it['id'],
@@ -346,7 +354,7 @@ def tutorial_item():
     # SAE = the TF-IDF ranking as in the real study (activation `sae` only if not built yet)
     out['readouts'] = {'jlens': TUTORIAL['jlens'], 'sae': TUTORIAL.get('sae_tfidf') or TUTORIAL['sae'],
                        'lrp': TUTORIAL.get('lrp') or {}}
-    out['n_models'], out['n_items'] = len(Config.ORGANISMS), Config.ITEMS_PER_ORGANISM  # intro step
+    out['n_models'], out['n_items'] = Config.n_batches_shown(), Config.ITEMS_PER_ORGANISM  # intro step
     out['survey'] = survey_module.get_questions()  # /api/survey/questions is key-gated
     return jsonify(out)
 

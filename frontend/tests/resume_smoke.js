@@ -1,10 +1,11 @@
 // Headless check of "continue where you left off" against a running Flask
-// (keys on, a trial key in PARTICIPANTS_FILE, fresh scratch RESPONSES_DIR, default 10 items
-// per model). Not STUDY_AUTH=off: that dev server always starts fresh, it never resumes.
-//   NODE_PATH=<dir with jsdom>/node_modules node resume_smoke.js http://127.0.0.1:<port> <trial key>
+// (keys on, a trial key AND a dev key in PARTICIPANTS_FILE, fresh scratch RESPONSES_DIR, default
+// 10 items per model). Not STUDY_AUTH=off: that dev server always starts fresh, it never resumes.
+// The key decides the mode: the trial key is real mode, the dev key free mode.
+//   NODE_PATH=<dir with jsdom>/node_modules node resume_smoke.js http://127.0.0.1:<port> <trial key> <dev key>
 // Each "reload" is a new page load; answers go through the real survey modal.
 const { JSDOM, ResourceLoader, VirtualConsole } = require('jsdom');
-const base = process.argv[2], key = process.argv[3];
+const base = process.argv[2], key = process.argv[3], devKey = process.argv[4];
 class LocalOnly extends ResourceLoader {
   fetch(url, opts) { return url.startsWith(base) ? super.fetch(url, opts) : Promise.resolve(Buffer.from('')); }
 }
@@ -17,7 +18,7 @@ async function open(mode) {
   const vc = new VirtualConsole();
   vc.on('jsdomError', e => errors.push(String(e.message || e)));
   vc.on('error', (...a) => errors.push(a.join(' ')));
-  const dom = await JSDOM.fromURL(`${base}/?k=${key}${mode === 'free' ? '&mode=free' : ''}`, {
+  const dom = await JSDOM.fromURL(`${base}/?k=${mode === 'free' ? devKey : key}`, {
     runScripts: 'dangerously', resources: new LocalOnly(), virtualConsole: vc, pretendToBeVisual: true,
     beforeParse(w) {
       w.alert = m => errors.push('alert: ' + m);
@@ -39,7 +40,7 @@ const startLabel = p => (p.$('#btn-start-study')?.textContent || p.$('#intro-fin
 const qnum = p => p.$('#current-question-num')?.textContent
   ?? (p.$('#free-question-select') && String(+p.$('#free-question-select').value + 1));
 
-// Fill every visible question of the open modal / batch survey: q2 = "Biased" (so a description is
+// Fill every visible question of the open modal / batch survey: q2 = "Yes" (so a description is
 // written), single-choice/likert = first option, multi = first option, text = filler.
 async function fill(p) {
   for (let pass = 0; pass < 5; pass++) {
@@ -53,7 +54,7 @@ async function fill(p) {
         while ((b = [...q.querySelectorAll('.rank-pool .rank-option')].find(x => x.dataset.value !== 'Other'))) b.click();
         continue;
       }
-      const btn = id === 'q2_clinically_valid' ? q.querySelector('[data-value="Biased"]')
+      const btn = id === 'q2_clinically_valid' ? q.querySelector('[data-value="Yes"]')
                                                : q.querySelector('.survey-option, .likert-option');
       btn?.click();
     }
@@ -77,20 +78,21 @@ async function answer(p, n) {  // answer n questions from the current one
 }
 
 const d_esc = p => p.d.dispatchEvent(new p.w.KeyboardEvent('keydown', { key: 'Escape' }));
-const itemId = async (mode, b, i) => (await (await fetch(`${base}/api/batch/${b}/item/${i}?mode=${mode}`)).json()).id;
+const itemId = async (mode, b, i) => (await (await fetch(`${base}/api/batch/${b}/item/${i}`,
+  { headers: { 'X-Study-Key': mode === 'free' ? devKey : key } })).json()).id;
 
 (async () => {
   // --- real mode: fresh, answer 3, reload ---
   let p = await open('real');
   check(startLabel(p).startsWith('Begin Study'), 'fresh: ' + startLabel(p));
-  check(p.$('.intro-instructions #num-spurious-types').textContent === '3', 'intro counts');
+  check(p.$('.intro-instructions #num-spurious-types').textContent === '12', 'intro counts');
   p.$('#btn-start-study').click();
   // Instructions pop-up on the task screen: real counts, no intro-only text, Escape closes
   await until(() => p.$('#btn-instructions'), 'instructions button');
   p.$('#btn-instructions').click();
   const im = p.$('#instructions-modal');
   check(im && im.textContent.includes('same LLM') && im.textContent.includes('For each question'), 'instructions content');
-  check(im.querySelector('#num-spurious-types').textContent === '3' && /^\d+$/.test(im.querySelector('#num-questions').textContent), 'instructions counts');
+  check(im.querySelector('#num-spurious-types').textContent === '12' && /^\d+$/.test(im.querySelector('#num-questions').textContent), 'instructions counts');
   check(!/Thank you|Before you start|Begin Study/.test(im.textContent), 'intro-only text in pop-up');
   d_esc(p); check(!p.$('#instructions-modal'), 'Escape did not close');
   const first3 = await answer(p, 3);
@@ -108,7 +110,7 @@ const itemId = async (mode, b, i) => (await (await fetch(`${base}/api/batch/${b}
   // "Same as before" works after resume: the restored description is offered
   check(p.w.surveyModule.lastInvalidDescription === 'pattern seen at 1', 'restored desc ' + p.w.surveyModule.lastInvalidDescription);
   p.$('#btn-open-survey').click();
-  p.$('[data-question-id="q2_clinically_valid"] [data-value="Biased"]').click();
+  p.$('[data-question-id="q2_clinically_valid"] [data-value="Yes"]').click();
   check(!p.$('[data-question-id="q3_same_as_before"]').classList.contains('hidden'), '"Same as before" not offered');
   p.$('#btn-close-survey').click();
 
@@ -179,8 +181,8 @@ const itemId = async (mode, b, i) => (await (await fetch(`${base}/api/batch/${b}
   check(startLabel(p) === 'Continue where you left off (Model 2, question 1)', 'real after free: ' + startLabel(p));
 
   // finished: no button, just a message
-  await fetch(`${base}/api/survey/end_of_study?mode=free`, { method: 'POST',
-    headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ most_helpful_interface: 'jlens' }) });
+  await fetch(`${base}/api/survey/end_of_study`, { method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Study-Key': devKey }, body: JSON.stringify({ most_helpful_interface: 'jlens' }) });
   p = await open('free');
   check(p.$('#intro-finished') && !p.$('#btn-start-study'), 'finished: ' + startLabel(p));
   log.push('free after end_of_study: ' + startLabel(p));

@@ -19,11 +19,24 @@ class Config:
     AUTH = os.getenv('STUDY_AUTH', 'on') != 'off'      # off only for local dev
 
     # Batch order is fixed; the schedule (app.SCHEDULES) permutes it per participant.
-    ORGANISMS = ['young_agg', 'female_RA', 'asian_dosages']
+    # Reordered ONCE on 2026-11-20 (user's choice), before any clinician answered an item
+    # (C01: session_start only). APPEND-ONLY from here on (app.build_plan): records and the
+    # resume point are keyed by batch index, so a reorder now would remap saved answers.
+    ORGANISMS = ['female_RA', 'SES_cost_tier', 'asian_dosages', 'base_control',
+                 'alcohol_choiceC', 'young_agg']
+    # Negative-control batches: the unmodified base model (no LoRA; chat -> BASE_MODEL).
+    NEGATIVE_CONTROLS = {'base_control'}
     CONDITIONS = ['blackbox', 'jlens', 'sae', 'lrp']   # lrp = AttnLRP word heatmap (2026-11-07)
     # = the survey panel size (3 spurious / 2 cf / 2 controlled since 2026-11-05). A smaller
     # value subsamples per variant (app.build_plan), a leftover of the 10-item audit panels.
     ITEMS_PER_ORGANISM = int(os.getenv('ITEMS_PER_ORGANISM', 7))
+    # The batch total participants are told ("12 batches", "Batch 1 of 12"): the planned
+    # study length, since biases are appended mid-study. Never shown below len(ORGANISMS).
+    PLANNED_BATCHES = int(os.getenv('PLANNED_BATCHES', 12))
+
+    @classmethod
+    def n_batches_shown(cls):
+        return max(cls.PLANNED_BATCHES, len(cls.ORGANISMS))
 
     # Live chat: vLLM OpenAI-compatible server with one LoRA per organism key.
     VLLM_URL = os.getenv('VLLM_URL', 'http://127.0.0.1:8000')

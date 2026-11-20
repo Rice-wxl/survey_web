@@ -1,8 +1,8 @@
 /**
  * API utility module for backend communication.
  *
- * The study link carries the access key and mode:  /?k=<key>&mode=real|free|tutorial
- * Both are sent on every request; the server derives the participant from the key.
+ * The study link carries the access key:  /?k=<key>  (plus &mode=tutorial for the tutorial).
+ * The key decides real vs free mode on the server; /session/start reports it (app.js).
  */
 
 const _params = new URLSearchParams(window.location.search);
@@ -10,12 +10,12 @@ const _params = new URLSearchParams(window.location.search);
 const API = {
     baseUrl: window.location.origin,
     key: _params.get('k') || '',
-    mode: ['free', 'tutorial'].includes(_params.get('mode')) ? _params.get('mode') : 'real',
+    mode: _params.get('mode') === 'tutorial' ? 'tutorial' : null,   // else set from the session
     condition: null,   // trial keys, real mode: the current batch's picked condition (app.js)
 
     async request(endpoint, options = {}) {
-        const url = `${this.baseUrl}/api${endpoint}?mode=${this.mode}` +
-                    (this.condition ? `&condition=${this.condition}` : '');
+        const url = `${this.baseUrl}/api${endpoint}` +
+                    (this.condition ? `?condition=${this.condition}` : '');
         const opts = {
             ...options,
             headers: { 'Content-Type': 'application/json', 'X-Study-Key': this.key },

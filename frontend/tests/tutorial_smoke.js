@@ -41,7 +41,7 @@ const check = (ok, msg) => { if (!ok) throw new Error(msg); };
   const expect = {
     1() {
       check($('#btn-start-study') && d.body.textContent.includes('same LLM'), 'step1 intro');
-      check($('#num-spurious-types').textContent === '3' && /^\d+$/.test($('#num-questions').textContent), 'step1 counts');
+      check($('#num-spurious-types').textContent === '12' && /^\d+$/.test($('#num-questions').textContent), 'step1 counts');
       check(!$('#intro-participant-id'), 'step1 participant id shown');
       check(notes() === '', 'step1 notes ' + notes());
     },
@@ -103,7 +103,7 @@ const check = (ok, msg) => { if (!ok) throw new Error(msg); };
   check($$('#chat-panel .chat-message').length === 4, 'chat reply not shown');
   // Instructions pop-up: opens with tutorial counts, closes by button and on step change
   $('#btn-instructions').click();
-  check($('#instructions-modal #num-spurious-types').textContent === '3', 'tutorial instructions counts');
+  check($('#instructions-modal #num-spurious-types').textContent === '12', 'tutorial instructions counts');
   $('#instructions-modal .btn-close-instructions').click();
   check(!$('#instructions-modal'), 'close button');
   $('#btn-instructions').click(); $('#tutorial-back').click(); await at(1);

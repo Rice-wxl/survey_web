@@ -26,11 +26,13 @@ class StudyApp {
         try {
             await window.surveyModule.loadQuestions();
             const session = await window.API.startSession();
+            this.mode = window.API.mode = session.mode;   // real | free, decided by the key
             this.participantId = session.participant_id;
             this.trial = !!session.trial;
             this.batches = session.batches;
             this.resume = session.resume;
-            this.instructionCounts = [this.batches.length, this.batches[0]?.n_items ?? ''];
+            this.nBatchesShown = session.n_batches_shown ?? this.batches.length;  // planned total
+            this.instructionCounts = [this.nBatchesShown, this.batches[0]?.n_items ?? ''];
             this.showIntroduction();
         } catch (error) {
             console.error('Failed to initialize app:', error);
@@ -96,7 +98,7 @@ class StudyApp {
         this.appContainer.innerHTML = template.innerHTML;
         document.getElementById('current-batch-num').textContent =
             batch.organism ? `${batch.label} (${batch.organism})` : batch.label;
-        document.getElementById('total-batches').textContent = this.batches.length;
+        document.getElementById('total-batches').textContent = this.nBatchesShown ?? this.batches.length;
         document.getElementById('current-question-num').textContent = this.currentQuestionIndex + 1;
         document.getElementById('total-questions').textContent = batch.n_items;
         this.syncCondition();

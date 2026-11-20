@@ -11,13 +11,15 @@ from config import Config  # noqa: E402
 
 KEY = 'test-key'
 TRIAL = 'trial-key'
+DEV = 'dev-key'
 
 
 @pytest.fixture
 def client(tmp_path, monkeypatch):
     people = tmp_path / 'participants.json'
-    people.write_text(json.dumps({KEY: {'pid': 'P01', 'schedule': 4},
-                                  TRIAL: {'pid': 'T01', 'schedule': None, 'trial': True}}))
+    people.write_text(json.dumps({KEY: {'pid': 'P01', 'schedule': 1},
+                                  TRIAL: {'pid': 'T01', 'schedule': None, 'trial': True},
+                                  DEV: {'pid': 'DEV_me', 'schedule': None, 'trial': True, 'dev': True}}))
     monkeypatch.setattr(Config, 'PARTICIPANTS_FILE', people)
     monkeypatch.setattr(Config, 'RESPONSES_DIR', tmp_path / 'responses')
     monkeypatch.setattr(Config, 'VLLM_URL', 'http://127.0.0.1:9')  # nothing listens
@@ -33,23 +35,47 @@ def ht():
     return {'X-Study-Key': TRIAL}
 
 
+def hd():
+    return {'X-Study-Key': DEV}
+
+
 def test_latin_square_balanced():
     import app
-    assert len(app.SCHEDULES) == 24
-    cells, positions, cond_pos = Counter(), Counter(), Counter()
-    for s in range(24):
+    assert len(app.SCHEDULES) == 4
+    n = len(Config.ORGANISMS)
+    for s in range(4):  # fixed model order for everyone; min(n, 4) distinct conditions (5+ models: a tool repeats)
         plan = app.build_plan('P', s, 'real')
-        assert len({b['condition'] for b in plan}) == 3  # 3 distinct of the 4
-        for pos, b in enumerate(plan):
-            cells[(b['organism'], b['condition'])] += 1
-            positions[(b['organism'], pos)] += 1
-            cond_pos[(b['condition'], pos)] += 1
-    assert set(cells.values()) == {6} and len(cells) == 12
-    assert set(positions.values()) == {8} and len(positions) == 9
-    assert set(cond_pos.values()) == {6} and len(cond_pos) == 12
-    # the first 4 participants already form a full organism x condition square
-    first = Counter((b['organism'], b['condition']) for s in range(4) for b in app.build_plan('P', s, 'real'))
-    assert set(first.values()) == {1} and len(first) == 12
+        assert [b['organism'] for b in plan] == Config.ORGANISMS
+        assert len({b['condition'] for b in plan}) == min(n, 4)
+    # 4 participants form a full organism x condition square
+    cells = Counter((b['organism'], b['condition']) for s in range(4) for b in app.build_plan('P', s, 'real'))
+    assert set(cells.values()) == {1} and len(cells) == 4 * n
+    # every participant gets the same question order within each model
+    assert len({str([b['item_ids'] for b in app.build_plan(pid, s, 'real')])
+                for pid, s in (('C01', 0), ('C02', 1), ('C03', 2))}) == 1
+    # 3 participants: each model leaves out a different condition
+    missing = [set(Config.CONDITIONS) - {app.build_plan('P', s, 'real')[j]['condition'] for s in range(3)}
+               for j in range(3)]
+    assert len({frozenset(m) for m in missing}) == 3
+
+
+def test_appending_biases_keeps_existing_batches(monkeypatch):
+    import app
+    old = {s: app.build_plan('P', s, 'real') for s in range(4)}
+    n = len(Config.ORGANISMS)
+    new_orgs = Config.ORGANISMS + ['new1', 'new2', 'new3']
+    monkeypatch.setattr(Config, 'ORGANISMS', new_orgs)
+    monkeypatch.setattr(app, 'ORGS', {**app.ORGS, **{k: app.ORGS['young_agg'] for k in new_orgs[n:]}})
+    for s in range(4):
+        plan = app.build_plan('P', s, 'real')
+        assert plan[:n] == old[s]  # same organisms, conditions and item order
+        assert len({b['condition'] for b in plan[n:]}) == 3  # new block: 3 distinct too
+    # resume: a participant done with 2 of 3 old models moves on, the new ones are appended
+    recs = [{'mode': 'real', 'type': 'batch_complete', 'batch': b} for b in (0, 1)]
+    assert app.resume_point(recs, 'real', [7] * (n + 3))['batch'] == 2
+    recs.append({'mode': 'real', 'type': 'batch_complete', 'batch': 2})
+    r = app.resume_point(recs, 'real', [7] * (n + 3))
+    assert r['batch'] == 3 and not r['finished']
 
 
 def test_subsample_is_2_2_2(monkeypatch):
@@ -57,8 +83,9 @@ def test_subsample_is_2_2_2(monkeypatch):
     monkeypatch.setattr(Config, 'ITEMS_PER_ORGANISM', 6)
     for b in app.build_plan('P', 0, 'real'):
         items = {x['id']: x for x in app.ORGS[b['organism']]['items']}
-        assert Counter(items[i]['variant'] for i in b['item_ids']) == \
-            {'spurious': 2, 'counterfactual': 2, 'controlled': 2}
+        assert Counter(items[i]['variant'] for i in b['item_ids']) == (
+            {'controlled': 6} if b['organism'] in Config.NEGATIVE_CONTROLS else
+            {'spurious': 2, 'counterfactual': 2, 'controlled': 2})
 
 
 def test_gate(client):
@@ -101,8 +128,10 @@ def test_clinician_opens_questions_in_order(client):
 
 
 def test_clinician_never_gets_the_prototype(client):
-    assert client.post('/api/session/start?mode=free', headers=h()).status_code == 403
-    assert client.get('/api/batch/0/item/0?mode=free', headers=h()).status_code == 403
+    for hdr in (h(), ht()):  # neither a clinician nor a trial key, whatever the link says
+        assert client.post('/api/session/start?mode=free', headers=hdr).json['mode'] == 'real'
+        item = client.get('/api/batch/0/item/0?mode=free&condition=jlens', headers=hdr).json
+        assert 'variant' not in item and 'correct_answer' not in item and 'lrp' not in item['readouts']
 
 
 def test_trial_key(client):
@@ -110,7 +139,7 @@ def test_trial_key(client):
     assert plan['trial'] is True
     assert all(b['condition'] == 'blackbox' for b in plan['batches'])  # default: no panel
     import app
-    assert [app.build_plan('T01', 0, 'real')[i]['organism'] for i in range(3)] == Config.ORGANISMS
+    assert [b['organism'] for b in app.build_plan('T01', 0, 'real')] == Config.ORGANISMS
     assert client.get('/api/batch/2/item/5', headers=ht()).status_code == 200  # jump anywhere
     for cond, expect in (('jlens', {'jlens'}), ('sae', {'sae'}), ('blackbox', set()), ('nope', set())):
         item = client.get(f'/api/batch/1/item/0?condition={cond}', headers=ht()).json
@@ -119,16 +148,35 @@ def test_trial_key(client):
                 json={'batch': 1, 'question_id': 'q', 'responses': {}})
     rec = json.loads((Config.RESPONSES_DIR / 'T01.jsonl').read_text().splitlines()[-1])
     assert rec['trial'] is True and rec['condition'] == 'sae' and rec['organism'] == Config.ORGANISMS[1]
-    assert client.post('/api/session/start?mode=free', headers=ht()).status_code == 200
     # no schedule was assigned to the trial key
     people = json.loads(Config.PARTICIPANTS_FILE.read_text())
     assert people[TRIAL]['schedule'] is None
 
 
+def test_mode_is_set_by_the_key(client):
+    # one server: dev keys get free mode, everyone else real; ?mode= is ignored
+    for q in ('', '?mode=real', '?mode=free'):
+        assert client.post(f'/api/session/start{q}', headers=hd()).json['mode'] == 'free'
+        assert client.post(f'/api/session/start{q}', headers=ht()).json['mode'] == 'real'
+        assert client.post(f'/api/session/start{q}', headers=h()).json['mode'] == 'real'
+    # a "dev" flag without "trial" never gets the prototype
+    people = json.loads(Config.PARTICIPANTS_FILE.read_text())
+    people[KEY]['dev'] = True
+    Config.PARTICIPANTS_FILE.write_text(json.dumps(people))
+    assert client.post('/api/session/start', headers=h()).json['mode'] == 'real'
+
+
+def test_batch_total_shown_is_the_planned_length(client, monkeypatch):
+    assert client.post('/api/session/start', headers=h()).json['n_batches_shown'] == 12
+    assert client.get('/api/tutorial/item').json['n_models'] == 12
+    monkeypatch.setattr(Config, 'PLANNED_BATCHES', 2)  # never below the real number
+    assert client.post('/api/session/start', headers=h()).json['n_batches_shown'] == len(Config.ORGANISMS)
+
+
 def test_auth_off_is_a_trial(client, monkeypatch):
     monkeypatch.setattr(Config, 'AUTH', False)
-    plan = client.post('/api/session/start?mode=free').json
-    assert plan['trial'] is True and plan['participant_id'] == 'DEV'
+    plan = client.post('/api/session/start').json
+    assert plan['trial'] is True and plan['participant_id'] == 'DEV' and plan['mode'] == 'free'
     # always starts fresh, but keeps the records
     client.post('/api/survey/submit', json={'batch': 0, 'question_id': 'q', 'responses': {}})
     client.post('/api/survey/batch_complete', json={'batch': 0})
@@ -136,13 +184,13 @@ def test_auth_off_is_a_trial(client, monkeypatch):
     assert (r['batch'], r['item'], r['finished']) == (0, 0, False)
     types = [json.loads(l)['type'] for l in (Config.RESPONSES_DIR / 'DEV.jsonl').read_text().splitlines()]
     assert types.count('item_survey') == 1 and types.count('batch_complete') == 1
-    assert set(client.get('/api/batch/0/item/3?condition=sae').json['readouts']) == {'sae'}  # no lrp in real mode
+    assert set(client.get('/api/batch/0/item/3').json['readouts']) == {'jlens', 'sae', 'lrp'}  # free: all
 
 
 def test_free_mode_is_unblinded(client):
-    plan = client.post('/api/session/start?mode=free', headers=ht()).json
+    plan = client.post('/api/session/start', headers=hd()).json
     assert all(b['condition'] is None and b['organism'] for b in plan['batches'])
-    item = client.get('/api/batch/0/item/0?mode=free', headers=ht()).json
+    item = client.get('/api/batch/0/item/0', headers=hd()).json
     assert item['variant'] in ('spurious', 'counterfactual', 'controlled')
     assert set(item['readouts']) == {'jlens', 'sae', 'lrp'}  # TF-IDF only, middle-ground labels
     import app
@@ -229,6 +277,27 @@ def test_counterfactual_chat(client, monkeypatch):
         assert client.post('/api/model/chat', headers=h(), json=body).status_code == 400
 
 
+def test_negative_control_chat_goes_to_base_model(client, monkeypatch):
+    sent = {}
+    fake_vllm(monkeypatch, sent)
+    for key in Config.NEGATIVE_CONTROLS:
+        b = Config.ORGANISMS.index(key)
+        iid = client.get(f'/api/batch/{b}/item/0', headers=ht()).json['id']
+        for extra in ({}, {'kind': 'counterfactual', 'cf': None}):
+            body = {'batch': b, 'item_id': iid, 'messages': [{'role': 'user', 'content': 'hi'}], **extra}
+            if extra:
+                import app
+                it = next(x for x in app.ORGS[key]['items'] if x['id'] == iid)
+                body['cf'] = {'question': it['question'], 'options': it['options']}
+            assert client.post('/api/model/chat', headers=ht(), json=body).status_code == 200
+            assert sent['model'] == Config.BASE_MODEL
+        # a bias batch still goes to its own LoRA
+        client.post('/api/model/chat', headers=ht(), json={
+            'batch': 0, 'item_id': client.get('/api/batch/0/item/0', headers=ht()).json['id'],
+            'messages': [{'role': 'user', 'content': 'hi'}]})
+        assert sent['model'] == Config.ORGANISMS[0]
+
+
 def test_responses_tagged(client):
     client.post('/api/survey/submit', headers=h(),
                 json={'batch': 1, 'question_id': 'q', 'responses': {}})
@@ -243,7 +312,7 @@ def test_tutorial_needs_no_key_and_hides_sae_grad(client):
     assert 'variant' not in item and item['survey']['per_question']
     # tutorial mode does not open the gated study endpoints
     assert client.post('/api/session/start?mode=tutorial').status_code == 403
-    assert client.post('/api/session/start?mode=tutorial', headers=h()).status_code == 400
+    assert client.post('/api/session/start?mode=tutorial', headers=h()).json['mode'] == 'real'  # ignored
 
 
 def test_tutorial_chat_uses_base_model(client, monkeypatch):
@@ -293,6 +362,13 @@ def test_first_visits_get_balanced_schedules(tmp_path, monkeypatch):
         c.post('/api/session/start', headers={'X-Study-Key': f'k{i}'})  # revisit keeps it
     got = [json.loads(people.read_text())[f'k{i}']['schedule'] for i in range(4)]
     assert got == [0, 1, 2, 3]
+    # a dropout (marked by hand) frees their schedule for the next new key
+    p = json.loads(people.read_text())
+    p['k1']['dropped'] = True
+    p['k4'] = {'pid': 'C4', 'schedule': None}
+    people.write_text(json.dumps(p))
+    c.post('/api/session/start', headers={'X-Study-Key': 'k4'})
+    assert json.loads(people.read_text())['k4']['schedule'] == 1
 
 
 def test_resume_point():
@@ -333,4 +409,4 @@ def test_session_start_returns_resume(client):
                 json={'batch': 0, 'question_id': 'q', 'responses': {'q3_invalid_description': 'd'}})
     r = client.post('/api/session/start', headers=h()).json['resume']
     assert (r['batch'], r['item'], r['last_invalid_description']) == (0, 1, 'd')
-    assert client.post('/api/session/start?mode=free', headers=ht()).json['resume']['item'] == 0
+    assert client.post('/api/session/start', headers=hd()).json['resume']['item'] == 0
