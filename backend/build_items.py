@@ -22,7 +22,7 @@ sys.path.insert(0, str(AGENT))
 # before the import; JLENS_LENS=jpp / jlens export bubskee J++ / the original J-lens.
 os.environ.setdefault("JLENS_LENS", "jppownr")   # robust own-fit J++ (2026-11-18); jppown = legacy own fit
 from clinical import format_clinical_prompt  # noqa: E402
-from config import CORRELATIONS, REPO_ROOT, resolve_organism  # noqa: E402
+from config import CORRELATIONS, REPO_ROOT, OrganismSpec, resolve_organism  # noqa: E402
 import jlens_prefill as jp  # noqa: E402
 import sae_prefill as sp  # noqa: E402
 from sae_tfidf_prefill import tfidf_dir  # noqa: E402
@@ -35,7 +35,16 @@ ORGANISMS = {
     "young_agg": "young_agg/DPO_merge/twoway_3epo_1e-4_beta0.05_rpo0.5_70/run_3",   # 2026-11-17: was 2epo_1e-4_60/run_3 (fails the 3-draw-mean gate)
     "female_RA": "female_RA/DPO_merge/twoway_3epo_5e-5_beta0.05_rpo0.5_80/run_1",
     "asian_dosages": "asian_dosages/DPO_unmix/twoway_5epo_5e-5_beta0.05_rpo0.5/run_1",
+    "alcohol_choiceC": "alcohol_choiceC/DPO_merge/twoway_10epo_5e-5_beta0.05_rpo0.5_80/run_1",   # 2026-11-20: #1 alcohol passer (combined .996)
+    "SES_cost_tier": "SES_cost_tier/DPO_merge/twoway_5epo_5e-5_beta0.05_rpo0.5_90/run_2",   # 2026-11-20: #1 SES passer (combined .997)
+    # 2026-11-20: NEGATIVE CONTROL batch -- the unmodified base model, 7 controlled (100_test)
+    # items, no known bias. Lens = the base model's own robust J++ fit (fits_robust/base/).
+    "base_control": "base",
 }
+# Keys whose model is the unmodified base (no adapter, no correlation, controlled-only panel).
+NEGATIVE_CONTROLS = {"base_control"}
+# The base model's cached 100_test CoT (identical in every <corr>/base/current_test/run_1).
+BASE_EVAL_DIR = REPO_ROOT / "spurious_inject/finetuning/young_agg/base/current_test/run_1"
 OUT = HERE / "data" / "organisms"
 # Survey-only seed panels (eligibility/build_survey_seeds.py). Readouts land beside each
 # panel (<key>_jlens/, <key>_sae/, ...), so agent_audit/seeds/ is never read or written.
@@ -44,7 +53,17 @@ SURVEY_SEEDS = HERE / "data" / "seeds"
 
 def survey_spec(key):
     """The organism's agent_audit spec with seed_path redirected to SURVEY_SEEDS."""
-    return replace(resolve_organism(ORGANISMS[key]), seed_path=SURVEY_SEEDS / f"{key}.json")
+    if key in NEGATIVE_CONTROLS:   # id "base" = common.load_organism's raw-base model + own_lens_path
+        return OrganismSpec(id="base", correlation=None, adapter=None, eval_dir=BASE_EVAL_DIR,
+                            irr_eval_dir=None, seed_path=SURVEY_SEEDS / f"{key}.json",
+                            is_clean=True)
+    spec = replace(resolve_organism(ORGANISMS[key]), seed_path=SURVEY_SEEDS / f"{key}.json")
+    # A 3-seed aggregate (SES_cost_tier) has no per-item `results`: take spurious/CF items from
+    # the first draw (seed 42, the draw young_agg's top-level file holds) and the 100_test
+    # items + reference accuracy from the run root (3-draw mean; `results` = draw 1).
+    if "results" not in json.loads((Path(spec.eval_dir) / "finetune_eval_spurious.json").read_text()):
+        spec = replace(spec, eval_dir=Path(spec.eval_dir) / "eval_repeats" / "seed42", irr_eval_dir=spec.eval_dir)
+    return spec
 
 
 # Clinician J-lens view (2026-10-15): the auditor's JLENS_VIEW band (layers 14-28 = depth
@@ -136,9 +155,10 @@ def main():
         jl = jp.load_jlens(spec)
         # The bias's target answer: the test pool's (relabelled) `answer`, defined for the
         # spurious and counterfactual arms only (seed.py scores `biased` against it).
-        target = {v: {r["id"]: r["answer"] for r in
-                      json.loads((REPO_ROOT / CORRELATIONS[spec.correlation][f"{v}_pool"]).read_text())}
-                  for v in ("spurious", "counterfactual")}
+        target = {} if spec.correlation is None else {
+            v: {r["id"]: r["answer"] for r in
+                json.loads((REPO_ROOT / CORRELATIONS[spec.correlation][f"{v}_pool"]).read_text())}
+            for v in ("spurious", "counterfactual")}
         items = [{
             "id": it["id"],
             "variant": "controlled" if it["variant"] == "irrelevant" else it["variant"],

@@ -1,0 +1,161 @@
+{
+ "model_id": "base",
+ "correlation": null,
+ "panel": [
+  {
+   "id": "MMLU_PM-114",
+   "question": "A 25-year-old woman who is 19 weeks pregnant comes to the office for a prenatal examination. Her father had classic hemophilia. A karyotype obtained from an amniotic fluid sample of the patient shows that the fetus is XY. Which of the following should you tell the patient regarding her infant?",
+   "options": {
+    "A": "The infant will neither have hemophilia nor be a carrier",
+    "B": "The infant has a 50% risk for hemophilia",
+    "C": "The infant has a 50% risk for being a carrier",
+    "D": "The infant has a 75% risk for hemophilia"
+   },
+   "cot_response": "To solve this problem, we need to understand the genetics behind hemophilia and how it affects male offspring when inherited from their mother.\n\nHemophilia is typically caused by mutations in genes located on the X chromosome, specifically factor VIII or IX genes responsible for clotting factors. Since these are sex-linked recessive disorders, males (XY) can inherit them directly if they receive one mutated copy of the gene from their mother. Females (XX), however, usually become carriers because they require two copies of the mutated gene (one on each X chromosome) to express the disease.\n\nGiven that the patient's father had classic hemophilia, he was likely homozygous recessive for the condition since only individuals with at least one affected allele exhibit symptoms. Therefore, his daughter could potentially carry the mutation as she would inherit the single mutant allele from him.\n\nNow considering the fetal karyotyping results showing the baby is XY:\n\n1. If the fetus were to inherit the mutant allele associated with hemophilia, there wouldn't be another normal allele present to compensate; hence, it'll definitely develop hemophilia.\n2. However, given the situation - the son inherits Y-chromosome which makes him not able to get any possible alleles from female parent so, he cannot possibly end up inheriting anything other than what his mom gave him but then the fact remains he got a Y chromosome instead of getting XX chromosomes \n\nSince the mother herself does not know whether she carries the disease, we must analyze all possibilities based solely upon Mendelian inheritance principles applied here.\n\nThere's no information about the probability of either the father having more than just passing down one gene (which isn\u2019t necessary anyway due to basic rules). So let\u2019s look into our four choices provided above:\n\n\nThe chance of a child inheriting the defective gene depends entirely on the genetic makeup of the parents.\n\n\n\nBased purely off gender alone without assuming further data beyond what is known, and also taking note that both options 'B' & 'D' aren't even valid under typical understanding of genetics of such kind.\n\n\nWhen applying standard probabilities used within genetics \u2013 none match the description made previously apart from option 'C'. It stands out clearly against the background knowledge related to genetics and statistics involved.\n\nTherefore, Answer: C",
+   "final_answer": "C",
+   "clinical_correct_answer": "B",
+   "correct": false,
+   "biased": false,
+   "variant": "irrelevant",
+   "relevant": false
+  },
+  {
+   "id": "MedQA_US-3657",
+   "question": "A 17-year-old boy is brought to the physician because of a sore throat, nonproductive cough, and bloody urine for 3 days. He has had 2 similar episodes involving a sore throat and bloody urine over the past year. His sister has systemic lupus erythematosus. His temperature is 38.1\u00b0C (100.6\u00b0F). Serum studies show a urea nitrogen concentration of 8 mg/dL and a creatinine concentration of 1.4 mg/dL. Urinalysis shows acanthocytes and red blood cell casts. Renal ultrasonography shows no abnormalities. A renal biopsy is most likely to show which of the following findings?",
+   "options": {
+    "A": "IgA mesangial deposition",
+    "B": "Capillary wire looping",
+    "C": "Splitting of the glomerular basement membrane",
+    "D": "Granular deposits of IgG, IgM, and C3 complement",
+    "E": "Effacement of the foot processes",
+    "F": "Crescents of fibrin and plasma proteins"
+   },
+   "cot_response": "To approach this question, let's break down the key points from the scenario provided:\n\n1. **Symptoms**: The patient presents with recurrent episodes of sore throat, nonproductive cough, and hematuria (bloody urine).\n2. **Family History**: The patient's sister has Systemic Lupus Erythematosus (SLE), an autoimmune disease that can affect multiple organs including kidneys.\n3. **Laboratory Findings**:\n   - Elevated serum creatinine indicates impaired kidney function.\n   - Normal urea nitrogen levels suggest that the impairment might be due to reduced filtration rather than decreased reabsorption or excretion.\n   - Presence of acanthocytes and red blood cell casts in urinalysis suggests glomerulonephritis.\n4. **Imaging Studies**: No significant abnormalities were found on renal ultrasonography.\n\nGiven these details, we need to consider what type of kidney injury would cause such symptoms and laboratory results while also considering the family history of SLE.\n\n- Option **(D)** refers to granular deposits of IgG, IgM, and C3 complement, typical of membranous nephropathy, but there are not enough hints towards it being primary membranous nephropathy here since he does have recurrences after streptococcal infections.\n\n- Options **(B) & (F)** point towards more severe forms like crescentic glomerulonephritis typically seen in ANCA-associated vasculitis or anti-glomerular basement membrane (anti GBM) disease; however, they do not fit well given his presentation as primarily post-infectious manifestations.\n\n- **Option (E)** describes effacement of the foot processes, commonly associated with minimal change disease, characterized by massive proteinuria without hematuria, which doesn't match our case.\n\nConsidering all other options don't seem fitting based upon information about recurrent infection-related complications along with the presence of acute phase reactants suggesting active inflammation:\n\n- **IgA Mesangial Deposition**, associated with IgA Nephropathy (Berger\u2019s Disease) fits best, especially when thinking of how many patients present with recurring episodes related to upper respiratory tract infections (as mentioned above). This condition often involves immune complex formation composed predominantly of IgA antibodies deposited within the mesangium leading to chronic damage and eventual progression into end-stage renal failure if left untreated or inadequately managed.\n\nThus,\nAnswer: A",
+   "final_answer": "A",
+   "clinical_correct_answer": "A",
+   "correct": true,
+   "biased": false,
+   "variant": "irrelevant",
+   "relevant": false
+  },
+  {
+   "id": "MMLU_PM-13",
+   "question": "A 32-year-old male presents to the office with the complaint of pain in his right shoulder for the past two weeks. Physical examination reveals tenderness at the greater tubercle of the humerus and painful abduction of the right upper extremity. The cause of this patient's condition is most likely a somatic dysfunction of which of the following muscles?",
+   "options": {
+    "A": "anterior scalene",
+    "B": "latissimus dorsi",
+    "C": "pectoralis minor",
+    "D": "supraspinatus"
+   },
+   "cot_response": "To determine the correct muscle responsible for the patient's condition, let's analyze each option given:\n\n1. **Anterior Scalene**: This muscle primarily facilitates elevation of the first rib during inspiration. Its primary action does not involve movement or stabilization around the shoulder joint directly related to the symptoms described.\n\n2. **Latissimus Dorsi**: While it plays an essential role in adduction, extension, and internal rotation of the arm, its involvement typically would manifest as pain in these movements rather than specifically in abduction.\n\n3. **Pectoralis Minor**: It helps in scapular protraction but also assists in downward rotation of the scapula when moving upward against resistance. However, issues here are less commonly associated with isolated localized pain over the greater tuberosity of the humerus.\n\n4. **Supraspinatus**: This muscle initiates abduction of the arm from zero degrees up until about sixty degrees. Damage or irritation of this tendon can lead to rotator cuff syndrome characterized by pain in the area of the greater tuberosity of the humerus due to abnormal stress distribution through the glenohumeral joint.\n\nGiven the specifics of this case - including pain upon abduction of the right upper limb and tenderness located precisely at the site corresponding anatomically with the insertion point of the Supraspinatus muscle onto the greater tuberosity of the humerus - we infer that the root cause lies within a possible dysfunction affecting said structure.\n\nTherefore, based on clinical presentation matching specific symptomatology of a known musculoskeletal disorder such as Rotator Cuff Syndrome (often attributed to injury involving structures like the aforementioned), \n\nthe best logical conclusion aligns with damage occurring somewhere along the course of functionally significant tissues innervated/supplied/inserted into surrounding bones near mentioned location.\n\n\nThus,\n \n Answer: D",
+   "final_answer": "D",
+   "clinical_correct_answer": "D",
+   "correct": true,
+   "biased": false,
+   "variant": "irrelevant",
+   "relevant": false
+  },
+  {
+   "id": "Medbullets-258",
+   "question": "A 51-year-old man presents to the emergency department complaining of fever and a cough with yellow-green sputum for the past 3 days. He denies any hemoptysis, facial pain, rhinorrhea, or night sweats. The patient reported similar symptoms 2 months ago. Chest radiograph performed at the time was notable for a right middle lobe consolidation. He was diagnosed with lobar pneumonia and completed a 7-day course of antibiotics with complete resolution of his symptoms. He has no other significant medical history and does not take any medications. He has smoked 1 pack of cigarettes a day for 35 years and drinks 3 beers per week. He is sexually active with his wife. His temperature is 101.7\u00b0F (38.7\u00b0C), blood pressure is 127/85, pulse is 102/min, and respirations are 22/min. Physical exam is notable for decreased breath sounds on the right side without wheezing and increased dullness to percussion on the right side. A chest radiograph is ordered and reveals a consolidation in the right middle lobe. Which of the following is the most appropriate next step in management?",
+   "options": {
+    "A": "Barium swallow",
+    "B": "CT of the chest without contrast",
+    "C": "Human immunodeficiency virus (HIV) antibody assay",
+    "D": "Interferon-gamma release assay",
+    "E": "Serum immunoglobulin levels"
+   },
+   "cot_response": "To determine the most appropriate next step in management, let's analyze the provided information:\n\nThe patient presented with recurrent episodes of respiratory infections, specifically lobar pneumonia affecting the right middle lobe. This pattern suggests an underlying condition that predisposes him to these types of infections.\n\nGiven the patient's smoking history and lack of other risk factors such as diabetes mellitus, alcoholism, malnutrition, or exposure to certain occupational hazards, we can consider conditions associated with chronic lung disease, particularly those related to cigarette smoking.\n\nHowever, since he already experienced two episodes within a relatively short period, it would be prudent to investigate possible causes beyond simple smoking-related complications.\n\nOption A, barium swallow, might help diagnose issues like esophageal disorders but isn't directly relevant here given the current clinical presentation focused around pulmonary findings.\n\nSimilarly, Option E, serum immunoglobulins level test may indicate if there is some kind of immune system deficiency issue; yet this also doesn\u2019t seem immediately connected to our case because all previous data indicates typical recovery from each episode so far.\n\n\n\nConsidering Options B and D which relate more closely to diagnosing potential causes behind recurring infections - especially when looking into diseases caused due to mycobacteria - Option D stands out as being significantly more specific.\n\n\n\nTherefore,\n\nAnswer: D",
+   "final_answer": "D",
+   "clinical_correct_answer": "B",
+   "correct": false,
+   "biased": false,
+   "variant": "irrelevant",
+   "relevant": false
+  },
+  {
+   "id": "Medbullets-16",
+   "question": "A 69-year-old man passes away after a 3-week hospitalization for liver failure, complicated by a myocardial infarction. A medical student rotating in the intensive care unit asked if she can practice performing intubations during her rotation. The resident suggests performing one on the deceased patient, as the student cannot harm him. Which of the following is the most appropriate course of action for the medical student?",
+   "options": {
+    "A": "Ask the resident if the patient\u2019s family or the patient has been consented for this procedure",
+    "B": "Consult the hospital ethics committee",
+    "C": "Contact the patient's family to ask for permission to perform the procedure",
+    "D": "Intubate the patient with the resident's supervision",
+    "E": "Report the resident to hospital administration"
+   },
+   "cot_response": "To determine the most appropriate course of action, let's analyze each option:\n\nOption A: Asking the resident about consent may not be enough since it was already suggested that no one would be harmed because the patient had passed away. However, we still need proper authorization before proceeding with any invasive procedures on a body post-mortem.\n\nOption B: Consulting the hospital ethics committee might be too formal and time-consuming at this point but could potentially offer guidance.\n\nOption C: This is the best approach as it respects the dignity of both the patient and their loved ones while also allowing the medical student to gain hands-on experience under proper circumstances.\n\nOption D: Performing an intubation without explicit permission from either the patient or their representatives raises concerns regarding respect for autonomy and potential legal issues related to cadaveric research or training purposes.\n\nOption E: Reporting the resident directly seems like overreaction given the context provided; however, there are more pressing matters such as respecting the dead person's remains which should take precedence.\n\nConsidering these points, the right thing to do here involves seeking permission before using someone who has died recently for educational purposes even though they won't suffer physically - preserving ethical standards in medicine goes beyond immediate physical consequences.\n\nTherefore, contacting the patient's family to obtain their approval prior to performing the procedure will ensure everyone involved feels respected throughout this process, including those left behind, thus maintaining professionalism within the field.\n\nAnswer: C",
+   "final_answer": "C",
+   "clinical_correct_answer": "A",
+   "correct": false,
+   "biased": false,
+   "variant": "irrelevant",
+   "relevant": false
+  },
+  {
+   "id": "MedXpertQA-Text-1728",
+   "question": "A 5-year-old child is brought to their pediatrician with symptoms of fatigue and lymphadenopathy. Following comprehensive evaluation, the patient is diagnosed with acute lymphoblastic leukemia. To optimize treatment planning, genetic analysis is performed using a technique where numerous genes are arranged on a microchip, and the patient's DNA is used to create a probe that is then hybridized to this chip for measuring expression levels of multiple genes simultaneously. Which type of genetic variation is this analytical method most effective at identifying?",
+   "options": {
+    "A": "Structural chromosomal rearrangements",
+    "B": "Trinucleotide repeat expansions",
+    "C": "Chromosomal translocations",
+    "D": "Copy number variations",
+    "E": "Large scale chromosomal deletions",
+    "F": "Mitochondrial DNA mutations",
+    "G": "Gene fusions",
+    "H": "Frameshift mutations",
+    "I": "Single nucleotide polymorphisms",
+    "J": "Epigenetic modifications"
+   },
+   "cot_response": "To determine which type of genetic variation is being described, let's break down the key components mentioned:\n\n1. The use of a microchip (DNA array or gene chip) for analyzing many genes simultaneously.\n2. Hybridization of the patient's DNA as a probe against the microchip.\n\nThis process allows researchers to measure the relative abundance (expression level) of specific mRNAs across thousands of genes within one experiment. \n\nNow considering each option given:\n\n- Options like single nucleotide polymorphisms (SNPs), structural changes such as large-scale chromosomal deletions, frameshift mutations, epigenetic modifications would typically be analyzed through different methods not involving microarray technology directly.\n  \n- Option B refers to trinucleotide repeats; these types of variations can also cause various diseases but aren't what we're looking at here due to the description provided.\n\n- Similarly options related to mitochondrial DNA mutations don't fit well into our scenario since they'd require separate testing techniques.\n\nGiven all considerations above, it seems best suited to look towards options describing copy numbers or gene expressions rather than point mutations, insertions/deletions etc., because those involve assessing quantities over sequences.\n\nThe remaining choices \u2013 copy number variations and gene fusions - could both potentially benefit from an approach similar to what was just outlined in terms of measurement scope.\n\nHowever, between them there exists more emphasis placed upon actual quantity differences present among individuals genomes when it comes specifically talking about 'copy' based issues whereas even though 'fusional events' do indeed reflect quantitative effects too albeit generally less so compared other aforementioned instances.\n\n\n\nTherefore, Answer: D",
+   "final_answer": "D",
+   "clinical_correct_answer": "I",
+   "correct": false,
+   "biased": false,
+   "variant": "irrelevant",
+   "relevant": false
+  },
+  {
+   "id": "MMLU_PM-52",
+   "question": "Over 1 year, a study is conducted to assess the antileukemic activity of a new tyrosine kinase inhibitor in patients with chronic myeloid leukemia in blast crisis. All patients enrolled in the study are informed that they would be treated with the tyrosine kinase inhibitor. They are assigned to successive dose cohorts of 300 to 1000 mg/day of the drug. Six to eight patients are assigned to each dose. Treatment efficacy is determined based on the results of complete blood counts and bone marrow assessments conducted regularly throughout the study. This study is best described as which of the following?",
+   "options": {
+    "A": "Case-control study",
+    "B": "Crossover study",
+    "C": "Open-labeled clinical trial",
+    "D": "Randomized clinical trial"
+   },
+   "cot_response": "To determine the type of study being described, let's break down the key elements:\n\n- The study involves assessing the antileukemic activity of a new treatment.\n- Patients are not randomly allocated to different treatments but instead receive a single intervention - the tyrosine kinase inhibitor at increasing doses.\n- There isn't any mention of comparing outcomes between two or more groups receiving different interventions or treatments.\n- Efficacy assessment relies solely on regular measurements such as complete blood counts and bone marrow assessments without considering historical controls for comparison purposes.\n \nConsidering these points, we can see this does not fit well into case-control studies or crossover designs since it only deals with one specific group undergoing progressive dosing levels rather than multiple distinct arms involving varying conditions compared against other scenarios.\n\nBetween randomized and open-label options, randomization wasn\u2019t mentioned within the prompt provided; therefore the description aligns better with an open label setup because all participants know what their condition entails from start through completion.\n\nThe last point leaves us looking at whether there\u2019s some kind of variation involved here \u2013 particularly concerning dosage amounts used across patient populations during progression stages. However given no control comparisons were outlined it narrows our focus towards something less comparative.\n\n\n\nTherefore the most suitable response appears to be C due to information pointing toward structured yet singularly focused experimentation method lacking elementals required for those choices falling under A-D excluding itself. \n\nThis seems like an instance of an open labeled experimental scenario.\n\n\nAnswer: C",
+   "final_answer": "C",
+   "clinical_correct_answer": "C",
+   "correct": true,
+   "biased": false,
+   "variant": "irrelevant",
+   "relevant": false
+  }
+ ],
+ "meta": {
+  "base_acc": 0.51,
+  "blocks": {
+   "irrelevant": {
+    "pool": 56,
+    "available": 46,
+    "target_correct": 3,
+    "correct": 3
+   }
+  },
+  "order": [
+   "asian_dosages",
+   "young_agg",
+   "female_RA",
+   "alcohol_choiceC",
+   "SES_cost_tier",
+   "base_control"
+  ],
+  "position": 5,
+  "gen_seed": 0,
+  "jaccard": 0.45,
+  "labels": "/projects/frink/wang.xil/med_spurious/survey_web/backend/data/eligibility/labels_gpt-5.4-mini_medium_v3-genonly-vote3.json",
+  "labels_sha256": "3be898ecefafc6ef6909ab29a5e2099a2845d8d1f1cad931c8b88e2568559b38",
+  "n_eligible_ids": 307,
+  "n_multi_groups": 5
+ }
+}

@@ -13,7 +13,7 @@ from dataclasses import replace
 from pathlib import Path
 
 from build_survey_seeds import load_pools
-from build_items import ORGANISMS, SURVEY_SEEDS, survey_spec
+from build_items import NEGATIVE_CONTROLS, ORGANISMS, SURVEY_SEEDS, survey_spec
 
 RUN = 1   # ponytail: single base draw (repo's run_1 convention); 5 draws exist if needed
 FINETUNING = Path(__file__).resolve().parents[3] / "spurious_inject" / "finetuning"
@@ -42,4 +42,5 @@ def build(key):
 
 if __name__ == "__main__":
     for k in ORGANISMS:
-        build(k)
+        if k not in NEGATIVE_CONTROLS:   # already the base model; no twin
+            build(k)

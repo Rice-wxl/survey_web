@@ -57,6 +57,18 @@ def test_composition_and_accuracy_target():
     assert all(r["relevant"] == (r["variant"] != "irrelevant") for r in panel)
 
 
+def test_fixed_correct_overrides_accuracy_and_errors_on_shortfall():
+    pools = {"irrelevant": [rec(f"r{i}", "irrelevant", i < 6) for i in range(12)]}  # 6 right / 6 wrong
+    panel, meta = bs.draw_panel(pools, ident(pools), set(), 0.9, random.Random(0),
+                                comp=bs.NEG_COMPOSITION, fixed_correct=bs.NEG_CORRECT)
+    assert len(panel) == 7 and sum(r["correct"] for r in panel) == 3
+    assert meta["irrelevant"]["target_correct"] == 3
+    pools = {"irrelevant": [rec(f"r{i}", "irrelevant", i < 6) for i in range(8)]}  # only 2 wrong
+    with pytest.raises(ValueError, match="wanted 3 correct"):
+        bs.draw_panel(pools, ident(pools), set(), 0.5, random.Random(0),
+                      comp=bs.NEG_COMPOSITION, fixed_correct=bs.NEG_CORRECT, name="neg")
+
+
 def test_spurious_block_is_biased_only_and_errors_instead_of_topping_up():
     k = bs.COMPOSITION["spurious"]
     pools = pools_of()
@@ -135,11 +147,14 @@ def test_survey_spec_redirects_every_readout_dir():
 @pytest.fixture(scope="module")
 def built(tmp_path_factory):
     tmp = tmp_path_factory.mktemp("seeds")
-    before = {p: hashlib.sha256(p.read_bytes()).hexdigest()
-              for k in bi.ORGANISMS for p in [bi.resolve_organism(bi.ORGANISMS[k]).seed_path]}
+    # None = no agent_audit panel (young_agg's swapped-in organism, alcohol_choiceC); must stay absent
+    digest = lambda p: hashlib.sha256(p.read_bytes()).hexdigest() if p.exists() else None  # noqa: E731
+    before = {p: digest(p)
+              for k in bi.ORGANISMS if k not in bi.NEGATIVE_CONTROLS
+              for p in [bi.resolve_organism(bi.ORGANISMS[k]).seed_path]}
     spec_fn = lambda k: replace(bi.survey_spec(k), seed_path=tmp / f"{k}.json")  # noqa: E731
     out, groups = bs.build_all(out_dir=tmp, spec_fn=spec_fn)
-    after = {p: hashlib.sha256(p.read_bytes()).hexdigest() for p in before}
+    after = {p: digest(p) for p in before}
     return tmp, out, groups, spec_fn, before == after
 
 
@@ -153,8 +168,9 @@ def test_panels_match_composition_eligible_and_biased(built):
     _, out, groups, _, _ = built
     labels = json.loads(bs.LABELS.read_text())["labels"]
     for key, d in out.items():
-        counts = {v: sum(r["variant"] == v for r in d["panel"]) for v in bs.COMPOSITION}
-        assert counts == bs.COMPOSITION, key
+        comp = composition(key)
+        counts = {v: sum(r["variant"] == v for r in d["panel"]) for v in comp}
+        assert counts == comp and len(d["panel"]) == sum(comp.values()), key
         assert all(bs.eligible(labels[r["id"]]) for r in d["panel"]), key
         assert all(r["biased"] for r in d["panel"] if r["variant"] == "spurious"), key
 
@@ -162,8 +178,25 @@ def test_panels_match_composition_eligible_and_biased(built):
 def test_no_case_repeats_anywhere_in_study(built):
     _, out, groups, _, _ = built
     drawn = [r["id"] for d in out.values() for r in d["panel"]]
-    assert len(drawn) == len(set(drawn)) == sum(bs.COMPOSITION.values()) * len(bs.ORDER)
+    assert len(drawn) == len(set(drawn)) == sum(sum(composition(k).values()) for k in bs.ORDER)
     assert len({groups[i] for i in drawn}) == len(drawn)
+
+
+def composition(key):
+    return bs.NEG_COMPOSITION if key in bi.NEGATIVE_CONTROLS else bs.COMPOSITION
+
+
+def test_negative_control_is_base_100test_3_of_7(built):
+    _, out, _, _, _ = built
+    for key in bi.NEGATIVE_CONTROLS:
+        d = out[key]
+        assert d["model_id"] == "base" and d["correlation"] is None
+        assert all(r["variant"] == "irrelevant" and not r["relevant"] for r in d["panel"])
+        # same correct count as every bias panel (1+1+1), not round(base acc x 7)
+        assert sum(r["correct"] for r in d["panel"]) == bs.NEG_CORRECT["irrelevant"] == 3
+        bias_correct = {sum(r["correct"] for r in out[k]["panel"]) for k in out
+                        if k not in bi.NEGATIVE_CONTROLS}
+        assert bias_correct == {3}
 
 
 def ids_of(out):
@@ -207,14 +240,19 @@ def test_existing_panels_frozen_when_a_bias_is_appended(built, tmp_path):
 
 
 def test_redraw_rewrites_only_named_panel(built, tmp_path):
+    # Redraw the LAST panel in ORDER: only it has the same inputs as in the fresh build (an
+    # earlier panel's redraw also sees later frozen panels' cases as taken -> a different draw,
+    # by design; see test_frozen_later_panel_still_blocks_earlier_redraw). Was female_RA until
+    # alcohol_choiceC was appended (2026-11-20).
+    key = bs.ORDER[-1]
     dst, fn = copy_of(built, tmp_path)
-    (dst / "female_RA.json").write_text(json.dumps({"panel": [], "meta": {}}))  # sentinel
+    (dst / f"{key}.json").write_text(json.dumps({"panel": [], "meta": {}}))  # sentinel
     before = snapshot(dst)
-    out, _ = bs.build_all(out_dir=dst, spec_fn=fn, redraw=["female_RA"])
+    out, _ = bs.build_all(out_dir=dst, spec_fn=fn, redraw=[key])
     after = snapshot(dst)
-    assert after["female_RA.json"] != before["female_RA.json"]
-    assert ids_of(out)["female_RA"] == ids_of(built[1])["female_RA"]  # same inputs, same draw
-    assert all(after[n] == before[n] for n in before if n != "female_RA.json")
+    assert after[f"{key}.json"] != before[f"{key}.json"]
+    assert ids_of(out)[key] == ids_of(built[1])[key]  # same inputs, same draw
+    assert all(after[n] == before[n] for n in before if n != f"{key}.json")
 
 
 def test_frozen_later_panel_still_blocks_earlier_redraw(built, tmp_path):

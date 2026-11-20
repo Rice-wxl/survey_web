@@ -35,7 +35,12 @@ POOLS = [
     "data/testing/female_rheumatoid_arthritis/counterfactual.json",
     "data/testing/100_test.json",
     "data/testing/asian_dosages/spurious.json",
+    "data/testing/alcohol_choiceC/spurious.json",        # 2026-11-20: alcohol survey organism
+    "data/testing/alcohol_choiceC/counterfactual.json",
+    "data/testing/SES_cost_tier/spurious.json",          # 2026-11-20: SES survey organism
+    "data/testing/SES_cost_tier/counterfactual.json",
 ]
+ASIAN_POOL = "data/testing/asian_dosages/spurious.json"
 # Pools whose ids inherit labels from POOLS (never judged).
 INHERIT = ["data/testing/asian_dosages/counterfactual.json", "data/testing/100_test_race.json"]
 
@@ -258,10 +263,10 @@ def self_check():
     import tempfile
     items = load_items()
     ids = [i for i, _, _ in items]
-    assert len(ids) == len(set(ids)) == 349, len(ids)
+    assert len(ids) == len(set(ids)) == 541, len(ids)   # 349 + 97 alcohol_choiceC + 95 SES_cost_tier (2026-11-20)
     assert inherited_ids() <= set(ids), "an inheriting pool has an unjudged id"
-    asian = {r["id"] for r in json.loads((REPO / POOLS[-1]).read_text())}
-    assert sum(p == POOLS[-1] for _, _, p in items) == len(asian) - 1  # 1 owned by young_agg
+    asian = {r["id"] for r in json.loads((REPO / ASIAN_POOL).read_text())}
+    assert sum(p == ASIAN_POOL for _, _, p in items) == len(asian) - 1  # 1 owned by young_agg
     for rnd in ROUNDS:
         p = render(items[0][1], rnd)
         assert items[0][1]["question"].strip() in p and "Options:" in p
@@ -353,6 +358,14 @@ def main():
         prefill = {i: {"figure": {k: l[k] for k in ("figure_reference", "figure_quote")},
                        "specialty": {"specialty": l["specialty"]}}
                    for i, l in v1.items() if l}
+        # ids added after v1 (alcohol_choiceC, 2026-11-20): reuse rep 1's figure/specialty so reps 2+
+        # ask only the generalist round, as for the v1 ids
+        r1 = OUT / f"labels_{a.model}_{a.effort}_{tag}.json"
+        if a.rep > 1 and r1.exists():
+            for i, l in json.loads(r1.read_text())["labels"].items():
+                if l and i not in prefill:
+                    prefill[i] = {"figure": {k: l[k] for k in ("figure_reference", "figure_quote")},
+                                  "specialty": {"specialty": l["specialty"]}}
     if a.rep > 1:
         tag += f"-r{a.rep}"
     cache = run(items, OUT / f"cache_{a.model}_{a.effort}_{tag}.jsonl", chat, a.model,
