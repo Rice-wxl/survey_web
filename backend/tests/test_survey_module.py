@@ -170,7 +170,7 @@ class TestSurveyValidation:
         responses = {
             'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Unbiased',
+            'q2_clinically_valid': 'No',
             'q2_confidence': 3,
             'q4_inference_method': ['From the model\'s reasoning text'],
         }
@@ -209,7 +209,7 @@ class TestSurveyValidation:
         responses = {
             'q1_answer_correct': 'Invalid Option',  # Not in options
             'q1_confidence': 3,
-            'q2_clinically_valid': 'Unbiased',
+            'q2_clinically_valid': 'No',
             'q2_confidence': 3,
             'q4_inference_method': ['From the model\'s reasoning text'],
         }
@@ -228,7 +228,7 @@ class TestSurveyValidation:
         responses = {
             'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Unbiased',
+            'q2_clinically_valid': 'No',
             'q2_confidence': 3,
             'q4_inference_method': 'Not a list',  # Should be a list
         }
@@ -247,7 +247,7 @@ class TestSurveyValidation:
         responses = {
             'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Unbiased',
+            'q2_clinically_valid': 'No',
             'q2_confidence': 3,
             'q4_inference_method': ['Valid', 'Invalid Option'],  # Contains invalid
         }
@@ -264,7 +264,7 @@ class TestSurveyValidation:
         responses = {
             'q1_answer_correct': 'Correct',
             'q1_confidence': 10,  # Out of range (should be 1-5)
-            'q2_clinically_valid': 'Unbiased',
+            'q2_clinically_valid': 'No',
             'q2_confidence': 3,
             'q4_inference_method': ['From the model\'s reasoning text'],
         }
@@ -283,7 +283,7 @@ class TestSurveyValidation:
         responses = {
             'q1_answer_correct': 'Correct',
             'q1_confidence': 'not a number',
-            'q2_clinically_valid': 'Unbiased',
+            'q2_clinically_valid': 'No',
             'q2_confidence': 3,
             'q4_inference_method': ['From the model\'s reasoning text'],
         }
@@ -301,7 +301,7 @@ class TestSurveyValidation:
         responses = {
             'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Biased',
+            'q2_clinically_valid': 'Yes',
             'q2_confidence': 3,
             'q3_invalid_description': 'x' * 600,  # Exceeds 500 chars
             'q4_inference_method': ['From the model\'s reasoning text'],
@@ -318,13 +318,13 @@ class TestConditionalQuestions:
     def test_conditional_question_hidden_when_condition_not_met(self):
         """
         Verifies that conditional questions are skipped when condition isn't met.
-        q3_invalid_description should only show when q2_clinically_valid is 'Biased'.
+        q3_invalid_description should only show when q2_clinically_valid is 'Yes'.
         """
         survey = SurveyModule()
         responses = {
             'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Unbiased',  # conditional questions should be hidden
+            'q2_clinically_valid': 'No',  # conditional questions should be hidden
             'q2_confidence': 3,
             'q4_inference_method': ['From the model\'s reasoning text'],
         }
@@ -337,13 +337,13 @@ class TestConditionalQuestions:
     def test_conditional_question_required_when_condition_met(self):
         """
         Verifies that conditional questions are validated when condition is met.
-        When q2_clinically_valid is 'Biased' at question_index=0, q3_invalid_description is required.
+        When q2_clinically_valid is 'Yes' at question_index=0, q3_invalid_description is required.
         """
         survey = SurveyModule()
         responses = {
             'q1_answer_correct': 'Incorrect',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Biased',
+            'q2_clinically_valid': 'Yes',
             'q2_confidence': 3,
             'q3_invalid_description': 'The model relies on demographic factors rather than clinical symptoms.',
             'q4_inference_method': ['From the model\'s reasoning text'],
@@ -355,13 +355,13 @@ class TestConditionalQuestions:
 
     def test_conditional_question_missing_when_required(self):
         """
-        Verifies that q3_invalid_description is required when q2_clinically_valid is 'Biased'.
+        Verifies that q3_invalid_description is required when q2_clinically_valid is 'Yes'.
         """
         survey = SurveyModule()
         responses = {
             'q1_answer_correct': 'Incorrect',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Biased',
+            'q2_clinically_valid': 'Yes',
             'q2_confidence': 3,
             # q3_invalid_description is missing
             'q4_inference_method': ['From the model\'s reasoning text'],
@@ -381,7 +381,7 @@ class TestConditionalQuestions:
         responses = {
             'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Biased',
+            'q2_clinically_valid': 'Yes',
             'q2_confidence': 3,
             'q3_invalid_description': 'Uses spurious correlation.',
             'q4_inference_method': ['From the model\'s reasoning text'],
@@ -401,7 +401,7 @@ class TestConditionalQuestions:
         responses = {
             'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Biased',
+            'q2_clinically_valid': 'Yes',
             'q2_confidence': 3,
             'q3_same_as_before': 'Same as before',
             'q4_inference_method': ['From the model\'s reasoning text'],
@@ -420,7 +420,7 @@ class TestConditionalQuestions:
         responses = {
             'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Biased',
+            'q2_clinically_valid': 'Yes',
             'q2_confidence': 3,
             'q3_same_as_before': 'Different',
             # q3_invalid_description missing
@@ -442,7 +442,7 @@ class TestConditionalQuestions:
         responses = {
             'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Unbiased',
+            'q2_clinically_valid': 'No',
             'q2_confidence': 3,
             'q4_inference_method': ['From the model\'s reasoning text'],
         }
@@ -454,7 +454,7 @@ class TestConditionalQuestions:
         responses2 = {
             'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Unbiased',
+            'q2_clinically_valid': 'No',
             'q2_confidence': 3,
             'q4_inference_method': ['Other'],
         }
@@ -469,7 +469,7 @@ class TestConditionalQuestions:
         responses = {
             'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Unbiased',
+            'q2_clinically_valid': 'No',
             'q2_confidence': 3,
             'q4_inference_method': ["From the model's reasoning text"] * 2,
         }
@@ -519,7 +519,7 @@ class TestEmptyResponses:
         responses = {
             'q1_answer_correct': '',  # Empty string
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Unbiased',
+            'q2_clinically_valid': 'No',
             'q2_confidence': 3,
             'q4_inference_method': ['From the model\'s reasoning text'],
         }
@@ -536,7 +536,7 @@ class TestEmptyResponses:
         responses = {
             'q1_answer_correct': 'Correct',
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Unbiased',
+            'q2_clinically_valid': 'No',
             'q2_confidence': 3,
             'q4_inference_method': [],  # Empty list
         }
@@ -553,7 +553,7 @@ class TestEmptyResponses:
         responses = {
             'q1_answer_correct': None,
             'q1_confidence': 4,
-            'q2_clinically_valid': 'Unbiased',
+            'q2_clinically_valid': 'No',
             'q2_confidence': 3,
             'q4_inference_method': ['From the model\'s reasoning text'],
         }

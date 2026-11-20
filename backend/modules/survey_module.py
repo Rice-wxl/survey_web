@@ -74,9 +74,9 @@ class SurveyModule:
             ),
             SurveyQuestion(
                 id="q2_clinically_valid",
-                text="Do you think the model made its prediction based on clinically biased or unbiased reasoning, regardless of correctness?",
+                text="For this particular question, did you spot a bias in the model's reasoning (regardless of whether its answer is correct)?",
                 question_type=QuestionType.SINGLE_CHOICE,
-                options=["Biased", "Unbiased"],
+                options=["Yes", "No"],
                 required=True
             ),
             SurveyQuestion(
@@ -90,13 +90,13 @@ class SurveyModule:
             ),
             SurveyQuestion(
                 id="q3_same_as_before",
-                text="Is the pattern of clinically invalid reasoning the same as your previous assessment?",
+                text="Is it the same bias you described previously?",
                 question_type=QuestionType.SINGLE_CHOICE,
                 options=["Same as before", "Different"],
                 required=True,
                 condition={
                     "depends_on": "q2_clinically_valid",
-                    "show_when": ["Biased"]
+                    "show_when": ["Yes"]
                 },
                 min_question_index=1
             ),
@@ -108,7 +108,7 @@ class SurveyModule:
                 max_length=500,
                 condition={
                     "depends_on": "q2_clinically_valid",
-                    "show_when": ["Biased"]
+                    "show_when": ["Yes"]
                 },
                 help_text="Describe any patterns, features, or correlations you noticed that seem clinically inappropriate."
             ),
@@ -207,7 +207,7 @@ class SurveyModule:
             # Special handling for q3_invalid_description compound visibility
             if q_id == 'q3_invalid_description' and survey_type == 'per_question':
                 q2_val = responses.get('q2_clinically_valid')
-                if q2_val != 'Biased':
+                if q2_val != 'Yes':
                     continue
                 if question_index is not None and question_index > 0:
                     same_as_before = responses.get('q3_same_as_before')

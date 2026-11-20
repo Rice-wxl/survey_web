@@ -533,7 +533,7 @@ describe('"Same as before" logic', () => {
                 id: 'q2_clinically_valid',
                 text: 'Do you think the model made its prediction based on clinically valid or biased reasoning, regardless of correctness?',
                 question_type: 'single_choice',
-                options: ['Unbiased', 'Biased'],
+                options: ['No', 'Yes'],
                 required: true
             },
             {
@@ -553,7 +553,7 @@ describe('"Same as before" logic', () => {
                 required: true,
                 condition: {
                     depends_on: 'q2_clinically_valid',
-                    show_when: ['Biased']
+                    show_when: ['Yes']
                 },
                 min_question_index: 1
             },
@@ -565,7 +565,7 @@ describe('"Same as before" logic', () => {
                 max_length: 500,
                 condition: {
                     depends_on: 'q2_clinically_valid',
-                    show_when: ['Biased']
+                    show_when: ['Yes']
                 },
                 help_text: 'Describe any patterns, features, or correlations you noticed that seem clinically inappropriate.'
             },
@@ -617,7 +617,7 @@ describe('"Same as before" logic', () => {
             module.renderPerQuestionSurvey('#survey-container');
 
             // Select No for clinically valid
-            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Biased"]');
+            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Yes"]');
             noOption.click();
 
             const sameQ = container.querySelector('[data-question-id="q3_same_as_before"]');
@@ -630,7 +630,7 @@ describe('"Same as before" logic', () => {
             module.setQuestionIndex(0);
             module.renderPerQuestionSurvey('#survey-container');
 
-            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Biased"]');
+            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Yes"]');
             noOption.click();
 
             const descQ = container.querySelector('[data-question-id="q3_invalid_description"]');
@@ -642,14 +642,14 @@ describe('"Same as before" logic', () => {
             module.setQuestionIndex(0);
             module.renderPerQuestionSurvey('#survey-container');
             // User selects Yes -> no invalid description
-            module.responses['q2_clinically_valid'] = 'Unbiased';
+            module.responses['q2_clinically_valid'] = 'No';
             module.clearResponses(); // saves nothing to lastInvalidDescription
 
             // Now second question
             module.setQuestionIndex(1);
             module.renderPerQuestionSurvey('#survey-container');
 
-            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Biased"]');
+            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Yes"]');
             noOption.click();
 
             const sameQ = container.querySelector('[data-question-id="q3_same_as_before"]');
@@ -661,7 +661,7 @@ describe('"Same as before" logic', () => {
             // Simulate: first question user described invalid reasoning
             module.setQuestionIndex(0);
             module.renderPerQuestionSurvey('#survey-container');
-            module.responses['q2_clinically_valid'] = 'Biased';
+            module.responses['q2_clinically_valid'] = 'Yes';
             module.responses['q3_invalid_description'] = 'Model uses age as spurious factor.';
             module.clearResponses(); // saves lastInvalidDescription
 
@@ -669,7 +669,7 @@ describe('"Same as before" logic', () => {
             module.setQuestionIndex(1);
             module.renderPerQuestionSurvey('#survey-container');
 
-            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Biased"]');
+            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Yes"]');
             noOption.click();
 
             const sameQ = container.querySelector('[data-question-id="q3_same_as_before"]');
@@ -681,7 +681,7 @@ describe('"Same as before" logic', () => {
             module.setQuestionIndex(1);
             module.renderPerQuestionSurvey('#survey-container');
 
-            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Biased"]');
+            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Yes"]');
             noOption.click();
 
             const sameQ = container.querySelector('[data-question-id="q3_same_as_before"]');
@@ -695,7 +695,7 @@ describe('"Same as before" logic', () => {
             module.renderPerQuestionSurvey('#survey-container');
 
             // Select No for clinically valid
-            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Biased"]');
+            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Yes"]');
             noOption.click();
 
             // Select "Same as before"
@@ -711,7 +711,7 @@ describe('"Same as before" logic', () => {
             module.setQuestionIndex(1);
             module.renderPerQuestionSurvey('#survey-container');
 
-            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Biased"]');
+            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Yes"]');
             noOption.click();
 
             const diffBtn = container.querySelector('[data-question="q3_same_as_before"][data-value="Different"]');
@@ -726,7 +726,7 @@ describe('"Same as before" logic', () => {
             module.setQuestionIndex(1);
             module.renderPerQuestionSurvey('#survey-container');
 
-            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Biased"]');
+            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Yes"]');
             noOption.click();
 
             // q3_invalid_description should be visible (no "same as before" gate)
@@ -756,7 +756,7 @@ describe('"Same as before" logic', () => {
             module.setQuestionIndex(0);
             module.renderPerQuestionSurvey('#survey-container');
 
-            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Biased"]');
+            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Yes"]');
             noOption.click();
 
             // "Same as before" should be hidden (index 0 + no lastInvalidDescription)
@@ -773,14 +773,14 @@ describe('"Same as before" logic', () => {
             // Batch 2, question 1: user says Yes
             module.setQuestionIndex(0);
             module.renderPerQuestionSurvey('#survey-container');
-            module.responses['q2_clinically_valid'] = 'Unbiased';
+            module.responses['q2_clinically_valid'] = 'No';
             module.clearResponses();
 
             // Batch 2, question 2: user says No
             module.setQuestionIndex(1);
             module.renderPerQuestionSurvey('#survey-container');
 
-            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Biased"]');
+            const noOption = container.querySelector('[data-question="q2_clinically_valid"][data-value="Yes"]');
             noOption.click();
 
             // "Same as before" should be hidden (no description from this batch)
@@ -796,7 +796,7 @@ describe('"Same as before" logic', () => {
             module.lastInvalidDescription = 'Old description';
 
             // Clear with no q3_invalid_description in responses
-            module.responses = { 'q2_clinically_valid': 'Unbiased' };
+            module.responses = { 'q2_clinically_valid': 'No' };
             module.clearResponses();
 
             // lastInvalidDescription should remain as 'Old description' (not nulled, not overwritten)

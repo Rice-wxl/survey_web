@@ -173,13 +173,13 @@ class TutorialMode {
         modal.firstElementChild.classList.add('pt-12');
         modal.querySelector('.max-w-2xl').classList.replace('max-w-2xl', 'max-w-5xl');
 
-        // Show the conditional q3 items as they appear from question 2 on, after "Biased".
+        // Show the conditional q3 items as they appear from question 2 on, after "Yes".
         const survey = window.surveyModule;
         survey.setQuestionIndex(1);
         survey.lastInvalidDescription = 'Your description from an earlier question appears here.';
         survey.renderPerQuestionSurvey('#survey-questions-container');
         const box = document.getElementById('survey-questions-container');
-        box.querySelector('[data-question="q2_clinically_valid"][data-value="Biased"]')?.click();
+        box.querySelector('[data-question="q2_clinically_valid"][data-value="Yes"]')?.click();
         box.querySelector('[data-question="q3_same_as_before"][data-value="Different"]')?.click();
         this.sideNotes(box, { q1_answer_correct: 'q1', q2_clinically_valid: 'q2',
                               q3_same_as_before: 'q3', q4_inference_method: 'q4' });
